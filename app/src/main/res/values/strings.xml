@@ -9,4 +9,9 @@
     <string name="navigation_drawer_open">Open menu</string>
     <string name="navigation_drawer_close">Close menu</string>
 
+    <string name="titlebar_accounts">Accounts</string>
+    <string name="titlebar_overview">Overview</string>
+    <string name="titlebar_transactions">Transactions</string>
+    <string name="titlebar_reports">Reports</string>
+
 </resources>

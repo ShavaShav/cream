@@ -31,4 +31,13 @@ public class OverviewFragment extends Fragment {
         super.onDetach();
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        // Set title bar
+        ((MainActivity) getActivity())
+                .setActionBarTitle(getString(R.string.titlebar_overview));
+    }
+
 }
