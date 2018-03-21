@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Cream</string>
+
+    <string name="nav_overview">Overview</string>
+    <string name="nav_accounts">Accounts</string>
+    <string name="nav_transactions">Transactions</string>
+    <string name="nav_reports">Reports</string>
+
+    <string name="navigation_drawer_open">Open menu</string>
+    <string name="navigation_drawer_close">Close menu</string>
+
+</resources>
