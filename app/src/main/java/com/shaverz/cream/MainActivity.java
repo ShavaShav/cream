@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        toggle.setHomeAsUpIndicator(R.drawable.ic_hamburger);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
@@ -66,7 +65,7 @@ public class MainActivity extends AppCompatActivity
                 fragment = new AccountsFragment();
                 break;
             case R.id.nav_transactions:
-                changeFragment = false;
+                fragment = new TransactionFragment();
                 break;
             case R.id.nav_reports:
                 changeFragment = false;
