@@ -51,4 +51,23 @@
     <string name="tab_text_3">CASH\nFLOW</string>
     <string name="tab_text_4">BALANCE</string>
 
+    <string name="report_title_expense_by_category">Expense By Category</string>
+    <string name="report_title_daily_expense">Daily Expense</string>
+    <string name="report_title_monthly_expense">Monthly Expense</string>
+    <string name="report_title_income_by_category">Income By Category</string>
+    <string name="report_title_daily_income">Daily Income</string>
+    <string name="report_title_monthly_income">Monthly Income</string>
+    <string name="report_title_income_vs_expense">Income Vs Expense</string>
+    <string name="report_title_daily_balance">Daily Balance</string>
+
+    <string name="report_description_expense_by_category">View your expenses broken down by categories for specific accounts and date periods</string>
+    <string name="report_description_daily_expense">View last seven days breakdown of your expenses by specific accounts</string>
+    <string name="report_description_monthly_expense">View a month by month breakdown of your expenses by specific accounts</string>
+    <string name="report_description_income_by_category">View all incomes sorted by category type</string>
+    <string name="report_description_daily_income">View last seven days breakdown of your incomes by specific accounts</string>
+    <string name="report_description_monthly_income">View a month by month breakdown of your incomes by specific accounts</string>
+    <string name="report_description_income_vs_expense">Compare your total expenses and income</string>
+    <string name="report_description_daily_balance">Compare your income and expenses on a daily basis</string>
+
+
 </resources>

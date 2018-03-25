@@ -1,7 +1,6 @@
 package com.shaverz.cream;
 
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -67,7 +66,9 @@ public class ReportsFragment extends Fragment {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             // Inflate the layout for this fragment
-            return inflater.inflate(R.layout.fragment_reports_expense, container, false);
+            View view = inflater.inflate(R.layout.fragment_reports_expense, container, false);
+
+            return view;
         }
     }
 
@@ -76,7 +77,9 @@ public class ReportsFragment extends Fragment {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             // Inflate the layout for this fragment
-            return inflater.inflate(R.layout.fragment_reports_expense, container, false);
+            View view = inflater.inflate(R.layout.fragment_reports_income, container, false);
+
+            return view;
         }
     }
 
@@ -85,7 +88,9 @@ public class ReportsFragment extends Fragment {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             // Inflate the layout for this fragment
-            return inflater.inflate(R.layout.fragment_reports_expense, container, false);
+            View view = inflater.inflate(R.layout.fragment_reports_cash_flow, container, false);
+
+            return view;
         }
     }
 
@@ -94,7 +99,9 @@ public class ReportsFragment extends Fragment {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             // Inflate the layout for this fragment
-            return inflater.inflate(R.layout.fragment_reports_expense, container, false);
+            View view = inflater.inflate(R.layout.fragment_reports_balance, container, false);
+
+            return view;
         }
     }
 
