@@ -6,21 +6,19 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 
 public class ReportsFragment extends Fragment {
-    private static final int EXPENSE = 0;
-    private static final int INCOME = 1;
-    private static final int CASHFLOW = 2;
-    private static final int BALANCE = 3;
-    private static final int NUM_PAGES = 4;
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
+    private Fragment[] reportTabFragments;
 
     public ReportsFragment() {
         // Required empty public constructor
@@ -29,6 +27,16 @@ public class ReportsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        Log.d("tag", "Creating view for reports");
+        // preload fragments
+        reportTabFragments = new Fragment[] {
+                new ExpenseFragment(),
+                new IncomeFragment(),
+                new CashFlowFragment(),
+                new BalanceFragment()
+        };
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_reports, container, false);
         // Create the adapter that will return a fragment for each of the three
@@ -105,7 +113,7 @@ public class ReportsFragment extends Fragment {
         }
     }
 
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+    public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -115,25 +123,14 @@ public class ReportsFragment extends Fragment {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            switch (position) {
-                case EXPENSE:
-                    return new ExpenseFragment();
-                case INCOME:
-                    return new IncomeFragment();
-                case CASHFLOW:
-                    return new CashFlowFragment();
-                case BALANCE:
-                    return new BalanceFragment();
-                default:
-                    return null;
-            }
+            return reportTabFragments[position];
 
         }
 
         @Override
         public int getCount() {
             // Show 4 total pages.
-            return NUM_PAGES;
+            return reportTabFragments.length;
         }
     }
 
