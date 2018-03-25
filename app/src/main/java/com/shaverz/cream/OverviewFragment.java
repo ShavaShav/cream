@@ -12,13 +12,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 public class OverviewFragment extends Fragment {
 
     private View mView;
-    private CardView accountsCardView;
-    private CardView transactionsCardView;
-    private CardView incomeVsExpenseCardView;
+    private LinearLayout accountsCardView;
+    private LinearLayout transactionsCardView;
+    private LinearLayout incomeVsExpenseCardView;
 
     public OverviewFragment() {
         // Required empty public constructor

@@ -10,7 +10,7 @@
     tools:context="com.shaverz.cream.SetupActivity">
 
     <android.support.v4.view.ViewPager
-        android:id="@+id/container"
+        android:id="@+id/reports_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">

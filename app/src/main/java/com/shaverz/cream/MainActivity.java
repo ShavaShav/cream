@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity
                 fragment = new TransactionFragment();
                 break;
             case R.id.nav_reports:
-                changeFragment = false;
+                fragment = new ReportsFragment();
                 break;
             default:
                 changeFragment = false;

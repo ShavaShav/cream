@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
         android:background="@drawable/common_border"
+        android:elevation="@dimen/common_elevation"
         android:columnCount="2"
         android:rowCount="2">
 
@@ -72,6 +73,7 @@
         android:layout_marginRight="@dimen/fab_margin"
         android:background="@drawable/common_border"
         android:orientation="vertical"
+        android:elevation="@dimen/common_elevation"
         app:layoutManager="LinearLayoutManager"
         tools:listitem="@layout/fragment_transaction_row">
 

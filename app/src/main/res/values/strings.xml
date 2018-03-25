@@ -44,4 +44,11 @@
     <string name="tx_account">ACCOUNT</string>
     <string name="tx_period">PERIOD</string>
 
+    <!-- Reports -->
+    <string name="title_activity_reports">ReportsActivity</string>
+    <string name="tab_text_1">EXPENSE</string>
+    <string name="tab_text_2">INCOME</string>
+    <string name="tab_text_3">CASH\nFLOW</string>
+    <string name="tab_text_4">BALANCE</string>
+
 </resources>

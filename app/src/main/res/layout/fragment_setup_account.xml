@@ -37,6 +37,7 @@
         android:layout_marginLeft="@dimen/fab_margin"
         android:layout_marginRight="@dimen/fab_margin"
         android:background="@drawable/common_border"
+        android:elevation="@dimen/common_elevation"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/fab_margin"
         android:paddingRight="@dimen/fab_margin">
@@ -74,6 +75,7 @@
         android:layout_marginLeft="@dimen/fab_margin"
         android:layout_marginRight="@dimen/fab_margin"
         android:background="@drawable/common_border"
+        android:elevation="@dimen/common_elevation"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/fab_margin"
         android:paddingRight="@dimen/fab_margin">
