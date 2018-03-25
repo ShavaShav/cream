@@ -1,6 +1,7 @@
 package com.shaverz.cream;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -117,6 +118,8 @@ public class OverviewFragment extends Fragment {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.action_customize:
+                Intent i = new Intent(getContext(),OverviewCustomizationActivity.class);
+                startActivity(i);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
