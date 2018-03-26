@@ -69,5 +69,11 @@
     <string name="report_description_income_vs_expense">Compare your total expenses and income</string>
     <string name="report_description_daily_balance">Compare your income and expenses on a daily basis</string>
 
+    <!-- DB helper -->
+    <string name="invalid_query_uri">Invalid query Uri: </string>
+    <string name="invalid_insert_uri">Invalid insert Uri: </string>
+    <string name="invalid_update_uri">Invalid update Uri: </string>
+    <string name="invalid_delete_uri">Invalid delete Uri: </string>
+    <string name="insert_failed">Insert failed:</string>
 
 </resources>
