@@ -25,7 +25,9 @@ class AppDatabaseHelper extends SQLiteOpenHelper {
                "CREATE TABLE " + User.TABLE_NAME + "(" +
                        User._ID + " integer primary key, " +
                        User.COLUMN_USERNAME + " text not null unique, " +
-                       User.COLUMN_PASSWORD + " text not null);";
+                       User.COLUMN_PASSWORD + " text not null, " +
+                       User.COLUMN_CURRENCY + " text, " +
+                       User.COLUMN_LANGUAGE + " text);";
        db.execSQL(CREATE_USERS_TABLE); // create the contacts table
 
        // SQL for creating the accounts table
@@ -54,7 +56,7 @@ class AppDatabaseHelper extends SQLiteOpenHelper {
            "FOREIGN KEY (" + Transaction.COLUMN_ACCOUNT_ID + ") " +
            "REFERENCES " + Account.TABLE_NAME + "(_id))";
 
-       db.execSQL(CREATE_ACCOUNTS_TABLE); // create the contacts table
+       db.execSQL(CREATE_TRANSACTIONS_TABLE); // create the contacts table
    }
 
    // normally defines how to upgrade the database when the schema changes

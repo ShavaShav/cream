@@ -10,7 +10,6 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
-import com.shaverz.cream.MainActivity;
 import com.shaverz.cream.R;
 import com.shaverz.cream.data.DatabaseDescription.*;
 
@@ -80,10 +79,8 @@ public class AppContentProvider extends ContentProvider {
             queryBuilder.appendWhere(
                Account._ID + "=" + uri.getLastPathSegment());
             break;
-         case ACCOUNTS: // all accounts will be selected for user
+         case ACCOUNTS: // all accounts will be selected
             queryBuilder.setTables(Account.TABLE_NAME);
-            queryBuilder.appendWhere(
-               Account.COLUMN_USER_ID + "=" + MainActivity.USER_ID);
             break;
          case ONE_TRANSACTION: // transaction with specified id will be selected
             queryBuilder.setTables(Transaction.TABLE_NAME);
