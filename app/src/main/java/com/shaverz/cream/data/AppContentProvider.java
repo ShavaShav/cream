@@ -120,7 +120,7 @@ public class AppContentProvider extends ContentProvider {
                   + "="
                   + User.TABLE_NAME + "." + User._ID);
             queryBuilder.appendWhere(
-                    Account.COLUMN_USER_ID + "=" + uri.getLastPathSegment());
+                    User.TABLE_NAME + "." + User._ID + "=" + uri.getLastPathSegment());
             break;
          case ONE_TRANSACTION: // transaction with specified id will be selected
             queryBuilder.setTables(Transaction.TABLE_NAME);
@@ -145,6 +145,8 @@ public class AppContentProvider extends ContentProvider {
                     + Transaction.TABLE_NAME + "." + Transaction.COLUMN_ACCOUNT_ID
                     + "="
                     + Account.TABLE_NAME + "." + Account._ID);
+            queryBuilder.appendWhere(
+                    User.TABLE_NAME + "." + User._ID + "=" + uri.getLastPathSegment());
             break;
          case TRANSACTIONS_FOR_ACCOUNT:
             queryBuilder.setTables(Account.TABLE_NAME
@@ -155,7 +157,7 @@ public class AppContentProvider extends ContentProvider {
                     + "="
                     + Transaction.TABLE_NAME + "." +Transaction.COLUMN_ACCOUNT_ID);
             queryBuilder.appendWhere(
-                    Account.COLUMN_USER_ID + "=" + uri.getLastPathSegment());
+                    Account.TABLE_NAME + "." + Account._ID + "=" + uri.getLastPathSegment());
             break;
          default:
             throw new UnsupportedOperationException(

@@ -62,7 +62,7 @@
             android:layout_row="1" />
     </GridLayout>
 
-    <android.support.v7.widget.RecyclerView xmlns:app="http://schemas.android.com/apk/res-auto"
+    <ListView xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/transaction_list"
         android:name="com.shaverz.cream.TransactionFragment"
@@ -74,10 +74,9 @@
         android:background="@drawable/common_border"
         android:orientation="vertical"
         android:elevation="@dimen/common_elevation"
-        app:layoutManager="LinearLayoutManager"
         tools:listitem="@layout/fragment_transaction_row">
 
-    </android.support.v7.widget.RecyclerView>
+    </ListView>
 
 </LinearLayout>
 
