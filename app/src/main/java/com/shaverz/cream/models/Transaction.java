@@ -3,32 +3,55 @@ package com.shaverz.cream.models;
 
 import java.util.Date;
 
-public class Transaction {
-        public final static int WITHDRAWAL = 0;
-        public final static int DEPOSIT = 1;
+public class Transaction implements Comparable<Transaction> {
+    private String id;
+    private double amount;
+    private String account; // storing account name redundantly for easy adapter access
+    private Date date;
+    private String category;
+    private String payee;
 
-        public final String id;
-        public final String accountName;
-        public final int type; // withdrawal or deposit
-        public final double amount;
-        public final Date date;
+    public Transaction(String id, double amount, String account, Date date, String category, String payee) {
+        this.id = id;
+        this.amount = amount;
+        this.account = account;
+        this.date = date;
+        this.category = category;
+        this.payee = payee;
+    }
 
-        public Transaction(String id, double amount, int type, String accountName, Date date) throws Exception {
-            this.id = id;
-            this.accountName = accountName;
-            if (type != WITHDRAWAL && type != DEPOSIT) {
-                throw new Exception("Invalid type!");
-            }
-            if (amount < 0.00) {
-                throw new Exception("Amount must be positive!");
-            }
-            this.type = type;
-            this.amount = amount;
-            this.date = date;
-        }
+    public String getId() {
+        return id;
+    }
 
-        @Override
-        public String toString() {
-            return accountName + ": " + (type == WITHDRAWAL ? "-":"+") + amount;
-        }
+    public String getAccount() {
+        return account;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public String getPayee() {
+        return payee;
+    }
+
+    @Override
+    public String toString() {
+        return id + "| " + account + " | "  + category + " | " +
+                payee + ": $" + amount + " @ " + date.toString();
+    }
+
+    @Override
+    public int compareTo(Transaction transaction) {
+        return this.date.compareTo(transaction.date);
+    }
 }

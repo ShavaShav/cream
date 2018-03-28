@@ -11,7 +11,7 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
 import com.shaverz.cream.R;
-import com.shaverz.cream.data.DatabaseDescription.*;
+import com.shaverz.cream.data.DB.*;
 
 public class AppContentProvider extends ContentProvider {
    // used to access the database
@@ -23,31 +23,36 @@ public class AppContentProvider extends ContentProvider {
 
    // constants used with UriMatcher to determine operation to perform
    private static final int USERS = 0; // manipulate users table
-   private static final int ONE_ACCOUNT = 1; // manipulate one account
-   private static final int ACCOUNTS = 2; // manipulate accounts table
-   private static final int ONE_TRANSACTION = 3; // manipulate one transaction
-   private static final int TRANSACTIONS = 4; // manipulate transaction table
+   private static final int ONE_USER = 1; // manipulate users table
+   private static final int ONE_ACCOUNT = 2; // manipulate one account
+   private static final int ACCOUNTS = 3; // manipulate accounts table
+   private static final int ONE_TRANSACTION = 4; // manipulate one transaction
+   private static final int TRANSACTIONS = 5; // manipulate transaction table
 
    // static block to configure this ContentProvider's UriMatcher
    static {
+      // Uri for Account with the specified id (#)
+      uriMatcher.addURI(DB.AUTHORITY,
+              User.TABLE_NAME + "/#", ONE_USER);
+
       // Uri for Users table
-      uriMatcher.addURI(DatabaseDescription.AUTHORITY,
+      uriMatcher.addURI(DB.AUTHORITY,
               User.TABLE_NAME, USERS);
 
       // Uri for Account with the specified id (#)
-      uriMatcher.addURI(DatabaseDescription.AUTHORITY,
+      uriMatcher.addURI(DB.AUTHORITY,
          Account.TABLE_NAME + "/#", ONE_ACCOUNT);
 
       // Uri for Accounts table
-      uriMatcher.addURI(DatabaseDescription.AUTHORITY,
+      uriMatcher.addURI(DB.AUTHORITY,
          Account.TABLE_NAME, ACCOUNTS);
 
       // Uri for Transaction with the specified id (#)
-      uriMatcher.addURI(DatabaseDescription.AUTHORITY,
+      uriMatcher.addURI(DB.AUTHORITY,
               Transaction.TABLE_NAME + "/#", ONE_TRANSACTION);
 
       // Uri for Transactions table
-      uriMatcher.addURI(DatabaseDescription.AUTHORITY,
+      uriMatcher.addURI(DB.AUTHORITY,
               Transaction.TABLE_NAME, TRANSACTIONS);
    }
 
@@ -89,6 +94,11 @@ public class AppContentProvider extends ContentProvider {
             break;
          case TRANSACTIONS: // all transactions will be selected
             queryBuilder.setTables(Transaction.TABLE_NAME);
+            break;
+         case ONE_USER: // all users will be selected
+            queryBuilder.setTables(User.TABLE_NAME);
+            queryBuilder.appendWhere(
+                    User._ID + "=" + uri.getLastPathSegment());
             break;
          case USERS: // all users will be selected
             queryBuilder.setTables(User.TABLE_NAME);
@@ -198,6 +208,15 @@ public class AppContentProvider extends ContentProvider {
             numberOfRowsUpdated = dbHelper.getWritableDatabase().update(
                Transaction.TABLE_NAME, values, Transaction._ID + "=" + id,
                selectionArgs);
+            break;
+         case ONE_USER:
+            // get from the uri the id of transaction to update
+            id = uri.getLastPathSegment();
+
+            // update the transaction
+            numberOfRowsUpdated = dbHelper.getWritableDatabase().update(
+                    User.TABLE_NAME, values, User._ID + "=" + id,
+                    selectionArgs);
             break;
          default:
             throw new UnsupportedOperationException(

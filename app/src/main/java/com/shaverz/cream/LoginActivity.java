@@ -5,42 +5,26 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
 
-import android.content.CursorLoader;
-import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.shaverz.cream.data.DatabaseDescription;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static android.Manifest.permission.READ_CONTACTS;
+import com.shaverz.cream.data.DB;
 
 /**
  * A login screen that offers login via username/password.
@@ -198,7 +182,6 @@ public class LoginActivity extends AppCompatActivity {
 
         private final String mUsername;
         private final String mPassword;
-        private String userid;
 
         UserLoginTask(String username, String password) {
             mUsername = username;
@@ -211,22 +194,26 @@ public class LoginActivity extends AppCompatActivity {
 
             // query for user
             Cursor userCursor = LoginActivity.this.getContentResolver().query(
-                    DatabaseDescription.User.CONTENT_URI, null,
+                    DB.User.CONTENT_URI, null,
                     "username='"+mUsername+"'",
                     null , null);
 
             if ( userCursor.moveToFirst() ) {
-                userid = userCursor.getString(userCursor.getColumnIndex(DatabaseDescription.User._ID));
                 isNewUser = false;
-                Log.d("Login", "Existent user. id: " + userid);
 
-                // Found user, check password
-                String password = userCursor.getString(userCursor.getColumnIndex(DatabaseDescription.User.COLUMN_PASSWORD));
+                // Check password
+                long userId = userCursor.getInt(userCursor.getColumnIndex(DB.User._ID));
+                String password = userCursor.getString(userCursor.getColumnIndex(DB.User.COLUMN_PASSWORD));
                 userCursor.close();
+
                 if (mPassword.equals(password)) {
-                    return true; // success
+                    // Build user uri and save it
+                    Uri userUri = DB.User.buildUserUri(userId);
+                    Utils.storeCurrentUserURI(LoginActivity.this, userUri);
+                    Log.d(Utils.TAG, "Existent user uri: " + userUri.toString());
+                    return true;
                 } else {
-                    return false; // incorrect password
+                    return false;
                 }
             } else {
                 userCursor.close();
@@ -234,19 +221,23 @@ public class LoginActivity extends AppCompatActivity {
                 // User wasn't found, so register the new account here.
                 // create ContentValues object containing user's key-value pairs
                 ContentValues contentValues = new ContentValues();
-                contentValues.put(DatabaseDescription.User.COLUMN_USERNAME, mUsername);
-                contentValues.put(DatabaseDescription.User.COLUMN_PASSWORD, mPassword);
+                contentValues.put(DB.User.COLUMN_USERNAME, mUsername);
+                contentValues.put(DB.User.COLUMN_PASSWORD, mPassword);
+                contentValues.put(DB.User.COLUMN_CURRENCY, Utils.DEFAULT_CURRENCY);
+                contentValues.put(DB.User.COLUMN_LANGUAGE, Utils.DEFAULT_LANGUAGE);
 
                 // use Activity's ContentResolver to invoke
                 // insert on the AppContentProvider
                 Uri newUserUri = LoginActivity.this.getContentResolver().insert(
-                        DatabaseDescription.User.CONTENT_URI, contentValues);
+                        DB.User.CONTENT_URI, contentValues);
+
                 if (newUserUri == null) {
                     return false; // failed somehow
                 } else {
-                    userid = newUserUri.getLastPathSegment();
+                    Utils.storeCurrentUserURI(LoginActivity.this, newUserUri);
+                    Log.d(Utils.TAG, "New user uri: " + newUserUri.toString());
+
                     isNewUser = true;
-                    Log.d("Login", "New user. id: " + userid);
                     return true;
                 }
             }
@@ -259,7 +250,6 @@ public class LoginActivity extends AppCompatActivity {
 
             if (success) {
                 finish();
-                Utils.storeCurrentUserId(LoginActivity.this, userid);
                 if (isNewUser) {
                     // do the setup activity route
                     Intent intent = new Intent(LoginActivity.this,SetupActivity.class);

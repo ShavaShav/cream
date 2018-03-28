@@ -7,7 +7,7 @@ import android.content.ContentUris;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-public class DatabaseDescription {
+public class DB {
    // ContentProvider's name: typically the package name
    public static final String AUTHORITY =
       "com.shaverz.cream.data";
@@ -28,7 +28,7 @@ public class DatabaseDescription {
       public static final String COLUMN_NAME = "name";
       public static final String COLUMN_USER_ID = "user_id";
 
-      // creates a Uri for a specific contact
+      // creates a Uri for a specific account
       public static Uri buildAccountUri(long id) {
          return ContentUris.withAppendedId(CONTENT_URI, id);
       }
@@ -70,7 +70,7 @@ public class DatabaseDescription {
       public static final String COLUMN_LANGUAGE = "language";
 
 
-      // creates a Uri for a specific users
+      // creates a Uri for a specific user
       public static Uri buildUserUri(long id) {
          return ContentUris.withAppendedId(CONTENT_URI, id);
       }

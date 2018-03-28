@@ -9,8 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.shaverz.cream.models.DummyTransactionGenerator;
 import com.shaverz.cream.models.Transaction;
+import com.shaverz.cream.models.User;
 import com.shaverz.cream.views.TransactionRecyclerViewAdapter;
 
 import java.util.List;
@@ -21,6 +21,8 @@ public class TransactionFragment extends Fragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
+    private User userModel;
+
     public TransactionFragment() {
     }
 
@@ -39,11 +41,11 @@ public class TransactionFragment extends Fragment {
         Context context = view.getContext();
         transactionRecyclerView.setLayoutManager(new LinearLayoutManager(context));
 
-        // TODO: Get transactions from db, convert to list of Transactions's
-        List<Transaction> transactionList = DummyTransactionGenerator.ITEMS;
+        userModel = Utils.fetchUserModel(this.getActivity());
+        List<Transaction> transactionsToShow = userModel.getTransactions(); // all by default
 
         // set adapter, which uses the transaction models to populate views
-        transactionRecyclerView.setAdapter(new TransactionRecyclerViewAdapter(transactionList));
+        transactionRecyclerView.setAdapter(new TransactionRecyclerViewAdapter(transactionsToShow));
 
         return view;
     }
