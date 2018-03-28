@@ -32,6 +32,12 @@ public class DB {
       public static Uri buildAccountUri(long id) {
          return ContentUris.withAppendedId(CONTENT_URI, id);
       }
+
+      // creates a Uri for accounts of specific user
+      public static Uri buildUserAccountUri(long id) {
+         Uri userTransactionsUri = Uri.withAppendedPath(CONTENT_URI, User.TABLE_NAME);
+         return ContentUris.withAppendedId(CONTENT_URI, id);
+      }
    }
 
    // nested class defines contents of the transactions table
@@ -52,6 +58,18 @@ public class DB {
       // creates a Uri for a specific transaction
       public static Uri buildTransactionUri(long id) {
          return ContentUris.withAppendedId(CONTENT_URI, id);
+      }
+
+      // creates a Uri for a transactions for a specific account
+      public static Uri buildAccountTransactionUri(long id) {
+         Uri accountTransactionsUri = Uri.withAppendedPath(CONTENT_URI, Account.TABLE_NAME);
+         return ContentUris.withAppendedId(accountTransactionsUri, id);
+      }
+
+      // creates a Uri for a transactions for a specific user
+      public static Uri buildUserTransactionUri(long id) {
+         Uri userTransactionsUri = Uri.withAppendedPath(CONTENT_URI, User.TABLE_NAME);
+         return ContentUris.withAppendedId(userTransactionsUri, id);
       }
    }
 
