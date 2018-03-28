@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v7.widget.ActionBarContextView;
 import android.util.Log;
 
 import com.shaverz.cream.data.DB;
@@ -22,6 +24,8 @@ import java.util.List;
 import java.util.TimeZone;
 
 public class Utils {
+    public static final boolean DEV = true;
+
     public static final String DEFAULT_CURRENCY = "CAD";
     public static final String DEFAULT_LANGUAGE = "English";
 
@@ -29,23 +33,23 @@ public class Utils {
 
     public static final String PREF_USER_URI = "user_uri";
 
-    public static void storeCurrentUserURI(Activity context, Uri userURI) {
+    public static void storeCurrentUserURI(Context context, Uri userURI) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(PREF_USER_URI, userURI.toString());
         editor.apply();
     }
 
-    public static Uri getCurrentUserURI(Activity context) {
+    public static Uri getCurrentUserURI(Context context) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        return Uri.parse(sharedPref.getString(PREF_USER_URI, ""));
+        return Uri.parse(sharedPref.getString(PREF_USER_URI, DEV ? "1" : "")); // use 1st user if dev
     }
 
-    public static String getCurrentUserID(Activity context) {
+    public static String getCurrentUserID(Context context) {
         return getCurrentUserURI(context).getLastPathSegment();
     }
 
-    public static User fetchUserModel (Activity context) {
+    public static User fetchUserModel (Context context) {
         User user = null;
         String userId = Utils.getCurrentUserID(context);
 
@@ -56,7 +60,7 @@ public class Utils {
                 null,
                 null);
 
-        if (cursor.moveToFirst()) {
+        if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
             String name = cursor.getString(cursor.getColumnIndex(DB.User.COLUMN_USERNAME));
             String currency = cursor.getString(cursor.getColumnIndex(DB.User.COLUMN_CURRENCY));
             String language = cursor.getString(cursor.getColumnIndex(DB.User.COLUMN_LANGUAGE));
@@ -64,7 +68,7 @@ public class Utils {
             user = new User(userId, name, currency, language);
         } else {
             Log.e(TAG, "No user found with id: " + userId);
-            cursor.close();
+            if (cursor != null) cursor.close();
             return null;
         }
 
@@ -75,6 +79,10 @@ public class Utils {
                 DB.Account.COLUMN_USER_ID + " = " + userId,
                 null,
                 null);
+
+        if (cursor == null || cursor.getCount() <= 0) {
+            return user; // no accounts
+        }
 
         List<Account> accounts = new ArrayList<>();
 
@@ -108,6 +116,21 @@ public class Utils {
 
         user.setAccountList(accounts);
         return user;
+    }
+
+    // Fetches user model asynchronously
+    public static class UserLoader extends AsyncTaskLoader<User> {
+        private Context context;
+
+        public UserLoader(Context context) {
+            super(context);
+            this.context = context;
+        }
+
+        @Override
+        public User loadInBackground() {
+            return fetchUserModel(context);
+        }
     }
 
     public static String toISO8601UTC(Date date) {
