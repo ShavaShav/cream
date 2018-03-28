@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
 
 import com.shaverz.cream.data.DB;
@@ -29,23 +30,23 @@ public class Utils {
 
     public static final String PREF_USER_URI = "user_uri";
 
-    public static void storeCurrentUserURI(Activity context, Uri userURI) {
+    public static void storeCurrentUserURI(Context context, Uri userURI) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(PREF_USER_URI, userURI.toString());
         editor.apply();
     }
 
-    public static Uri getCurrentUserURI(Activity context) {
+    public static Uri getCurrentUserURI(Context context) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         return Uri.parse(sharedPref.getString(PREF_USER_URI, ""));
     }
 
-    public static String getCurrentUserID(Activity context) {
+    public static String getCurrentUserID(Context context) {
         return getCurrentUserURI(context).getLastPathSegment();
     }
 
-    public static User fetchUserModel (Activity context) {
+    public static User fetchUserModel (Context context) {
         User user = null;
         String userId = Utils.getCurrentUserID(context);
 
@@ -108,6 +109,21 @@ public class Utils {
 
         user.setAccountList(accounts);
         return user;
+    }
+
+    // Fetches user model asynchronously
+    public static class UserLoader extends AsyncTaskLoader<User> {
+
+        public UserLoader(Context context) {
+            super(context);
+            Log.d(Utils.TAG,"Creating loader..");
+        }
+
+        @Override
+        public User loadInBackground() {
+            Log.d(Utils.TAG,"Loading..");
+            return fetchUserModel(super.getContext());
+        }
     }
 
     public static String toISO8601UTC(Date date) {
