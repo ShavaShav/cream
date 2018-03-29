@@ -57,7 +57,7 @@ public class Utils {
                 null,
                 null);
 
-        if (cursor.moveToFirst()) {
+        if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
             String name = cursor.getString(cursor.getColumnIndex(DB.User.COLUMN_USERNAME));
             String currency = cursor.getString(cursor.getColumnIndex(DB.User.COLUMN_CURRENCY));
             String language = cursor.getString(cursor.getColumnIndex(DB.User.COLUMN_LANGUAGE));
@@ -65,7 +65,7 @@ public class Utils {
             user = new User(userId, name, currency, language);
         } else {
             Log.e(TAG, "No user found with id: " + userId);
-            cursor.close();
+            if (cursor != null) cursor.close();
             return null;
         }
 
@@ -76,6 +76,8 @@ public class Utils {
                 DB.Account.COLUMN_USER_ID + " = " + userId,
                 null,
                 null);
+
+        if (cursor == null || cursor.getCount() <= 0) return user; // no accounts
 
         List<Account> accounts = new ArrayList<>();
 
@@ -106,7 +108,7 @@ public class Utils {
                 account.addTransaction(new Transaction(id, amount, account.getName(), date, category, payee));
             }
         }
-
+        cursor.close();
         user.setAccountList(accounts);
         return user;
     }

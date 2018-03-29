@@ -1,7 +1,11 @@
 package com.shaverz.cream;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -12,10 +16,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.shaverz.cream.data.DB;
 import com.shaverz.cream.models.Transaction;
 import com.shaverz.cream.models.User;
 import com.shaverz.cream.views.TransactionRecyclerViewAdapter;
 
+import java.util.Date;
 import java.util.List;
 
 public class TransactionFragment extends Fragment implements
@@ -27,6 +33,7 @@ public class TransactionFragment extends Fragment implements
      */
     private User userModel;
     private View mView;
+    private TransactionRecyclerViewAdapter adapter;
     private static final int LIST_LOADER = 0;
 
     public TransactionFragment() {
@@ -44,16 +51,26 @@ public class TransactionFragment extends Fragment implements
 
         getLoaderManager().initLoader(LIST_LOADER, null, this).forceLoad();
 
-//        // set up recycler view
-//        RecyclerView transactionRecyclerView = (RecyclerView) view.findViewById(R.id.transaction_list);
-//        Context context = view.getContext();
-//        transactionRecyclerView.setLayoutManager(new LinearLayoutManager(context));
-//
-//        userModel = Utils.fetchUserModel(this.getActivity());
-//        List<Transaction> transactionsToShow = userModel.getTransactions(); // all by default
-//
-//        // set adapter, which uses the transaction models to populate views
-//        transactionRecyclerView.setAdapter(new TransactionRecyclerViewAdapter(transactionsToShow));
+        FloatingActionButton fab = mView.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ContentValues values = new ContentValues();
+                values.put(DB.Transaction.COLUMN_ACCOUNT_ID, 2);
+                values.put(DB.Transaction.COLUMN_AMOUNT, 100.0);
+                values.put(DB.Transaction.COLUMN_CATEGORY, "Other");
+                values.put(DB.Transaction.COLUMN_DATE, Utils.toISO8601UTC(new Date()));
+                values.put(DB.Transaction.COLUMN_PAYEE, "Random");
+
+                Uri uri = getActivity()
+                        .getContentResolver()
+                        .insert(DB.Transaction.CONTENT_URI, values);
+
+                getLoaderManager()
+                        .restartLoader(LIST_LOADER, null, TransactionFragment.this)
+                        .forceLoad();
+            }
+        });
 
         return mView;
     }
@@ -84,13 +101,15 @@ public class TransactionFragment extends Fragment implements
 
     @Override
     public void onLoadFinished(Loader<User> loader, User data) {
+        Snackbar.make(mView, "Balance: " + data.getBalance(), Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
         Log.d(Utils.TAG, "Done!");
         // get list view
         final RecyclerView transactionRecyclerView = (RecyclerView) mView.findViewById(R.id.transaction_list);
         // get list of items from loader's result
         List<Transaction> transactionsToShow = data.getTransactions(); // all by default
         // create adapter and set view to use
-        TransactionRecyclerViewAdapter adapter = new TransactionRecyclerViewAdapter(transactionsToShow);
+        adapter = new TransactionRecyclerViewAdapter(transactionsToShow);
         transactionRecyclerView.setAdapter(adapter);
     }
 
