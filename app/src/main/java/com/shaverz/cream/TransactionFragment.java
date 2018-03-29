@@ -38,6 +38,8 @@ public class TransactionFragment extends Fragment implements
     private RecyclerView transactionRecyclerView;
     private static final int LIST_LOADER = 0;
 
+    public static final String TRANSACTION_OBJECT = "transaction";
+
     public TransactionFragment() {
     }
 
@@ -55,24 +57,16 @@ public class TransactionFragment extends Fragment implements
 
         getLoaderManager().initLoader(LIST_LOADER, null, this).forceLoad();
 
-        FloatingActionButton fab = mView.findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton addTransactionButton = mView.findViewById(R.id.fab);
+        addTransactionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ContentValues values = new ContentValues();
-                values.put(DB.Transaction.COLUMN_ACCOUNT_ID, 2);
-                values.put(DB.Transaction.COLUMN_AMOUNT, 100.0);
-                values.put(DB.Transaction.COLUMN_CATEGORY, "Other");
-                values.put(DB.Transaction.COLUMN_DATE, Utils.toISO8601UTC(new Date()));
-                values.put(DB.Transaction.COLUMN_PAYEE, "Random");
-
-                Uri uri = getActivity()
-                        .getContentResolver()
-                        .insert(DB.Transaction.CONTENT_URI, values);
-
-                getLoaderManager()
-                        .restartLoader(LIST_LOADER, null, TransactionFragment.this)
-                        .forceLoad();
+                // no args for regular add
+                AddEditTransactionFragment addEditFrag = new AddEditTransactionFragment();
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, addEditFrag, Utils.TAG)
+                        .addToBackStack(null)
+                        .commit();
             }
         });
 
@@ -105,8 +99,8 @@ public class TransactionFragment extends Fragment implements
 
     @Override
     public void onLoadFinished(Loader<User> loader, User data) {
-        Snackbar.make(mView, "Balance: " + data.getBalance(), Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show();
+//        Snackbar.make(mView, "Balance: " + data.getBalance(), Snackbar.LENGTH_LONG)
+//                .setAction("Action", null).show();
 
         // get list of items from loader's result
         List<Transaction> transactionsToShow = data.getTransactions(); // all by default

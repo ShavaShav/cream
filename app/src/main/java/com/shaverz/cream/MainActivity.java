@@ -1,6 +1,7 @@
 package com.shaverz.cream;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.design.widget.NavigationView;
@@ -16,6 +17,8 @@ import com.shaverz.cream.models.User;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    public static User USER;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,4 +95,5 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 }

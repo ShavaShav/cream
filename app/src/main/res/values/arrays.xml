@@ -15,4 +15,13 @@
         <item>Japanese</item>
         <item>Spanish</item>
     </string-array>
+
+    <string-array name="category_array">
+        <item>Other</item>
+        <item>Food</item>
+        <item>Rent</item>
+        <item>School</item>
+        <item>Shopping</item>
+        <item>Pay</item>
+    </string-array>
 </resources>

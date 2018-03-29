@@ -25,7 +25,7 @@
             android:layout_alignParentTop="true"
             android:layout_margin="@dimen/report_list_item_padding"
             android:background="@drawable/circle_border"
-            android:backgroundTint="@color/report_cash_flow"
+            android:backgroundTint="@color/bg_cash_flow"
             android:padding="@dimen/report_list_item_padding"
             android:src="@drawable/ic_pie_chart" />
 

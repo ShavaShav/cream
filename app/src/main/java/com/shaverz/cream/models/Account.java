@@ -48,6 +48,10 @@ public class Account {
 
     @Override
     public String toString() {
+        return getName();
+    }
+
+    public String treeString() {
         StringBuilder sb = new StringBuilder("(" + id + ")" + name);
         for (Transaction tx : transactionList) {
             sb.append("\n\t" + tx);

@@ -90,8 +90,8 @@ public class SetupActivity extends AppCompatActivity implements View.OnClickList
         contentValues.clear();
         contentValues.put(DB.Transaction.COLUMN_ACCOUNT_ID, bankID);
         contentValues.put(DB.Transaction.COLUMN_AMOUNT, bank_opening_transaction);
-        contentValues.put(DB.Transaction.COLUMN_CATEGORY, "Other");
-        contentValues.put(DB.Transaction.COLUMN_DATE, Utils.toISO8601UTC(new Date()));
+        contentValues.put(DB.Transaction.COLUMN_CATEGORY, "Opening Balance");
+        contentValues.put(DB.Transaction.COLUMN_DATE, System.currentTimeMillis());
         contentValues.put(DB.Transaction.COLUMN_PAYEE, "Opening Balance");
         Log.d(Utils.TAG, getContentResolver().insert(DB.Transaction.CONTENT_URI, contentValues).getLastPathSegment());
 
@@ -107,8 +107,8 @@ public class SetupActivity extends AppCompatActivity implements View.OnClickList
         contentValues.clear();
         contentValues.put(DB.Transaction.COLUMN_ACCOUNT_ID, cashID);
         contentValues.put(DB.Transaction.COLUMN_AMOUNT, cash_opening_transaction);
-        contentValues.put(DB.Transaction.COLUMN_CATEGORY, "Other");
-        contentValues.put(DB.Transaction.COLUMN_DATE, Utils.toISO8601UTC(new Date()));
+        contentValues.put(DB.Transaction.COLUMN_CATEGORY, "Opening Balance");
+        contentValues.put(DB.Transaction.COLUMN_DATE, System.currentTimeMillis());
         contentValues.put(DB.Transaction.COLUMN_PAYEE, "Opening Balance");
         Log.d(Utils.TAG, getContentResolver().insert(DB.Transaction.CONTENT_URI, contentValues).getLastPathSegment());
 

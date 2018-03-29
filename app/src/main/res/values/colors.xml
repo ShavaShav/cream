@@ -8,8 +8,12 @@
     <color name="nav_icon_colour">#000000</color>
 
     <!-- Report colors -->
-    <color name="report_expense">#f28888</color>
-    <color name="report_income">#68ef6d</color>
-    <color name="report_cash_flow">#f2bf58</color>
-    <color name="report_balance">#aab9fa</color>
+    <color name="bg_expense">#f28888</color>
+    <color name="bg_income">#68ef6d</color>
+    <color name="bg_cash_flow">#f2bf58</color>
+    <color name="bg_balance">#aab9fa</color>
+
+    <!-- Colours for text -->
+    <color name="text_negative">#d93e3e</color>
+    <color name="text_positive">#3ab63e</color>
 </resources>

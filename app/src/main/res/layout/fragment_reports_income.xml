@@ -25,7 +25,7 @@
             android:layout_alignParentTop="true"
             android:layout_margin="@dimen/report_list_item_padding"
             android:background="@drawable/circle_border"
-            android:backgroundTint="@color/report_income"
+            android:backgroundTint="@color/bg_income"
             android:padding="@dimen/report_list_item_padding"
             android:src="@drawable/ic_pie_chart" />
 
@@ -77,7 +77,7 @@
             android:layout_alignParentTop="true"
             android:layout_margin="@dimen/report_list_item_padding"
             android:background="@drawable/circle_border"
-            android:backgroundTint="@color/report_income"
+            android:backgroundTint="@color/bg_income"
             android:contentDescription="TODO"
             android:padding="@dimen/report_list_item_padding"
             android:src="@drawable/ic_show_chart" />
@@ -130,7 +130,7 @@
             android:layout_alignParentTop="true"
             android:layout_margin="@dimen/report_list_item_padding"
             android:background="@drawable/circle_border"
-            android:backgroundTint="@color/report_income"
+            android:backgroundTint="@color/bg_income"
             android:contentDescription="TODO"
             android:padding="@dimen/report_list_item_padding"
             android:src="@drawable/ic_show_chart" />

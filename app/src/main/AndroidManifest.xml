@@ -10,27 +10,33 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <provider
-            android:name="com.shaverz.cream.data.AppContentProvider"
+            android:name=".data.AppContentProvider"
             android:authorities="com.shaverz.cream.data"
             android:enabled="true"
-            android:exported="false"/>
+            android:exported="false" />
+
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".SetupActivity"
-            android:label="@string/app_name"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
-            android:name=".LoginActivity"
-            android:label="@string/app_name"
+            android:name=".SetupActivity"
             android:configChanges="orientation|keyboardHidden"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".LoginActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>

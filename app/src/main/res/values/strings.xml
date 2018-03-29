@@ -91,4 +91,23 @@
         completions."
     </string>
 
+    <!-- Add/Edit transaction -->
+    <string name="add_transaction_ok">Added transaction!</string>
+    <string name="add_transaction_fail">Failed to add transaction</string>
+    <string name="edit_transaction_ok">Edited transaction!</string>
+    <string name="edit_transaction_fail">Failed to edit transaction</string>
+
+    <string name="toggle_expense">Expense</string>
+    <string name="toggle_income">Income</string>
+    <string name="hint_payer">Payer</string>
+    <string name="hint_payee">Payee</string>
+    <string name="hint_amount">Amount</string>
+    <string name="hint_date">Date</string>
+    <string name="hint_account">Account</string>
+    <string name="hint_category">Category</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
 </resources>

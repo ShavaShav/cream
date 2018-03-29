@@ -30,6 +30,8 @@ public class Utils {
 
     public static final String PREF_USER_URI = "user_uri";
 
+    public static final boolean DEBUG = true;
+
     public static void storeCurrentUserURI(Context context, Uri userURI) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedPref.edit();
@@ -104,9 +106,8 @@ public class Utils {
                 String id = cursor.getString(cursor.getColumnIndex(DB.Transaction._ID));
                 double amount = cursor.getDouble(cursor.getColumnIndex(DB.Transaction.COLUMN_AMOUNT));
                 String category = cursor.getString(cursor.getColumnIndex(DB.Transaction.COLUMN_CATEGORY));
-                String payee = cursor.getString(cursor.getColumnIndex(DB.Transaction.COLUMN_CATEGORY));
-                Date date = Utils
-                        .fromISO8601UTC(cursor.getString(cursor.getColumnIndex(DB.Transaction.COLUMN_DATE)));
+                String payee = cursor.getString(cursor.getColumnIndex(DB.Transaction.COLUMN_PAYEE));
+                Date date = new Date(Long.parseLong(cursor.getString(cursor.getColumnIndex(DB.Transaction.COLUMN_DATE))));
                 account.addTransaction(new Transaction(id, amount, account.getName(), date, category, payee));
             }
         }

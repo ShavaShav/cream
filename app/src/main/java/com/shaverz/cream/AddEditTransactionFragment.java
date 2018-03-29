@@ -1,0 +1,237 @@
+package com.shaverz.cream;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.ToggleButton;
+
+import com.shaverz.cream.data.DB;
+import com.shaverz.cream.models.Account;
+import com.shaverz.cream.models.Transaction;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class AddEditTransactionFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+
+    private Transaction transaction; // Transaction object
+    private boolean addingNewTransaction = true; // adding (true) or editing
+
+    // EditTexts for transaction information
+
+    private FloatingActionButton saveContactFAB;
+    private View mView;
+
+    private TextInputLayout amountTextLayout;
+    private TextInputLayout payerPayeeTextLayout;
+    private Spinner accountSpinner;
+    private ArrayAdapter<Account> accountArrayAdapter; // holds account objects so can get id easily
+    private Spinner categorySpinner;
+    private ArrayAdapter<String> categoryArrayAdapter;
+    private ToggleButton incomeToggle;
+
+    private final int ACCOUNTS_LOADER = 0;
+
+    // set AddEditFragmentListener when Fragment attached
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+    }
+
+    // remove AddEditFragmentListener when Fragment detached
+    @Override
+    public void onDetach() {
+        super.onDetach();
+    }
+
+    // called when Fragment's view needs to be created
+    @Override
+    public View onCreateView(
+            LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        setHasOptionsMenu(true); // fragment has menu items to display
+
+        // inflate GUI and get references to values
+        mView = inflater.inflate(R.layout.fragment_add_edit_transaction, container, false);
+
+        accountSpinner = (Spinner) mView.findViewById(R.id.account_spinner);
+        categorySpinner = (Spinner) mView.findViewById(R.id.currency_spinner);
+        amountTextLayout = mView.findViewById(R.id.amountTextInputLayout);
+        payerPayeeTextLayout = mView.findViewById(R.id.payerPayeeTextInputLayout);
+        incomeToggle = mView.findViewById(R.id.incomeToggle);
+
+        amountTextLayout.requestFocus(); // focus on amount by default
+
+        categoryArrayAdapter = new ArrayAdapter<String>(getContext(),
+                android.R.layout.simple_spinner_item,
+                getResources().getStringArray(R.array.category_array));
+
+        categoryArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        categorySpinner.setAdapter(categoryArrayAdapter);
+
+        // set FloatingActionButton's event listener
+        saveContactFAB = (FloatingActionButton) mView.findViewById(R.id.addTransactionButton);
+        saveContactFAB.setOnClickListener(saveContactButtonClicked);
+
+        Bundle arguments = getArguments(); // null if creating new contact
+
+        // get Transaction from args
+        if (arguments != null) {
+            addingNewTransaction = false;
+            transaction = arguments.getParcelable(TransactionFragment.TRANSACTION_OBJECT);
+        }
+
+        getLoaderManager().initLoader(ACCOUNTS_LOADER, null, this);
+
+        return mView;
+    }
+
+    // responds to event generated when user saves a contact
+    private final View.OnClickListener saveContactButtonClicked =
+            new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // hide the virtual keyboard
+                    ((InputMethodManager) getActivity().getSystemService(
+                            Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(
+                            getView().getWindowToken(), 0);
+                    saveTransaction(); // save contact to the database
+                }
+            };
+
+    // saves contact information to the database
+    private void saveTransaction() {
+        // reset errors
+        payerPayeeTextLayout.setError(null);
+        payerPayeeTextLayout.setError(null);
+
+        Account account = accountArrayAdapter.getItem(accountSpinner.getSelectedItemPosition());
+        String stringAmount = amountTextLayout.getEditText().getText().toString();
+        String payee = payerPayeeTextLayout.getEditText().getText().toString();
+        String category = categoryArrayAdapter.getItem(categorySpinner.getSelectedItemPosition());
+
+        // Check for a valid payee/payer
+        if (TextUtils.isEmpty(payee)) {
+            payerPayeeTextLayout.setError(getString(R.string.error_field_required));
+            payerPayeeTextLayout.requestFocus();
+            return; // don't save
+        }
+
+        // Check for a valid amount
+        if (TextUtils.isEmpty(stringAmount)) {
+            amountTextLayout.setError(getString(R.string.error_field_required));
+            amountTextLayout.requestFocus();
+            return; // don't save
+        }
+
+        double amount = Math.abs(Double.parseDouble(stringAmount)); // no need to validate, text is decimal
+
+        if (! incomeToggle.isChecked()) {
+            // expense chosen, set amount to negative
+            amount = -amount;
+        }
+
+        Log.d(Utils.TAG, "amount: " + amount);
+
+        // create ContentValues object containing contact's key-value pairs
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DB.Transaction.COLUMN_ACCOUNT_ID, account.getId());
+        contentValues.put(DB.Transaction.COLUMN_AMOUNT, amount);
+        contentValues.put(DB.Transaction.COLUMN_CATEGORY, category);
+        contentValues.put(DB.Transaction.COLUMN_DATE, System.currentTimeMillis());
+        contentValues.put(DB.Transaction.COLUMN_PAYEE, payee);
+
+        if (addingNewTransaction) {
+            // use Activity's ContentResolver to invoke
+            // insert on the AppContentProvider
+            Uri newContactUri = getActivity().getContentResolver().insert(
+                    DB.Transaction.CONTENT_URI, contentValues);
+            if (newContactUri != null) {
+                Snackbar.make(this.getView(), getString(R.string.add_transaction_ok),
+                        Snackbar.LENGTH_LONG).show();
+                // go back to wherever we were
+                getFragmentManager().popBackStack();
+            } else {
+                Snackbar.make(this.getView(), getString(R.string.add_transaction_fail),
+                        Snackbar.LENGTH_LONG).show();
+            }
+
+        }
+        else {
+            // use Activity's ContentResolver to invoke
+            // insert on the AppContentProvider
+            Uri transactionUri = DB.Transaction.buildTransactionUri(Long.parseLong(transaction.getId()));
+
+            int updatedRows = getActivity().getContentResolver().update(
+                    transactionUri, contentValues, null, null);
+
+            if (updatedRows > 0) {
+                Snackbar.make(this.getView(), getString(R.string.add_transaction_ok),
+                        Snackbar.LENGTH_LONG).show();
+                // go back to wherever we were
+                getFragmentManager().popBackStack();
+            } else {
+                Snackbar.make(this.getView(), getString(R.string.add_transaction_fail),
+                        Snackbar.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    // called by LoaderManager to create a Loader
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        // create an appropriate CursorLoader based on the id argument;
+        // only one Loader in this fragment, so the switch is unnecessary
+        return new CursorLoader(getActivity(),
+                DB.Account.CONTENT_URI, // Uri of contact to display
+                null, // null projection returns all columns
+                DB.Account.COLUMN_USER_ID + " = ?",
+                new String[] { Utils.getCurrentUserID(getContext()) }, // no selection arguments
+                null); // sort order
+    }
+
+    // called by LoaderManager when loading completes
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        Log.d(Utils.TAG, "Done!");
+        // display accounts in spinner
+        if (data == null ) return; // no accounts
+
+        List<Account> accounts = new ArrayList<>();
+
+        for (data.moveToFirst(); !data.isAfterLast(); data.moveToNext()) {
+            String id = data.getString(data.getColumnIndex(DB.Account._ID));
+            String name = data.getString(data.getColumnIndex(DB.Account.COLUMN_NAME));
+            accounts.add(new Account(id, name));
+        }
+
+        accountArrayAdapter = new ArrayAdapter<Account>(getContext(),
+                android.R.layout.simple_spinner_item, accounts);
+        accountArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        accountSpinner.setAdapter(accountArrayAdapter);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
+}

@@ -52,6 +52,6 @@ public class Transaction implements Comparable<Transaction> {
 
     @Override
     public int compareTo(Transaction transaction) {
-        return this.date.compareTo(transaction.date);
+        return -this.date.compareTo(transaction.date);
     }
 }

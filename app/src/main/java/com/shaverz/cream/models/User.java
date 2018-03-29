@@ -75,7 +75,7 @@ public class User {
         StringBuilder sb = new StringBuilder(
                 "(" + id + ")" + username + ": " + language + " - " + currency);
         for (Account account : accountList) {
-            sb.append("\n-> " + account);
+            sb.append("\n-> " + account.treeString());
         }
         return sb.toString();
     }
