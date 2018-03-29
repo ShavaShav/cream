@@ -97,6 +97,8 @@ public class Utils {
                     new String[] { account.getId() },
                     null);
 
+            if (cursor == null || cursor.getCount() <= 0) continue;
+
             // convert each to transaction object and add to account
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                 String id = cursor.getString(cursor.getColumnIndex(DB.Transaction._ID));
@@ -118,12 +120,10 @@ public class Utils {
 
         public UserLoader(Context context) {
             super(context);
-            Log.d(Utils.TAG,"Creating loader..");
         }
 
         @Override
         public User loadInBackground() {
-            Log.d(Utils.TAG,"Loading..");
             return fetchUserModel(super.getContext());
         }
     }

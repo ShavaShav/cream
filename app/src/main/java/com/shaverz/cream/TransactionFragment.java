@@ -21,6 +21,7 @@ import com.shaverz.cream.models.Transaction;
 import com.shaverz.cream.models.User;
 import com.shaverz.cream.views.TransactionRecyclerViewAdapter;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -34,6 +35,7 @@ public class TransactionFragment extends Fragment implements
     private User userModel;
     private View mView;
     private TransactionRecyclerViewAdapter adapter;
+    private RecyclerView transactionRecyclerView;
     private static final int LIST_LOADER = 0;
 
     public TransactionFragment() {
@@ -48,6 +50,8 @@ public class TransactionFragment extends Fragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_transactions, container, false);
+        transactionRecyclerView = (RecyclerView) mView.findViewById(R.id.transaction_list);
+        transactionRecyclerView.setAdapter(new TransactionRecyclerViewAdapter(new ArrayList<Transaction>()));
 
         getLoaderManager().initLoader(LIST_LOADER, null, this).forceLoad();
 
@@ -103,9 +107,7 @@ public class TransactionFragment extends Fragment implements
     public void onLoadFinished(Loader<User> loader, User data) {
         Snackbar.make(mView, "Balance: " + data.getBalance(), Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
-        Log.d(Utils.TAG, "Done!");
-        // get list view
-        final RecyclerView transactionRecyclerView = (RecyclerView) mView.findViewById(R.id.transaction_list);
+
         // get list of items from loader's result
         List<Transaction> transactionsToShow = data.getTransactions(); // all by default
         // create adapter and set view to use
@@ -115,7 +117,6 @@ public class TransactionFragment extends Fragment implements
 
     @Override
     public void onLoaderReset(Loader<User> loader) {
-        final RecyclerView transactionRecyclerView = (RecyclerView) mView.findViewById(R.id.transaction_list);
         transactionRecyclerView.setAdapter(null);
     }
 }
