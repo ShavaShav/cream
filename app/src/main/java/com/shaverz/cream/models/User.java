@@ -44,6 +44,15 @@ public class User {
         return null;
     }
 
+    // can do this since Account names are unique for user
+    public Account findAccountByName(String name) {
+        for (Account a : accountList) {
+            if (a.getName().equals(name))
+                return a;
+        }
+        return null;
+    }
+
     public String getId() {
         return id;
     }

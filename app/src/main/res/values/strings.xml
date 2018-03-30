@@ -26,6 +26,7 @@
     <string name="header_cash">CASH</string>
     <string name="header_bank">BANK</string>
     <string name="text_optional">OPTIONAL</string>
+    <string name="default_opening_balance">0.00</string>
 
     <!-- Cardview titles -->
     <string name="title_accounts">My Accounts</string>
@@ -42,6 +43,9 @@
     <string name="menu_settings">Settings</string>
 
     <!-- Transactions -->
+    <string name="action_reorder">Reverse order</string>
+    <string name="period_open">Period Opening</string>
+    <string name="period_close">Period Closing</string>
     <string name="tx_account">ACCOUNT</string>
     <string name="tx_period">PERIOD</string>
 
@@ -87,16 +91,20 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
+    <string name="error_invalid_number">This must be a valid number</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
 
-    <!-- Add/Edit transaction -->
-    <string name="action_reorder">Reverse order</string>
+    <!-- Add/Edit transaction and account-->
     <string name="add_transaction_ok">Added transaction!</string>
     <string name="add_transaction_fail">Failed to add transaction</string>
     <string name="edit_transaction_ok">Edited transaction!</string>
     <string name="edit_transaction_fail">Failed to edit transaction</string>
+    <string name="add_account_ok">Added account!</string>
+    <string name="add_account_fail">Failed to add account</string>
+    <string name="edit_account_ok">Edited account!</string>
+    <string name="edit_account_fail">Failed to edit account</string>
 
     <string name="toggle_expense">Expense</string>
     <string name="toggle_income">Income</string>
@@ -106,13 +114,8 @@
     <string name="hint_date">Date</string>
     <string name="hint_account">Account</string>
     <string name="hint_category">Category</string>
-
-    <string name="period_open">Period Opening</string>
-    <string name="period_close">Period Closing</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="opening_balance_category">Opening Balance</string>
-    <string name="opening_balance_payee">Other</string>
-
+    <string name="hint_opening_balance">Opening Balance</string>
+    <string name="opening_balance_category">Other</string>
+    <string name="opening_balance_payee">Opening Balance</string>
 
 </resources>

@@ -46,7 +46,6 @@ public class TransactionFragment extends Fragment implements
 
     private static final int LIST_LOADER = 0;
     private boolean reverseOrder = false;
-    public static final String TRANSACTION_OBJECT = "transaction";
 
     public TransactionFragment() {
     }

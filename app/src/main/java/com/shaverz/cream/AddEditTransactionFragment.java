@@ -2,14 +2,12 @@ package com.shaverz.cream;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -41,8 +39,6 @@ public class AddEditTransactionFragment extends Fragment {
     private Spinner categorySpinner;
     private ArrayAdapter<String> categoryArrayAdapter;
     private ToggleButton incomeToggle;
-
-    private final int ACCOUNTS_LOADER = 0;
 
     // set AddEditFragmentListener when Fragment attached
     @Override
@@ -97,7 +93,25 @@ public class AddEditTransactionFragment extends Fragment {
         // get Transaction from args
         if (arguments != null) {
             addingNewTransaction = false;
-            transaction = arguments.getParcelable(TransactionFragment.TRANSACTION_OBJECT);
+            transaction = arguments.getParcelable(MainActivity.TRANSACTION_OBJECT);
+
+            if (transaction.getAmount() < 0.00) {
+                incomeToggle.setChecked(false); // expense
+            } else {
+                incomeToggle.setChecked(true); // income
+            }
+
+            // find account by name from transaction, in order to set spinner
+            Account toSet = MainActivity.CURRENT_USER.findAccountByName(transaction.getAccount());
+            int accountPosition = accountArrayAdapter.getPosition(toSet);
+            accountSpinner.setSelection(accountPosition);
+
+            // set spinner by transaction category
+            int categoryPosition = categoryArrayAdapter.getPosition(transaction.getCategory());
+            categorySpinner.setSelection(categoryPosition);
+
+            amountTextLayout.getEditText().setText(String.valueOf(transaction.getAmount()));
+            payerPayeeTextLayout.getEditText().setText(transaction.getPayee());
         }
 
         return mView;
@@ -120,7 +134,7 @@ public class AddEditTransactionFragment extends Fragment {
     private void saveTransaction() {
         // reset errors
         payerPayeeTextLayout.setError(null);
-        payerPayeeTextLayout.setError(null);
+        amountTextLayout.setError(null);
 
         Account account = accountArrayAdapter.getItem(accountSpinner.getSelectedItemPosition());
         String stringAmount = amountTextLayout.getEditText().getText().toString();
@@ -134,14 +148,22 @@ public class AddEditTransactionFragment extends Fragment {
             return; // don't save
         }
 
-        // Check for a valid amount
+        // Check for a non-empty amount
         if (TextUtils.isEmpty(stringAmount)) {
             amountTextLayout.setError(getString(R.string.error_field_required));
             amountTextLayout.requestFocus();
             return; // don't save
         }
 
-        double amount = Math.abs(Double.parseDouble(stringAmount)); // no need to validate, text is decimal
+        double amount = 0.00;
+        try {
+            amount = Math.abs(Double.parseDouble(stringAmount));
+        } catch (Exception e) {
+            // Amount is not a valid double
+            amountTextLayout.setError(getString(R.string.error_invalid_number));
+            amountTextLayout.requestFocus();
+            return; // don't save
+        }
 
         if (! incomeToggle.isChecked()) {
             // expense chosen, set amount to negative
@@ -155,10 +177,12 @@ public class AddEditTransactionFragment extends Fragment {
         contentValues.put(DB.Transaction.COLUMN_ACCOUNT_ID, account.getId());
         contentValues.put(DB.Transaction.COLUMN_AMOUNT, amount);
         contentValues.put(DB.Transaction.COLUMN_CATEGORY, category);
-        contentValues.put(DB.Transaction.COLUMN_DATE, System.currentTimeMillis());
         contentValues.put(DB.Transaction.COLUMN_PAYEE, payee);
 
         if (addingNewTransaction) {
+            // new transaction, use current time as date
+            contentValues.put(DB.Transaction.COLUMN_DATE, System.currentTimeMillis());
+
             // use Activity's ContentResolver to invoke
             // insert on the AppContentProvider
             Uri newContactUri = getActivity().getContentResolver().insert(

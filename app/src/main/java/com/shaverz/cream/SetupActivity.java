@@ -11,18 +11,19 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 
 import com.shaverz.cream.data.DB;
-
-import java.util.Date;
 
 public class SetupActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -34,10 +35,11 @@ public class SetupActivity extends AppCompatActivity implements View.OnClickList
     private ViewPager mViewPager;
     private ImageButton nextButton;
 
+    // Store values from inner fragments
     private static String currency = Utils.DEFAULT_CURRENCY;
     private static String language = Utils.DEFAULT_LANGUAGE;
-    private static double bank_opening_transaction = 0.0;
-    private static double cash_opening_transaction = 0.0;
+    private static double bankOpeningTransaction = 0.0;
+    private static double cashOpeningTransaction = 0.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,39 +80,8 @@ public class SetupActivity extends AppCompatActivity implements View.OnClickList
                 null);
 
         // add Bank and Cash accounts
-        contentValues.clear();
-        contentValues.put(DB.Account.COLUMN_USER_ID, Utils.getCurrentUserID(this));
-        contentValues.put(DB.Account.COLUMN_NAME, "Bank");
-        String bankID = getContentResolver()
-                .insert(DB.Account.CONTENT_URI, contentValues)
-                .getLastPathSegment();
-
-        Log.d(Utils.TAG, "bankID: " + bankID);
-
-        contentValues.clear();
-        contentValues.put(DB.Transaction.COLUMN_ACCOUNT_ID, bankID);
-        contentValues.put(DB.Transaction.COLUMN_AMOUNT, bank_opening_transaction);
-        contentValues.put(DB.Transaction.COLUMN_CATEGORY, "Other");
-        contentValues.put(DB.Transaction.COLUMN_DATE, System.currentTimeMillis());
-        contentValues.put(DB.Transaction.COLUMN_PAYEE, "Opening Balance");
-        Log.d(Utils.TAG, getContentResolver().insert(DB.Transaction.CONTENT_URI, contentValues).getLastPathSegment());
-
-        contentValues.clear();
-        contentValues.put(DB.Account.COLUMN_USER_ID, Utils.getCurrentUserID(this));
-        contentValues.put(DB.Account.COLUMN_NAME, "Cash");
-        String cashID = getContentResolver()
-                .insert(DB.Account.CONTENT_URI, contentValues)
-                .getLastPathSegment();
-
-        Log.d(Utils.TAG, "cashID: " + cashID);
-
-        contentValues.clear();
-        contentValues.put(DB.Transaction.COLUMN_ACCOUNT_ID, cashID);
-        contentValues.put(DB.Transaction.COLUMN_AMOUNT, cash_opening_transaction);
-        contentValues.put(DB.Transaction.COLUMN_CATEGORY, "Other");
-        contentValues.put(DB.Transaction.COLUMN_DATE, System.currentTimeMillis());
-        contentValues.put(DB.Transaction.COLUMN_PAYEE, "Opening Balance");
-        Log.d(Utils.TAG, getContentResolver().insert(DB.Transaction.CONTENT_URI, contentValues).getLastPathSegment());
+        Utils.createNewAccount(this, "Bank", bankOpeningTransaction);
+        Utils.createNewAccount(this, "Cash", cashOpeningTransaction);
 
         Intent intent = new Intent(SetupActivity.this, MainActivity.class);
         startActivity(intent);
@@ -159,7 +130,44 @@ public class SetupActivity extends AppCompatActivity implements View.OnClickList
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View view = inflater.inflate(R.layout.fragment_setup_account, container, false);
-            // TODO: SET CASH AND BANK AMOUNTS HERE from change handler
+
+            EditText cashOpeningView = (EditText) view.findViewById(R.id.bank_edittext);
+            EditText bankOpeningView = (EditText) view.findViewById(R.id.cash_edittext);
+
+            cashOpeningView.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    try {
+                        cashOpeningTransaction = Double.parseDouble(charSequence.toString());
+                    } catch (Exception e) {
+                        cashOpeningTransaction = 0.00; // invalid double - set to 0
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {}
+            });
+
+            bankOpeningView.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    try {
+                        bankOpeningTransaction = Double.parseDouble(charSequence.toString());
+                    } catch (Exception e) {
+                        bankOpeningTransaction = 0.00; // invalid double - set to 0
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {}
+            });
+
             return view;
         }
     }

@@ -1,14 +1,17 @@
 package com.shaverz.cream.views;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.shaverz.cream.AddEditTransactionFragment;
 import com.shaverz.cream.MainActivity;
 import com.shaverz.cream.R;
+import com.shaverz.cream.TransactionFragment;
 import com.shaverz.cream.Utils;
 import com.shaverz.cream.models.Transaction;
 
@@ -67,6 +70,23 @@ public class TransactionRecyclerViewAdapter extends RecyclerView.Adapter<Transac
             payerView = (TextView) view.findViewById(R.id.payeePayerTextView);
             categoryView = (TextView) view.findViewById(R.id.categoryTextView);
             amountView = (TextView) view.findViewById(R.id.amountTextView);
+
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Transaction transaction = transactions.get(getLayoutPosition());
+
+                    AddEditTransactionFragment addEditFrag = new AddEditTransactionFragment();
+                    Bundle arguments = new Bundle();
+                    arguments.putParcelable(MainActivity.TRANSACTION_OBJECT, transaction);
+                    addEditFrag.setArguments(arguments);
+
+                    ((MainActivity)context).getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, addEditFrag, Utils.TAG)
+                            .addToBackStack(null)
+                            .commit();
+                }
+            });
         }
     }
 }

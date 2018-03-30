@@ -21,6 +21,8 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     public static User CURRENT_USER;
+    public static final String TRANSACTION_OBJECT = "transaction";
+    public static final String ACCOUNT_OBJECT = "account";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

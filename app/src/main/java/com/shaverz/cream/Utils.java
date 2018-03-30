@@ -1,6 +1,7 @@
 package com.shaverz.cream;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -157,6 +158,33 @@ public class Utils {
         }
     }
 
+    public static Uri createNewAccount(Context context, String name, double openingBalance) {
+        // insert account
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DB.Account.COLUMN_USER_ID, Utils.getCurrentUserID(context));
+        contentValues.put(DB.Account.COLUMN_NAME, name);
+
+        String accountID = context.getContentResolver()
+                .insert(DB.Account.CONTENT_URI, contentValues)
+                .getLastPathSegment();
+
+        Log.d(Utils.TAG, "New account created with id #" + accountID);
+
+        contentValues.clear();
+        contentValues.put(DB.Transaction.COLUMN_ACCOUNT_ID, accountID);
+        contentValues.put(DB.Transaction.COLUMN_AMOUNT, openingBalance);
+        contentValues.put(DB.Transaction.COLUMN_CATEGORY, context.getString(R.string.opening_balance_category));
+        contentValues.put(DB.Transaction.COLUMN_DATE, System.currentTimeMillis());
+        contentValues.put(DB.Transaction.COLUMN_PAYEE, context.getString(R.string.opening_balance_payee));
+
+        String transactionID = context.getContentResolver()
+                .insert(DB.Transaction.CONTENT_URI, contentValues)
+                .getLastPathSegment();
+
+        Log.d(Utils.TAG, "Opening balance added as transaction #" + transactionID);
+
+        return DB.Account.buildAccountUri(Long.parseLong(accountID));
+    }
 
     // Fetches user model asynchronously
     public static class UserLoader extends AsyncTaskLoader<User> {

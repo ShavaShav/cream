@@ -1,15 +1,11 @@
 package com.shaverz.cream;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,14 +14,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.shaverz.cream.models.Account;
 import com.shaverz.cream.models.Transaction;
 import com.shaverz.cream.models.User;
 import com.shaverz.cream.views.TransactionRecyclerViewAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class OverviewFragment extends Fragment implements
@@ -76,6 +70,12 @@ public class OverviewFragment extends Fragment implements
                         case R.id.action_reorder_account:
                             break;
                         case R.id.action_new_account:
+                            // no args for regular add
+                            AddEditAccountFragment addEditFrag = new AddEditAccountFragment();
+                            getActivity().getSupportFragmentManager().beginTransaction()
+                                    .replace(R.id.fragment_container, addEditFrag, "addEditFrag")
+                                    .addToBackStack(null)
+                                    .commit();
                             break;
                         case R.id.action_switch_mode:
                             break;
@@ -159,18 +159,15 @@ public class OverviewFragment extends Fragment implements
 
     @Override
     public Loader<User> onCreateLoader(int id, Bundle args) {
-        Log.d(Utils.TAG,"Loading!");
         return new Utils.UserLoader(this.getContext());
     }
 
     @Override
     public void onLoadFinished(Loader<User> loader, User data) {
-        Log.d(Utils.TAG,"Done!");
-
         // refresh current user
         MainActivity.CURRENT_USER = data;
 
-        refreshSelectedTransactions();
+        refreshRecentTransactions();
     }
 
     @Override
@@ -178,11 +175,16 @@ public class OverviewFragment extends Fragment implements
         transactionRecyclerView.setAdapter(null);
     }
 
-    private void refreshSelectedTransactions() {
-
+    private void refreshRecentTransactions() {
         List<Transaction> transactions = MainActivity.CURRENT_USER.getTransactions();
         Collections.sort(transactions); // sort by latest
-        List<Transaction> recentTransactions = transactions.subList(0, 3); // limit to 3
+
+        int numToDisplay = 3;
+        if (transactions.size() < numToDisplay) {
+            numToDisplay = transactions.size();
+        }
+
+        List<Transaction> recentTransactions = transactions.subList(0, numToDisplay); // limit to 3
 
         // create adapter and set view to use
         adapter = new TransactionRecyclerViewAdapter(recentTransactions);
