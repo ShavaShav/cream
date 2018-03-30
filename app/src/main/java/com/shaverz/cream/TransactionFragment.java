@@ -1,34 +1,32 @@
 package com.shaverz.cream;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 
-import com.shaverz.cream.data.DB;
 import com.shaverz.cream.models.Account;
 import com.shaverz.cream.models.Transaction;
 import com.shaverz.cream.models.User;
 import com.shaverz.cream.views.TransactionRecyclerViewAdapter;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
+import java.util.Comparator;
 import java.util.List;
 
 public class TransactionFragment extends Fragment implements
@@ -46,9 +44,8 @@ public class TransactionFragment extends Fragment implements
     private ArrayAdapter<Account> accountArrayAdapter; // holds account objects so can get id easily
     private Spinner periodSpinner;
     private ArrayAdapter<String> periodArrayAdapter;
-
-    private Calendar startDate;
-    private Calendar endDate;
+    private TextView periodOpeningView;
+    private TextView periodClosingView;
 
     private static final int LIST_LOADER = 0;
 
@@ -70,11 +67,14 @@ public class TransactionFragment extends Fragment implements
         accountSpinner = (Spinner) mView.findViewById(R.id.spinner_account);
         periodSpinner = (Spinner) mView.findViewById(R.id.spinner_period);
         transactionRecyclerView = (RecyclerView) mView.findViewById(R.id.transaction_list);
+        periodOpeningView = (TextView) mView.findViewById(R.id.periodOpeningAmountView);
+        periodClosingView = (TextView) mView.findViewById(R.id.periodClosingAmountView);
 
         transactionRecyclerView.setAdapter(new TransactionRecyclerViewAdapter(new ArrayList<Transaction>()));
 
+        // make a copy of accounts list to show
         List<Account> accountList = new ArrayList<>(MainActivity.CURRENT_USER.getAccountList());
-        accountList.add(0, new Account("-1", "All"));
+        accountList.add(0, new Account("-1", "All")); // Fake account for "All" setting
 
         accountArrayAdapter = new ArrayAdapter<Account>(getContext(),
                 android.R.layout.simple_spinner_item, accountList);
@@ -84,7 +84,7 @@ public class TransactionFragment extends Fragment implements
 
         periodArrayAdapter = new ArrayAdapter<String>(getContext(),
                 android.R.layout.simple_spinner_item,
-                getResources().getStringArray(R.array.period_array));
+                Period.strings);
 
         periodArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         periodSpinner.setAdapter(periodArrayAdapter);
@@ -92,7 +92,7 @@ public class TransactionFragment extends Fragment implements
         accountSpinner.setOnItemSelectedListener(new optionsChangeListener());
         periodSpinner.setOnItemSelectedListener(new optionsChangeListener());
 
-        getLoaderManager().initLoader(LIST_LOADER, null, this);
+        getLoaderManager().initLoader(LIST_LOADER, null, this).forceLoad();
 
         FloatingActionButton addTransactionButton = mView.findViewById(R.id.fab);
         addTransactionButton.setOnClickListener(new View.OnClickListener() {
@@ -114,7 +114,7 @@ public class TransactionFragment extends Fragment implements
         // will refetch transactions whenever options change
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            getLoaderManager().restartLoader(LIST_LOADER, null, TransactionFragment.this).forceLoad();
+            refreshSelectedTransactions(); // just change the items, don't restart loader
         }
 
         @Override
@@ -147,58 +147,62 @@ public class TransactionFragment extends Fragment implements
         return new Utils.UserLoader(this.getContext());
     }
 
-    @Override
-    public void onLoadFinished(Loader<User> loader, User user) {
-        Log.d(Utils.TAG, "done!");
-
-        // refresh current user
-        MainActivity.CURRENT_USER = user;
-
+    private void refreshSelectedTransactions() {
         // trim transactions to show according to account and period settings
-        List<Transaction> transactionList = user.getTransactions(); // all by default
+        List<Transaction> transactionList = MainActivity.CURRENT_USER.getTransactions(); // all by default
 
         // get spinner values
         Account a = accountArrayAdapter.getItem(accountSpinner.getSelectedItemPosition());
         String period = periodArrayAdapter.getItem(periodSpinner.getSelectedItemPosition());
 
-        // if specific account selected, use that accounts list
+        // if specific account selected, use that accounts list. (Fake "All" account has negative id)
         if (Integer.parseInt(a.getId()) > 0) {
-            transactionList = user.getAccount(a.getId()).getTransactionList();
+            transactionList =  MainActivity.CURRENT_USER.getAccount(a.getId()).getTransactionList();
         }
 
-        startDate = Calendar.getInstance(); // now
-        endDate = Calendar.getInstance(); // now
+        Period.DateRange dateRange = Period.getDateRange(period);
 
-        switch (period) {
-            case "Today":
-                startDate.add(Calendar.DAY_OF_YEAR, -1);
-                break;
-            case "Yesterday":
-                startDate.add(Calendar.DAY_OF_YEAR, -2);
-                endDate.add(Calendar.DAY_OF_YEAR, -1);
-                break;
-            case "Last 7 days":
-                startDate.add(Calendar.DAY_OF_YEAR, -7);
-                break;
-            case "Last 30 days":
-                startDate.add(Calendar.DAY_OF_YEAR, -30);
-                break;
-            default: // show all
-                startDate.setTimeInMillis(Long.MIN_VALUE); // earliest possible time
-                break;
-        }
+        // only show transactions within date range -> makes a copy so user models aren't overwritten
+        final ArrayList<Transaction> transactionsToShow = new ArrayList<>();
 
-        // only show transactions within date range
-        ArrayList<Transaction> transactionsToShow = new ArrayList<>();
+        double openingPeriodBalance = 0.00;
+        double periodBalance = 0.00;
+
         for (Transaction t : transactionList){
-            if (t.getDate().after(startDate) && t.getDate().before(endDate))
+            if (t.getDate().after(dateRange.startDate) && t.getDate().before(dateRange.endDate)){
                 transactionsToShow.add(t);
+                periodBalance += t.getAmount();
+            } else if (t.getDate().before(dateRange.startDate)) {
+                openingPeriodBalance += t.getAmount(); // transaction occurred before period.
+            }
         }
-        Collections.sort(transactionsToShow);
+
+        double closingPeriodBalance = openingPeriodBalance + periodBalance;
+
+        // Format currency according to locale from main activity
+        Utils.setCurrencyTextView(getContext(), periodOpeningView, openingPeriodBalance);
+        Utils.setCurrencyTextView(getContext(), periodClosingView, closingPeriodBalance);
+
+        // Sort transactions
+        Comparator<Transaction> cmp = null;
+
+        // TODO: add reverse order button:
+//        if (reverseOrderButtonClicked)
+//            cmp = Collections.reverseOrder();
+
+        Collections.sort(transactionsToShow, cmp);
 
         // create adapter and set view to use
         adapter = new TransactionRecyclerViewAdapter(transactionsToShow);
         transactionRecyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<User> loader, User user) {
+        // refresh current user
+        MainActivity.CURRENT_USER = user;
+
+        refreshSelectedTransactions();
     }
 
     @Override

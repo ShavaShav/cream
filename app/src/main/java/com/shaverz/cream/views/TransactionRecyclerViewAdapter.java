@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.shaverz.cream.MainActivity;
 import com.shaverz.cream.R;
+import com.shaverz.cream.Utils;
 import com.shaverz.cream.models.Transaction;
 
 import java.text.NumberFormat;
@@ -42,17 +43,7 @@ public class TransactionRecyclerViewAdapter extends RecyclerView.Adapter<Transac
         holder.categoryView.setText(t.getCategory());
 
         // Format currency according to locale from main activity
-        holder.amountView.setText(
-                NumberFormat
-                        .getCurrencyInstance(MainActivity.CURRENT_USER.getCurrencyLocale())
-                        .format(t.getAmount()));
-
-        // Set to color depending on expense or income
-        if (t.getAmount() >= 0.00) {
-            holder.amountView.setTextColor(context.getResources().getColor(R.color.text_positive));
-        } else {
-            holder.amountView.setTextColor(context.getResources().getColor(R.color.text_negative));
-        }
+        Utils.setCurrencyTextView(context, holder.amountView, t.getAmount());
     }
 
     @Override

@@ -8,6 +8,8 @@ import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
+import android.util.Pair;
+import android.widget.TextView;
 
 import com.shaverz.cream.data.DB;
 import com.shaverz.cream.models.Account;
@@ -15,6 +17,7 @@ import com.shaverz.cream.models.Transaction;
 import com.shaverz.cream.models.User;
 
 import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -119,6 +122,24 @@ public class Utils {
         return user;
     }
 
+    // customizes a textview with color depending on currency +/- and locale
+    public static void setCurrencyTextView (Context context, TextView currencyTextView, double amount) {
+        // Format currency according to locale from main activity
+        currencyTextView.setText(
+                NumberFormat
+                        .getCurrencyInstance(MainActivity.CURRENT_USER.getCurrencyLocale())
+                        .format(amount));
+
+        // Set to color depending on expense or income
+        if (amount > 0.00) {
+            currencyTextView.setTextColor(context.getResources().getColor(R.color.text_positive));
+        } else if (amount < 0.00 ){
+            currencyTextView.setTextColor(context.getResources().getColor(R.color.text_negative));
+        } else {
+            currencyTextView.setTextColor(context.getResources().getColor(R.color.text_neutral));
+        }
+    }
+
     public static Locale convertToLocale(String currencyCode) {
         switch (currencyCode) {
             case "CAN":
@@ -135,6 +156,7 @@ public class Utils {
                 return Locale.CANADA;
         }
     }
+
 
     // Fetches user model asynchronously
     public static class UserLoader extends AsyncTaskLoader<User> {

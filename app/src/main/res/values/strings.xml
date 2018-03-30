@@ -106,8 +106,12 @@
     <string name="hint_account">Account</string>
     <string name="hint_category">Category</string>
 
+    <string name="period_open">Period Opening</string>
+    <string name="period_close">Period Closing</string>
+
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="opening_balance_category">Opening Balance</string>
+    <string name="opening_balance_payee">Other</string>
 
 
 </resources>

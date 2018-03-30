@@ -16,4 +16,5 @@
     <!-- Colours for text -->
     <color name="text_negative">#d93e3e</color>
     <color name="text_positive">#3ab63e</color>
+    <color name="text_neutral">#808080</color>
 </resources>

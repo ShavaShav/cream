@@ -2,6 +2,7 @@ package com.shaverz.cream.models;
 
 
 import java.util.Calendar;
+import java.util.Comparator;
 
 public class Transaction implements Comparable<Transaction> {
     private String id;
@@ -50,6 +51,17 @@ public class Transaction implements Comparable<Transaction> {
                 payee + ": $" + amount + " @ " + date.toString();
     }
 
+    // Sorts transactions
+    public static class TransactionComparator implements Comparator<Transaction> {
+
+        @Override
+        public int compare(Transaction transaction, Transaction t1) {
+            return transaction.compareTo(t1);
+        }
+
+    }
+
+    // Latest -> Oldest
     @Override
     public int compareTo(Transaction transaction) {
         return -this.date.compareTo(transaction.date);
