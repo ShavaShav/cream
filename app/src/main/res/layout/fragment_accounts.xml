@@ -36,11 +36,18 @@
                     android:textAppearance="?android:attr/textAppearanceLarge" />
             </android.support.v7.widget.Toolbar>
 
-            <TextView
-                android:id="@+id/info_text0"
+            <android.support.v7.widget.RecyclerView xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/accounts_list"
+                android:name="com.shaverz.cream.AccountFragment"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="My text" />
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                app:layoutManager="LinearLayoutManager"
+                tools:listitem="@layout/fragment_account_row">
+
+            </android.support.v7.widget.RecyclerView>
         </LinearLayout>
 
     </LinearLayout>

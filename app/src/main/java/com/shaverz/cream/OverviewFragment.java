@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -14,8 +15,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.shaverz.cream.models.Account;
 import com.shaverz.cream.models.Transaction;
 import com.shaverz.cream.models.User;
+import com.shaverz.cream.views.AccountRecyclerViewAdapter;
 import com.shaverz.cream.views.TransactionRecyclerViewAdapter;
 
 import java.util.ArrayList;
@@ -29,10 +32,15 @@ public class OverviewFragment extends Fragment implements
     private LinearLayout accountsCardView;
     private LinearLayout transactionsCardView;
     private LinearLayout incomeVsExpenseCardView;
-    private TransactionRecyclerViewAdapter adapter;
-    private RecyclerView transactionRecyclerView;
+
+    private TransactionRecyclerViewAdapter recentTransactionsAdapter;
+    private RecyclerView recentTransactionRecyclerView;
+    private AccountRecyclerViewAdapter myAccountsAdapter;
+    private RecyclerView myAccountsRecyclerView;
 
     private static final int USER_LOADER = 0;
+
+    private boolean isAccountsCompact = true;
 
     public OverviewFragment() {
         // Required empty public constructor
@@ -50,9 +58,12 @@ public class OverviewFragment extends Fragment implements
         accountsCardView = mView.findViewById(R.id.card_view_my_accounts);
         transactionsCardView = mView.findViewById(R.id.card_view_transactions);
         incomeVsExpenseCardView = mView.findViewById(R.id.card_view_income_vs_expense);
-        transactionRecyclerView = (RecyclerView) mView.findViewById(R.id.recent_transactions_list);
 
-        transactionRecyclerView.setAdapter(new TransactionRecyclerViewAdapter(new ArrayList<Transaction>()));
+        recentTransactionRecyclerView = (RecyclerView) mView.findViewById(R.id.recent_transactions_list);
+        myAccountsRecyclerView = (RecyclerView) mView.findViewById(R.id.my_accounts_list);
+
+        recentTransactionRecyclerView.setAdapter(new TransactionRecyclerViewAdapter(new ArrayList<Transaction>()));
+        myAccountsRecyclerView.setAdapter(new AccountRecyclerViewAdapter(new ArrayList<Account>(), isAccountsCompact));
 
         // Attach settings menu to accounts card
         Toolbar accountsToolbar = (Toolbar) mView.findViewById(R.id.toolbar_accounts);
@@ -78,11 +89,16 @@ public class OverviewFragment extends Fragment implements
                                     .commit();
                             break;
                         case R.id.action_switch_mode:
+                            isAccountsCompact = ! isAccountsCompact;
+                            setupMyAccountsMode(isAccountsCompact, menuItem);
+                            refreshMyAccounts();
                             break;
                     }
                     return true;
                 }
             });
+            MenuItem switchModeMenuItem = accountsToolbar.getMenu().findItem(R.id.action_switch_mode);
+            setupMyAccountsMode(isAccountsCompact, switchModeMenuItem);
         }
 
         // Attach settings menu to transactions card
@@ -132,6 +148,22 @@ public class OverviewFragment extends Fragment implements
         return mView;
     }
 
+    private void setupMyAccountsMode (boolean isCompact, MenuItem switchModeMenuItem) {
+        // Change orientation of recycler view
+        LinearLayoutManager llm;
+        if (isCompact) {
+            switchModeMenuItem.setTitle(R.string.menu_switch_list_mode);
+            llm = new LinearLayoutManager(getContext(),
+                    LinearLayoutManager.HORIZONTAL, false);
+        } else {
+            switchModeMenuItem.setTitle(R.string.menu_switch_compact_mode);
+            llm = new LinearLayoutManager(getContext(),
+                    LinearLayoutManager.VERTICAL, false);
+        }
+
+        myAccountsRecyclerView.setLayoutManager(llm);
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_overview, menu);
@@ -168,11 +200,13 @@ public class OverviewFragment extends Fragment implements
         MainActivity.CURRENT_USER = data;
 
         refreshRecentTransactions();
+        refreshMyAccounts();
     }
 
     @Override
     public void onLoaderReset(Loader<User> loader) {
-        transactionRecyclerView.setAdapter(null);
+        recentTransactionRecyclerView.setAdapter(null);
+        myAccountsRecyclerView.setAdapter(null);
     }
 
     private void refreshRecentTransactions() {
@@ -186,8 +220,16 @@ public class OverviewFragment extends Fragment implements
 
         List<Transaction> recentTransactions = transactions.subList(0, numToDisplay); // limit to 3
 
-        // create adapter and set view to use
-        adapter = new TransactionRecyclerViewAdapter(recentTransactions);
-        transactionRecyclerView.setAdapter(adapter);
+        // create recentTransactionsAdapter and set view to use
+        recentTransactionsAdapter = new TransactionRecyclerViewAdapter(recentTransactions);
+        recentTransactionRecyclerView.setAdapter(recentTransactionsAdapter);
+    }
+
+    private void refreshMyAccounts() {
+        // create recentTransactionsAdapter and set view to use
+        myAccountsAdapter =
+                new AccountRecyclerViewAdapter(MainActivity.CURRENT_USER.getAccountList(),
+                isAccountsCompact);
+        myAccountsRecyclerView.setAdapter(myAccountsAdapter);
     }
 }

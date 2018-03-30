@@ -135,7 +135,7 @@ public class AddEditAccountFragment extends Fragment {
         else {
             // use Activity's ContentResolver to invoke
             // insert on the AppContentProvider
-            Uri accountUri = DB.Transaction.buildTransactionUri(Long.parseLong(this.account.getId()));
+            Uri accountUri = DB.Account.buildAccountUri(Long.parseLong(this.account.getId()));
 
             ContentValues contentValues = new ContentValues();
             contentValues.put(DB.Account.COLUMN_NAME, name);

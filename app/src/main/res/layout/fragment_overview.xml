@@ -9,38 +9,43 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-            <LinearLayout
+        <LinearLayout
+            android:id="@+id/card_view_my_accounts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/fab_margin"
+            android:background="@drawable/common_border"
+            android:elevation="@dimen/common_elevation"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/fab_margin">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar_accounts"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingBottom="@dimen/fab_margin"
-                android:paddingLeft="@dimen/fab_margin"
-                android:paddingRight="@dimen/fab_margin"
-                android:id="@+id/card_view_my_accounts"
-                android:layout_margin="@dimen/fab_margin"
-                android:background="@drawable/common_border"
-                android:elevation="@dimen/common_elevation">
-
-                <android.support.v7.widget.Toolbar
-                    android:id="@+id/toolbar_accounts"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:id="@+id/toolbar_title_accounts"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="@string/title_accounts"
-                        android:textAppearance="?android:attr/textAppearanceLarge" />
-                </android.support.v7.widget.Toolbar>
+                android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/info_text0"
-                    android:layout_width="match_parent"
+                    android:id="@+id/toolbar_title_accounts"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="My text" />
-            </LinearLayout>
+                    android:layout_gravity="center"
+                    android:text="@string/title_accounts"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+            </android.support.v7.widget.Toolbar>
+
+            <android.support.v7.widget.RecyclerView xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/my_accounts_list"
+                android:name="com.shaverz.cream.OverviewFragment"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                app:layoutManager="LinearLayoutManager"
+                tools:listitem="@layout/fragment_account_row">
+
+            </android.support.v7.widget.RecyclerView>
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/card_view_transactions"
@@ -69,11 +74,9 @@
             <android.support.v7.widget.RecyclerView xmlns:app="http://schemas.android.com/apk/res-auto"
                 xmlns:tools="http://schemas.android.com/tools"
                 android:id="@+id/recent_transactions_list"
-                android:name="com.shaverz.cream.TransactionFragment"
+                android:name="com.shaverz.cream.OverviewFragment"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_marginLeft="@dimen/fab_margin"
-                android:layout_marginRight="@dimen/fab_margin"
                 android:layout_weight="1"
                 android:orientation="vertical"
                 app:layoutManager="LinearLayoutManager"

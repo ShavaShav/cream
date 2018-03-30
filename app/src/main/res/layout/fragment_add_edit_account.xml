@@ -10,9 +10,12 @@
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/fab_margin"
+            android:background="@drawable/common_border"
+            android:elevation="@dimen/common_elevation"
+            android:orientation="vertical">
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/nameTextInputLayout"
@@ -46,8 +49,8 @@
                     android:layout_weight="1"
                     android:ems="10"
                     android:hint="@string/hint_opening_balance"
-                    android:text="@string/default_opening_balance"
-                    android:inputType="numberDecimal|numberSigned" />
+                    android:inputType="numberDecimal|numberSigned"
+                    android:text="@string/default_opening_balance" />
 
             </android.support.design.widget.TextInputLayout>
 

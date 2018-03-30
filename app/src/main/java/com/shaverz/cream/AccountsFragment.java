@@ -4,15 +4,33 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class AccountsFragment extends Fragment {
+import com.shaverz.cream.models.Account;
+import com.shaverz.cream.models.Transaction;
+import com.shaverz.cream.models.User;
+import com.shaverz.cream.views.AccountRecyclerViewAdapter;
+import com.shaverz.cream.views.TransactionRecyclerViewAdapter;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class AccountsFragment extends Fragment implements
+        LoaderManager.LoaderCallbacks<User>{
 
     private View mView;
+    private AccountRecyclerViewAdapter myAccountsAdapter;
+    private RecyclerView myAccountsRecyclerView;
+
+    private static final int USER_LOADER = 0;
 
     public AccountsFragment() {
         // Required empty public constructor
@@ -25,6 +43,9 @@ public class AccountsFragment extends Fragment {
         // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_accounts, container, false);
 
+        myAccountsRecyclerView = (RecyclerView) mView.findViewById(R.id.accounts_list);
+        myAccountsRecyclerView.setAdapter(new AccountRecyclerViewAdapter(new ArrayList<Account>(), false));
+
         // Attach settings menu to accounts card
         Toolbar accountsToolbar = (Toolbar) mView.findViewById(R.id.toolbar_accounts);
         if (accountsToolbar != null) {
@@ -36,6 +57,8 @@ public class AccountsFragment extends Fragment {
                 }
             });
         }
+
+        getLoaderManager().initLoader(USER_LOADER, null, this).forceLoad();
 
         return mView;
     }
@@ -58,4 +81,24 @@ public class AccountsFragment extends Fragment {
         ((MainActivity) getActivity())
                 .setActionBarTitle(getString(R.string.titlebar_accounts));
     }
+
+    @Override
+    public Loader<User> onCreateLoader(int id, Bundle args) {
+        return new Utils.UserLoader(this.getContext());
+    }
+
+    @Override
+    public void onLoadFinished(Loader<User> loader, User data) {
+        // refresh current user and accounts
+        MainActivity.CURRENT_USER = data;
+        myAccountsAdapter = new AccountRecyclerViewAdapter(MainActivity.CURRENT_USER.getAccountList(), false);
+        myAccountsRecyclerView.setAdapter(myAccountsAdapter);
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<User> loader) {
+        myAccountsRecyclerView.setAdapter(null);
+    }
+
 }
