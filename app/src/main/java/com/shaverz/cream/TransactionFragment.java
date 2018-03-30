@@ -1,15 +1,15 @@
 package com.shaverz.cream;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -22,9 +22,7 @@ import com.shaverz.cream.models.Transaction;
 import com.shaverz.cream.models.User;
 import com.shaverz.cream.views.TransactionRecyclerViewAdapter;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -36,7 +34,6 @@ public class TransactionFragment extends Fragment implements
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    private User userModel;
     private View mView;
     private TransactionRecyclerViewAdapter adapter;
     private RecyclerView transactionRecyclerView;
@@ -48,7 +45,7 @@ public class TransactionFragment extends Fragment implements
     private TextView periodClosingView;
 
     private static final int LIST_LOADER = 0;
-
+    private boolean reverseOrder = false;
     public static final String TRANSACTION_OBJECT = "transaction";
 
     public TransactionFragment() {
@@ -63,6 +60,9 @@ public class TransactionFragment extends Fragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_transactions, container, false);
+
+        // Fragment has own menu for customization
+        setHasOptionsMenu(true);
 
         accountSpinner = (Spinner) mView.findViewById(R.id.spinner_account);
         periodSpinner = (Spinner) mView.findViewById(R.id.spinner_period);
@@ -124,22 +124,30 @@ public class TransactionFragment extends Fragment implements
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-    }
-
-    @Override
     public void onResume(){
         super.onResume();
 
         // Set title bar
         ((MainActivity) getActivity())
                 .setActionBarTitle(getString(R.string.titlebar_transactions));
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_transactions, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.action_reorder:
+                reverseOrder = ! reverseOrder;
+                refreshSelectedTransactions();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -186,9 +194,7 @@ public class TransactionFragment extends Fragment implements
         // Sort transactions
         Comparator<Transaction> cmp = null;
 
-        // TODO: add reverse order button:
-//        if (reverseOrderButtonClicked)
-//            cmp = Collections.reverseOrder();
+        if (reverseOrder) cmp = Collections.reverseOrder();
 
         Collections.sort(transactionsToShow, cmp);
 

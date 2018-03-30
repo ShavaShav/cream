@@ -92,6 +92,7 @@
     </string>
 
     <!-- Add/Edit transaction -->
+    <string name="action_reorder">Reverse order</string>
     <string name="add_transaction_ok">Added transaction!</string>
     <string name="add_transaction_fail">Failed to add transaction</string>
     <string name="edit_transaction_ok">Edited transaction!</string>
