@@ -10,8 +10,6 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,10 +24,7 @@ import com.shaverz.cream.data.DB;
 import com.shaverz.cream.models.Account;
 import com.shaverz.cream.models.Transaction;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class AddEditTransactionFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class AddEditTransactionFragment extends Fragment {
 
     private Transaction transaction; // Transaction object
     private boolean addingNewTransaction = true; // adding (true) or editing
@@ -80,6 +75,12 @@ public class AddEditTransactionFragment extends Fragment implements LoaderManage
 
         amountTextLayout.requestFocus(); // focus on amount by default
 
+        accountArrayAdapter = new ArrayAdapter<Account>(getContext(),
+                android.R.layout.simple_spinner_item, MainActivity.CURRENT_USER.getAccountList());
+
+        accountArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        accountSpinner.setAdapter(accountArrayAdapter);
+
         categoryArrayAdapter = new ArrayAdapter<String>(getContext(),
                 android.R.layout.simple_spinner_item,
                 getResources().getStringArray(R.array.category_array));
@@ -98,8 +99,6 @@ public class AddEditTransactionFragment extends Fragment implements LoaderManage
             addingNewTransaction = false;
             transaction = arguments.getParcelable(TransactionFragment.TRANSACTION_OBJECT);
         }
-
-        getLoaderManager().initLoader(ACCOUNTS_LOADER, null, this);
 
         return mView;
     }
@@ -195,43 +194,4 @@ public class AddEditTransactionFragment extends Fragment implements LoaderManage
         }
     }
 
-    // called by LoaderManager to create a Loader
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        // create an appropriate CursorLoader based on the id argument;
-        // only one Loader in this fragment, so the switch is unnecessary
-        return new CursorLoader(getActivity(),
-                DB.Account.CONTENT_URI, // Uri of contact to display
-                null, // null projection returns all columns
-                DB.Account.COLUMN_USER_ID + " = ?",
-                new String[] { Utils.getCurrentUserID(getContext()) }, // no selection arguments
-                null); // sort order
-    }
-
-    // called by LoaderManager when loading completes
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Log.d(Utils.TAG, "Done!");
-        // display accounts in spinner
-        if (data == null ) return; // no accounts
-
-        List<Account> accounts = new ArrayList<>();
-
-        for (data.moveToFirst(); !data.isAfterLast(); data.moveToNext()) {
-            String id = data.getString(data.getColumnIndex(DB.Account._ID));
-            String name = data.getString(data.getColumnIndex(DB.Account.COLUMN_NAME));
-            accounts.add(new Account(id, name));
-        }
-
-        accountArrayAdapter = new ArrayAdapter<Account>(getContext(),
-                android.R.layout.simple_spinner_item, accounts);
-        accountArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        accountSpinner.setAdapter(accountArrayAdapter);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
-    }
 }

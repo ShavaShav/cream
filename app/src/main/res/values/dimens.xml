@@ -14,4 +14,6 @@
     <dimen name="common_elevation">6dp</dimen>
     <dimen name="report_list_item_padding">6dp</dimen>
     <dimen name="text_description">12sp</dimen>
+    <dimen name="text_amount">30sp</dimen>
+    <dimen name="common_grid_padding">6dp</dimen>
 </resources>

@@ -15,17 +15,18 @@ import android.view.MenuItem;
 
 import com.shaverz.cream.models.User;
 
+import java.util.Locale;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    public static User USER;
+    public static User CURRENT_USER;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        User user = Utils.fetchUserModel(this);
-        Log.d(Utils.TAG, user.toString());
+        CURRENT_USER = Utils.fetchUserModel(this);
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);

@@ -1,17 +1,17 @@
 package com.shaverz.cream.models;
 
 
-import java.util.Date;
+import java.util.Calendar;
 
 public class Transaction implements Comparable<Transaction> {
     private String id;
     private double amount;
     private String account; // storing account name redundantly for easy adapter access
-    private Date date;
+    private Calendar date;
     private String category;
     private String payee;
 
-    public Transaction(String id, double amount, String account, Date date, String category, String payee) {
+    public Transaction(String id, double amount, String account, Calendar date, String category, String payee) {
         this.id = id;
         this.amount = amount;
         this.account = account;
@@ -32,7 +32,7 @@ public class Transaction implements Comparable<Transaction> {
         return amount;
     }
 
-    public Date getDate() {
+    public Calendar getDate() {
         return date;
     }
 

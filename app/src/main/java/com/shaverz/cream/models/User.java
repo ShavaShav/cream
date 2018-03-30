@@ -1,8 +1,11 @@
 package com.shaverz.cream.models;
 
+import com.shaverz.cream.Utils;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by z on 27/03/2018.
@@ -11,7 +14,7 @@ import java.util.List;
 public class User {
     private String id;
     private String username;
-    private String currency;
+    private Locale currencyLocale;
     private String language;
 
     private List<Account> accountList;
@@ -19,7 +22,7 @@ public class User {
     public User(String id, String username, String currency, String language) {
         this.id = id;
         this.username = username;
-        this.currency = currency;
+        this.currencyLocale = Utils.convertToLocale(currency);
         this.language = language;
         this.accountList = new ArrayList<>();
     }
@@ -33,6 +36,14 @@ public class User {
         return balance;
     }
 
+    public Account getAccount(String id) {
+        for (Account a : accountList) {
+            if (a.getId().equals(id))
+                return a;
+        }
+        return null;
+    }
+
     public String getId() {
         return id;
     }
@@ -41,8 +52,8 @@ public class User {
         return username;
     }
 
-    public String getCurrency() {
-        return currency;
+    public Locale getCurrencyLocale() {
+        return currencyLocale;
     }
 
     public String getLanguage() {
@@ -73,7 +84,7 @@ public class User {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(
-                "(" + id + ")" + username + ": " + language + " - " + currency);
+                "(" + id + ")" + username + ": " + language + " - " + currencyLocale);
         for (Account account : accountList) {
             sb.append("\n-> " + account.treeString());
         }

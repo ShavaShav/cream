@@ -18,8 +18,10 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 
 public class Utils {
@@ -107,13 +109,31 @@ public class Utils {
                 double amount = cursor.getDouble(cursor.getColumnIndex(DB.Transaction.COLUMN_AMOUNT));
                 String category = cursor.getString(cursor.getColumnIndex(DB.Transaction.COLUMN_CATEGORY));
                 String payee = cursor.getString(cursor.getColumnIndex(DB.Transaction.COLUMN_PAYEE));
-                Date date = new Date(Long.parseLong(cursor.getString(cursor.getColumnIndex(DB.Transaction.COLUMN_DATE))));
+                Calendar date = Calendar.getInstance();
+                date.setTimeInMillis(Long.parseLong(cursor.getString(cursor.getColumnIndex(DB.Transaction.COLUMN_DATE))));
                 account.addTransaction(new Transaction(id, amount, account.getName(), date, category, payee));
             }
         }
         cursor.close();
         user.setAccountList(accounts);
         return user;
+    }
+
+    public static Locale convertToLocale(String currencyCode) {
+        switch (currencyCode) {
+            case "CAN":
+                return Locale.CANADA;
+            case "EUR":
+                return Locale.GERMAN;
+            case "GBP":
+                return Locale.UK;
+            case "JPY":
+                return Locale.JAPAN;
+            case "USD":
+                return Locale.US;
+            default:
+                return Locale.CANADA;
+        }
     }
 
     // Fetches user model asynchronously
@@ -129,25 +149,5 @@ public class Utils {
         }
     }
 
-    public static String toISO8601UTC(Date date) {
-        TimeZone tz = TimeZone.getTimeZone("UTC");
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
-        df.setTimeZone(tz);
-        return df.format(date);
-    }
-
-    public static Date fromISO8601UTC(String dateStr) {
-        TimeZone tz = TimeZone.getTimeZone("UTC");
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
-        df.setTimeZone(tz);
-
-        try {
-            return df.parse(dateStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
 
 }
