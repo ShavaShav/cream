@@ -23,8 +23,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:ellipsize="end"
+                android:singleLine="true"
                 android:text="Account"
-                android:textSize="@dimen/header_1_size"
+                android:textSize="@dimen/text_account"
                 android:textStyle="bold" />
 
             <TextView
@@ -32,7 +34,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/text_margin"
-                android:layout_weight="1"
+                android:ellipsize="end"
+                android:singleLine="true"
                 android:text="Date" />
         </LinearLayout>
 
@@ -46,6 +49,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:ellipsize="end"
+                android:singleLine="true"
                 android:text="Payer"
                 android:textSize="@dimen/header_2_size"
                 android:textStyle="bold|italic" />
@@ -55,7 +60,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/text_margin"
-                android:layout_weight="1"
+                android:ellipsize="end"
+                android:singleLine="true"
                 android:text="Category" />
         </LinearLayout>
     </LinearLayout>
@@ -65,7 +71,9 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:ellipsize="marquee"
         android:gravity="center_vertical"
+        android:singleLine="true"
         android:text="$0.00"
         android:textAlignment="viewEnd"
         android:textSize="@dimen/text_amount"

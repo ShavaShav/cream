@@ -16,8 +16,9 @@ public class Period {
             "All",
             "Today",
             "Yesterday",
-            "Last 7 Days",
-            "Last 30 days"};
+            "Last Week",
+            "Last Month",
+            "Last Year"};
 
 
     public static DateRange getDateRange(String periodString) {
@@ -33,11 +34,14 @@ public class Period {
                 startDate.add(Calendar.DAY_OF_YEAR, -2);
                 endDate.add(Calendar.DAY_OF_YEAR, -1);
                 break;
-            case "Last 7 days":
+            case "Last Week":
                 startDate.add(Calendar.DAY_OF_YEAR, -7);
                 break;
-            case "Last 30 days":
-                startDate.add(Calendar.DAY_OF_YEAR, -30);
+            case "Last Month":
+                startDate.add(Calendar.DAY_OF_YEAR, -31);
+                break;
+            case "Last Year":
+                startDate.add(Calendar.DAY_OF_YEAR, -365);
                 break;
             default: // show all
                 startDate.setTimeInMillis(Long.MIN_VALUE); // earliest possible time

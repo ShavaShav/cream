@@ -144,12 +144,12 @@ public class AddEditAccountFragment extends Fragment {
                     accountUri, contentValues, null, null);
 
             if (updatedRows > 0) {
-                Snackbar.make(this.getView(), getString(R.string.add_transaction_ok),
+                Snackbar.make(this.getView(), getString(R.string.edit_account_ok),
                         Snackbar.LENGTH_LONG).show();
                 // go back to wherever we were
                 getFragmentManager().popBackStack();
             } else {
-                Snackbar.make(this.getView(), getString(R.string.add_transaction_fail),
+                Snackbar.make(this.getView(), getString(R.string.edit_account_fail),
                         Snackbar.LENGTH_LONG).show();
             }
         }

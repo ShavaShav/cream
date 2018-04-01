@@ -110,7 +110,7 @@ public class AddEditTransactionFragment extends Fragment {
             int categoryPosition = categoryArrayAdapter.getPosition(transaction.getCategory());
             categorySpinner.setSelection(categoryPosition);
 
-            amountTextLayout.getEditText().setText(String.valueOf(transaction.getAmount()));
+            amountTextLayout.getEditText().setText(String.valueOf(Math.abs(transaction.getAmount())));
             payerPayeeTextLayout.getEditText().setText(transaction.getPayee());
         }
 
@@ -172,7 +172,7 @@ public class AddEditTransactionFragment extends Fragment {
 
         Log.d(Utils.TAG, "amount: " + amount);
 
-        // create ContentValues object containing contact's key-value pairs
+        // create ContentValues object containing transactions's key-value pairs
         ContentValues contentValues = new ContentValues();
         contentValues.put(DB.Transaction.COLUMN_ACCOUNT_ID, account.getId());
         contentValues.put(DB.Transaction.COLUMN_AMOUNT, amount);
@@ -207,12 +207,12 @@ public class AddEditTransactionFragment extends Fragment {
                     transactionUri, contentValues, null, null);
 
             if (updatedRows > 0) {
-                Snackbar.make(this.getView(), getString(R.string.add_transaction_ok),
+                Snackbar.make(this.getView(), getString(R.string.edit_transaction_ok),
                         Snackbar.LENGTH_LONG).show();
                 // go back to wherever we were
                 getFragmentManager().popBackStack();
             } else {
-                Snackbar.make(this.getView(), getString(R.string.add_transaction_fail),
+                Snackbar.make(this.getView(), getString(R.string.edit_transaction_fail),
                         Snackbar.LENGTH_LONG).show();
             }
         }

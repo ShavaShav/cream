@@ -50,7 +50,8 @@
                 android:layout_gravity="fill"
                 android:layout_marginLeft="@dimen/appbar_padding_top"
                 android:layout_marginRight="@dimen/appbar_padding_top"
-                android:layout_row="1" />
+                android:layout_row="1"
+                android:layout_rowWeight="1" />
 
             <Spinner
                 android:id="@+id/spinner_period"
@@ -61,7 +62,8 @@
                 android:layout_gravity="fill"
                 android:layout_marginLeft="@dimen/appbar_padding_top"
                 android:layout_marginRight="@dimen/appbar_padding_top"
-                android:layout_row="1" />
+                android:layout_row="1"
+                android:layout_rowWeight="1" />
         </GridLayout>
 
         <android.support.v7.widget.RecyclerView xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -104,6 +106,8 @@
                 android:layout_marginLeft="@dimen/appbar_padding_top"
                 android:layout_marginRight="@dimen/appbar_padding_top"
                 android:layout_row="0"
+                android:ellipsize="end"
+                android:singleLine="true"
                 android:text="@string/period_open" />
 
             <TextView
@@ -116,6 +120,8 @@
                 android:layout_marginLeft="@dimen/appbar_padding_top"
                 android:layout_marginRight="@dimen/appbar_padding_top"
                 android:layout_row="0"
+                android:ellipsize="end"
+                android:singleLine="true"
                 android:text="@string/period_close" />
 
             <TextView
@@ -127,7 +133,10 @@
                 android:layout_marginLeft="@dimen/appbar_padding_top"
                 android:layout_marginRight="@dimen/appbar_padding_top"
                 android:layout_row="1"
-                android:textSize="@dimen/header_1_size" />
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:textSize="@dimen/header_1_size"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/periodClosingAmountView"
@@ -138,7 +147,10 @@
                 android:layout_marginLeft="@dimen/appbar_padding_top"
                 android:layout_marginRight="@dimen/appbar_padding_top"
                 android:layout_row="1"
-                android:textSize="@dimen/header_1_size" />
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:textSize="@dimen/header_1_size"
+                android:textStyle="bold" />
         </GridLayout>
 
     </LinearLayout>
