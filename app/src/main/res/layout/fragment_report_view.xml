@@ -61,22 +61,25 @@
             </LinearLayout>
         </LinearLayout>
 
-        <android.support.v7.widget.RecyclerView xmlns:app="http://schemas.android.com/apk/res-auto"
+        <RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/graph_view"
-            android:name="com.shaverz.cream.TransactionFragment"
+            android:id="@+id/graph_frame"
+            android:name="com.shaverz.cream.ReportViewFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center|fill"
+            android:layout_marginBottom="@dimen/fab_margin"
             android:layout_marginLeft="@dimen/fab_margin"
             android:layout_marginRight="@dimen/fab_margin"
             android:layout_weight="1"
             android:background="@drawable/common_border"
-            android:elevation="@dimen/common_elevation"
-            android:orientation="vertical"
-            app:layoutManager="LinearLayoutManager"
-            tools:listitem="@layout/fragment_transaction_row">
+            android:elevation="@dimen/common_elevation">
+            <com.github.mikephil.charting.charts.PieChart
+                android:id="@+id/pie_chart"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
-        </android.support.v7.widget.RecyclerView>
+        </RelativeLayout>
 
     </LinearLayout>
 

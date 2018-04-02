@@ -18,6 +18,7 @@ public class ReportsFragment extends Fragment {
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
     private Fragment[] reportTabFragments;
+    private static FragmentManager fragmentManager;
 
     public ReportsFragment() {
         // Required empty public constructor
@@ -38,6 +39,10 @@ public class ReportsFragment extends Fragment {
 
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_reports, container, false);
+
+        // Save fragment manager
+        fragmentManager = getActivity().getSupportFragmentManager();
+
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getActivity().getSupportFragmentManager());
@@ -74,7 +79,9 @@ public class ReportsFragment extends Fragment {
                                  Bundle savedInstanceState) {
             // Inflate the layout for this fragment
             View view = inflater.inflate(R.layout.fragment_reports_expense, container, false);
-
+            view.findViewById(R.id.report_expense_by_category).setOnClickListener(new ReportClickListener());
+            view.findViewById(R.id.report_daily_expense).setOnClickListener(new ReportClickListener());
+            view.findViewById(R.id.report_monthly_expense).setOnClickListener(new ReportClickListener());
             return view;
         }
     }
@@ -85,7 +92,9 @@ public class ReportsFragment extends Fragment {
                                  Bundle savedInstanceState) {
             // Inflate the layout for this fragment
             View view = inflater.inflate(R.layout.fragment_reports_income, container, false);
-
+            view.findViewById(R.id.report_income_by_category).setOnClickListener(new ReportClickListener());
+            view.findViewById(R.id.report_daily_income).setOnClickListener(new ReportClickListener());
+            view.findViewById(R.id.report_monthly_income).setOnClickListener(new ReportClickListener());
             return view;
         }
     }
@@ -96,7 +105,7 @@ public class ReportsFragment extends Fragment {
                                  Bundle savedInstanceState) {
             // Inflate the layout for this fragment
             View view = inflater.inflate(R.layout.fragment_reports_cash_flow, container, false);
-
+            view.findViewById(R.id.report_income_vs_expense).setOnClickListener(new ReportClickListener());
             return view;
         }
     }
@@ -107,8 +116,46 @@ public class ReportsFragment extends Fragment {
                                  Bundle savedInstanceState) {
             // Inflate the layout for this fragment
             View view = inflater.inflate(R.layout.fragment_reports_balance, container, false);
-
+            view.findViewById(R.id.report_daily_balance).setOnClickListener(new ReportClickListener());
             return view;
+        }
+    }
+
+    private static class ReportClickListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View view) {
+            switch (view.getId()) {
+                case R.id.report_expense_by_category:
+                    Log.d(Utils.TAG, "report_expense_by_category");
+                    break;
+                case R.id.report_daily_expense:
+                    Log.d(Utils.TAG, "report_daily_expense");
+                    break;
+                case R.id.report_monthly_expense:
+                    Log.d(Utils.TAG, "report_monthly_expense");
+                    break;
+                case R.id.report_income_by_category:
+                    Log.d(Utils.TAG, "report_income_by_category");
+                    break;
+                case R.id.report_daily_income:
+                    Log.d(Utils.TAG, "report_daily_income");
+                    break;
+                case R.id.report_monthly_income:
+                    Log.d(Utils.TAG, "report_monthly_income");
+                    break;
+                case R.id.report_income_vs_expense:
+                    Log.d(Utils.TAG, "report_income_vs_expense");
+                    break;
+                case R.id.report_daily_balance:
+                    Log.d(Utils.TAG, "report_daily_balance");
+                    break;
+            }
+
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, new ReportViewFragment())
+                    .addToBackStack(null)
+                    .commit();
         }
     }
 
