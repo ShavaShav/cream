@@ -121,44 +121,6 @@ public class ReportsFragment extends Fragment {
         }
     }
 
-    private static class ReportClickListener implements View.OnClickListener {
-
-        @Override
-        public void onClick(View view) {
-            switch (view.getId()) {
-                case R.id.report_expense_by_category:
-                    Log.d(Utils.TAG, "report_expense_by_category");
-                    break;
-                case R.id.report_daily_expense:
-                    Log.d(Utils.TAG, "report_daily_expense");
-                    break;
-                case R.id.report_monthly_expense:
-                    Log.d(Utils.TAG, "report_monthly_expense");
-                    break;
-                case R.id.report_income_by_category:
-                    Log.d(Utils.TAG, "report_income_by_category");
-                    break;
-                case R.id.report_daily_income:
-                    Log.d(Utils.TAG, "report_daily_income");
-                    break;
-                case R.id.report_monthly_income:
-                    Log.d(Utils.TAG, "report_monthly_income");
-                    break;
-                case R.id.report_income_vs_expense:
-                    Log.d(Utils.TAG, "report_income_vs_expense");
-                    break;
-                case R.id.report_daily_balance:
-                    Log.d(Utils.TAG, "report_daily_balance");
-                    break;
-            }
-
-            fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, new ReportViewFragment())
-                    .addToBackStack(null)
-                    .commit();
-        }
-    }
-
     public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {
@@ -180,4 +142,55 @@ public class ReportsFragment extends Fragment {
         }
     }
 
+    private static class ReportClickListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View view) {
+            // Pass report graph type to view frag according to button clicked
+            Bundle arguments = new Bundle();
+
+            switch (view.getId()) {
+                case R.id.report_expense_by_category:
+                    arguments.putInt(ReportViewFragment.ARG_REPORT_TYPE,
+                            ReportViewFragment.EXPENSE_BY_CATEGORY);
+                    break;
+                case R.id.report_daily_expense:
+                    arguments.putInt(ReportViewFragment.ARG_REPORT_TYPE,
+                            ReportViewFragment.DAILY_EXPENSES);
+                    break;
+                case R.id.report_monthly_expense:
+                    arguments.putInt(ReportViewFragment.ARG_REPORT_TYPE,
+                            ReportViewFragment.MONTHLY_EXPENSES);
+                    break;
+                case R.id.report_income_by_category:
+                    arguments.putInt(ReportViewFragment.ARG_REPORT_TYPE,
+                            ReportViewFragment.INCOME_BY_CATEGORY);
+                    break;
+                case R.id.report_daily_income:
+                    arguments.putInt(ReportViewFragment.ARG_REPORT_TYPE,
+                            ReportViewFragment.DAILY_INCOME);
+                    break;
+                case R.id.report_monthly_income:
+                    arguments.putInt(ReportViewFragment.ARG_REPORT_TYPE,
+                            ReportViewFragment.MONTHLY_INCOME);
+                    break;
+                case R.id.report_income_vs_expense:
+                    arguments.putInt(ReportViewFragment.ARG_REPORT_TYPE,
+                            ReportViewFragment.INCOME_VS_EXPENSE);
+                    break;
+                case R.id.report_daily_balance:
+                    arguments.putInt(ReportViewFragment.ARG_REPORT_TYPE,
+                            ReportViewFragment.DAILY_BALANCE);
+                    break;
+            }
+
+            ReportViewFragment reportViewFragment = new ReportViewFragment();
+            reportViewFragment.setArguments(arguments);
+
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, reportViewFragment)
+                    .addToBackStack(null)
+                    .commit();
+        }
+    }
 }
