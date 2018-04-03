@@ -5,7 +5,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 
 import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.LineChart;
@@ -13,6 +16,8 @@ import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+
+import com.shaverz.cream.models.Account;
 import com.shaverz.cream.models.Transaction;
 
 import java.util.ArrayList;
@@ -34,13 +39,16 @@ public class ReportViewFragment extends Fragment {
     public static final int DAILY_BALANCE = 7;
     public static final int INCOME_VS_EXPENSE = 8;
 
-//    private Spinner accountSpinner;
-//    private ArrayAdapter<Account> accountArrayAdapter; // holds account objects so can get id easily
-//    private Spinner periodSpinner;
-//    private ArrayAdapter<String> periodArrayAdapter;
-
+    private Spinner accountSpinner;
+    private ArrayAdapter<Account> accountArrayAdapter; // holds account objects so can get id easily
+    private Spinner periodSpinner;
+    private ArrayAdapter<String> periodArrayAdapter;
+    private RelativeLayout graphFrame;
+    private RelativeLayout.LayoutParams chartParams = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
     private int reportType;
     private Chart chart;
+
 
     private static final int[] GRAPH_COLORS = new int[] {
             R.color.chart_blue,
@@ -68,33 +76,92 @@ public class ReportViewFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        // Inflate the layout for this fragment and get views
         View view = inflater.inflate(R.layout.fragment_report_view, container, false);
+        accountSpinner = (Spinner) view.findViewById(R.id.spinner_account);
+        periodSpinner = (Spinner) view.findViewById(R.id.spinner_period);
+
+        // make a copy of accounts list to show
+        List<Account> accountList = new ArrayList<>(MainActivity.CURRENT_USER.getAccountList());
+        accountList.add(0, new Account("-1", "All")); // Fake account for "All" setting
+
+        accountArrayAdapter = new ArrayAdapter<Account>(getContext(),
+                android.R.layout.simple_spinner_item, accountList);
+
+        accountArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        accountSpinner.setAdapter(accountArrayAdapter);
+
+        periodArrayAdapter = new ArrayAdapter<String>(getContext(),
+                android.R.layout.simple_spinner_item,
+                Period.strings);
+
+        periodArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        periodSpinner.setAdapter(periodArrayAdapter);
+
+        accountSpinner.setOnItemSelectedListener(new ReportViewFragment.optionsChangeListener());
+        periodSpinner.setOnItemSelectedListener(new ReportViewFragment.optionsChangeListener());
 
         // generate chart for report
         chart = generateChart(reportType);
 
         // Add chart to graph_frame, fill it
-        RelativeLayout rl = view.findViewById(R.id.graph_frame);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        rl.addView(chart, params);
+        graphFrame = view.findViewById(R.id.graph_frame);
+        graphFrame.addView(chart, chartParams);
 
         chart.invalidate(); // refresh
 
         return view;
     }
 
+    private class optionsChangeListener implements AdapterView.OnItemSelectedListener {
+        // will refresh chart whenever options change
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            graphFrame.removeView(chart);
+            chart = generateChart(reportType);
+            graphFrame.addView(chart, chartParams);
+            chart.invalidate();
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+
+        }
+    }
+
     public Chart generateChart(int reportType) {
+        // trim transactions to show according to account and period settings
+        List<Transaction> transactionList = MainActivity.CURRENT_USER.getTransactions(); // all by default
+
+        // get spinner values
+        Account a = accountArrayAdapter.getItem(accountSpinner.getSelectedItemPosition());
+        String period = periodArrayAdapter.getItem(periodSpinner.getSelectedItemPosition());
+
+        // if specific account selected, use that accounts list. (Fake "All" account has negative id)
+        if (Integer.parseInt(a.getId()) > 0) {
+            transactionList = MainActivity.CURRENT_USER.getAccount(a.getId()).getTransactionList();
+        }
+
+        Period.DateRange dateRange = Period.getDateRange(period);
+
+        // only show data for transactions within date range -> makes a copy so user models aren't overwritten
+        final ArrayList<Transaction> transactionsToChart = new ArrayList<>();
+
+        for (Transaction t : transactionList){
+            if (t.getDate().after(dateRange.startDate) && t.getDate().before(dateRange.endDate)) {
+                transactionsToChart.add(t);
+            }
+        }
+
         switch (reportType) {
             case EXPENSE_BY_CATEGORY:
-                return generateByCategoryChart(false);
+                return generateByCategoryChart(transactionsToChart, false);
             case DAILY_EXPENSES:
                 return new LineChart(getContext()); // empty chart
             case MONTHLY_EXPENSES:
                 return new LineChart(getContext()); // empty chart
             case INCOME_BY_CATEGORY:
-                return generateByCategoryChart(true);
+                return generateByCategoryChart(transactionsToChart, true);
             case DAILY_INCOME:
                 return new LineChart(getContext()); // empty chart
             case MONTHLY_INCOME:
@@ -109,11 +176,11 @@ public class ReportViewFragment extends Fragment {
 
     }
 
-    private PieChart generateByCategoryChart(boolean income) {
+    private PieChart generateByCategoryChart(List<Transaction> transactions, boolean income) {
         Map<String, Double> catAmtMap = new HashMap<String, Double>();
 
         // Map income or expenses by category
-        for (Transaction tx : MainActivity.CURRENT_USER.getTransactions()) {
+        for (Transaction tx : transactions) {
             double amount = tx.getAmount();
             boolean addToMap = false;
             // Only count transactions according to flag
