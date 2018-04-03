@@ -1,0 +1,66 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context="com.shaverz.cream.AccountPeriodSpinnerFragment">
+
+    <GridLayout
+        android:id="@+id/options_grid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        android:background="@drawable/common_border"
+        android:columnCount="2"
+        android:elevation="@dimen/common_elevation"
+        android:rowCount="2">
+
+        <TextView
+            android:id="@+id/account_textView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill"
+            android:layout_marginLeft="@dimen/appbar_padding_top"
+            android:layout_marginRight="@dimen/appbar_padding_top"
+            android:layout_row="0"
+            android:text="@string/tx_account" />
+
+        <TextView
+            android:id="@+id/period_textView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_column="1"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill"
+            android:layout_marginLeft="@dimen/appbar_padding_top"
+            android:layout_marginRight="@dimen/appbar_padding_top"
+            android:layout_row="0"
+            android:text="@string/tx_period" />
+
+        <Spinner
+            android:id="@+id/spinner_account"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill"
+            android:layout_marginLeft="@dimen/appbar_padding_top"
+            android:layout_marginRight="@dimen/appbar_padding_top"
+            android:layout_row="1"
+            android:layout_rowWeight="1" />
+
+        <Spinner
+            android:id="@+id/spinner_period"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="1"
+            android:layout_columnWeight="1"
+            android:layout_gravity="fill"
+            android:layout_marginLeft="@dimen/appbar_padding_top"
+            android:layout_marginRight="@dimen/appbar_padding_top"
+            android:layout_row="1"
+            android:layout_rowWeight="1" />
+    </GridLayout>
+
+</FrameLayout>

@@ -2,18 +2,14 @@ package com.shaverz.cream;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
@@ -38,10 +34,14 @@ public class ReportViewFragment extends Fragment {
     public static final int DAILY_BALANCE = 7;
     public static final int INCOME_VS_EXPENSE = 8;
 
-
+//    private Spinner accountSpinner;
+//    private ArrayAdapter<Account> accountArrayAdapter; // holds account objects so can get id easily
+//    private Spinner periodSpinner;
+//    private ArrayAdapter<String> periodArrayAdapter;
 
     private int reportType;
     private Chart chart;
+
     private static final int[] GRAPH_COLORS = new int[] {
             R.color.chart_blue,
             R.color.chart_green,
@@ -140,14 +140,14 @@ public class ReportViewFragment extends Fragment {
 
         Iterator it = catAmtMap.entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry<String, Double> pair = (Map.Entry)it.next();
+            Map.Entry<String, Double> pair = (Map.Entry) it.next();
             entries.add(new PieEntry(pair.getValue().floatValue(), pair.getKey()));
             it.remove(); // avoids a ConcurrentModificationException
         }
 
         // Connect chart parts and return
         PieDataSet set = new PieDataSet(entries,
-                ( income ? "Income" : "Expenses" ) + " by Category");
+                (income ? "Income" : "Expenses") + " by Category");
         set.setColors(GRAPH_COLORS, getContext());
 
         PieData data = new PieData(set);
