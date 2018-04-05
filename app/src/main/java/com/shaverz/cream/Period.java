@@ -13,13 +13,13 @@ import java.util.List;
 public class Period {
 
     public static final String[] strings = {
-            "All",
-            "Today",
-            "Yesterday",
-            "Last Week",
-            "Last Month",
-            "Last Year"};
-
+        "All",
+        "Today",
+        "Yesterday",
+        "Past Week",
+        "Past Month",
+        "Past Year"
+    };
 
     public static DateRange getDateRange(String periodString) {
 

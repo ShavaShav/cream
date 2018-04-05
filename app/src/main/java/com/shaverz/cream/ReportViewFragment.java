@@ -2,6 +2,7 @@ package com.shaverz.cream;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,21 +11,31 @@ import android.widget.ArrayAdapter;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.shaverz.cream.models.Account;
 import com.shaverz.cream.models.Transaction;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 
 public class ReportViewFragment extends Fragment {
@@ -47,16 +58,28 @@ public class ReportViewFragment extends Fragment {
     private RelativeLayout.LayoutParams chartParams = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
     private int reportType;
+    private boolean periodExists;
     private Chart chart;
 
 
-    private static final int[] GRAPH_COLORS = new int[] {
+    private static int[] graphColours = new int[] {
             R.color.chart_blue,
             R.color.chart_green,
             R.color.chart_orange,
             R.color.chart_red,
-            R.color.chart_yellow,
             R.color.chart_black };
+
+    private static void shuffleColours() {
+        Random rnd = new Random();
+        for (int i = graphColours.length - 1; i > 0; i--)
+        {
+            int index = rnd.nextInt(i + 1);
+            //  Swap
+            int temp = graphColours[index];
+            graphColours[index] = graphColours[i];
+            graphColours[i] = temp;
+        }
+    }
 
     public ReportViewFragment() {
         // Required empty public constructor
@@ -70,7 +93,7 @@ public class ReportViewFragment extends Fragment {
         } else {
             reportType = EXPENSE_BY_CATEGORY; // default
         }
-
+        shuffleColours(); // shuffle for initial view
     }
 
     @Override
@@ -79,27 +102,53 @@ public class ReportViewFragment extends Fragment {
         // Inflate the layout for this fragment and get views
         View view = inflater.inflate(R.layout.fragment_report_view, container, false);
         accountSpinner = (Spinner) view.findViewById(R.id.spinner_account);
-        periodSpinner = (Spinner) view.findViewById(R.id.spinner_period);
 
         // make a copy of accounts list to show
         List<Account> accountList = new ArrayList<>(MainActivity.CURRENT_USER.getAccountList());
         accountList.add(0, new Account("-1", "All")); // Fake account for "All" setting
+
 
         accountArrayAdapter = new ArrayAdapter<Account>(getContext(),
                 android.R.layout.simple_spinner_item, accountList);
 
         accountArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         accountSpinner.setAdapter(accountArrayAdapter);
+        // Stop spinner from calling it's listener on init
+        accountSpinner.post(new Runnable() {
+            public void run() {
+                accountSpinner.setOnItemSelectedListener(new ReportViewFragment.optionsChangeListener());
+            }
+        });
 
-        periodArrayAdapter = new ArrayAdapter<String>(getContext(),
-                android.R.layout.simple_spinner_item,
-                Period.strings);
+        periodExists = false; // assume no period option
 
-        periodArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        periodSpinner.setAdapter(periodArrayAdapter);
+        if (reportType != DAILY_EXPENSES
+                && reportType != DAILY_INCOME
+                && reportType != MONTHLY_EXPENSES
+                && reportType != MONTHLY_INCOME) {
 
-        accountSpinner.setOnItemSelectedListener(new ReportViewFragment.optionsChangeListener());
-        periodSpinner.setOnItemSelectedListener(new ReportViewFragment.optionsChangeListener());
+            periodExists = true;
+
+            periodSpinner = (Spinner) view.findViewById(R.id.spinner_period);
+            periodArrayAdapter = new ArrayAdapter<String>(getContext(),
+                    android.R.layout.simple_spinner_item,
+                    Period.strings);
+
+            periodArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            periodSpinner.setAdapter(periodArrayAdapter);
+            // Stop spinner from calling it's listener on init
+            periodSpinner.post(new Runnable() {
+                public void run() {
+                    periodSpinner.setOnItemSelectedListener(new ReportViewFragment.optionsChangeListener());
+                }
+            });
+        }
+
+        if (!periodExists) {
+            // disappear period tech and spinner
+            view.findViewById(R.id.spinner_period).setVisibility(View.GONE);
+            view.findViewById(R.id.period_textView).setVisibility(View.GONE);
+        }
 
         // generate chart for report
         chart = generateChart(reportType);
@@ -107,8 +156,6 @@ public class ReportViewFragment extends Fragment {
         // Add chart to graph_frame, fill it
         graphFrame = view.findViewById(R.id.graph_frame);
         graphFrame.addView(chart, chartParams);
-
-        chart.invalidate(); // refresh
 
         return view;
     }
@@ -133,23 +180,30 @@ public class ReportViewFragment extends Fragment {
         // trim transactions to show according to account and period settings
         List<Transaction> transactionList = MainActivity.CURRENT_USER.getTransactions(); // all by default
 
-        // get spinner values
+        // get account from spinner
         Account a = accountArrayAdapter.getItem(accountSpinner.getSelectedItemPosition());
-        String period = periodArrayAdapter.getItem(periodSpinner.getSelectedItemPosition());
 
         // if specific account selected, use that accounts list. (Fake "All" account has negative id)
         if (Integer.parseInt(a.getId()) > 0) {
             transactionList = MainActivity.CURRENT_USER.getAccount(a.getId()).getTransactionList();
         }
 
-        Period.DateRange dateRange = Period.getDateRange(period);
+        List<Transaction> transactionsToChart;
 
-        // only show data for transactions within date range -> makes a copy so user models aren't overwritten
-        final ArrayList<Transaction> transactionsToChart = new ArrayList<>();
+        if ( ! periodExists) {
+            // no period, no further filter
+            transactionsToChart = transactionList;
+        } else {
+            // copy transactions within period
+            String period = periodArrayAdapter.getItem(periodSpinner.getSelectedItemPosition());
+            Period.DateRange dateRange = Period.getDateRange(period);
 
-        for (Transaction t : transactionList){
-            if (t.getDate().after(dateRange.startDate) && t.getDate().before(dateRange.endDate)) {
-                transactionsToChart.add(t);
+            // only show data for transactions within date range -> makes a copy so user models aren't overwritten
+            transactionsToChart = new ArrayList<>();
+            for (Transaction t : transactionList){
+                if (t.getDate().after(dateRange.startDate) && t.getDate().before(dateRange.endDate)) {
+                    transactionsToChart.add(t);
+                }
             }
         }
 
@@ -157,15 +211,15 @@ public class ReportViewFragment extends Fragment {
             case EXPENSE_BY_CATEGORY:
                 return generateByCategoryChart(transactionsToChart, false);
             case DAILY_EXPENSES:
-                return new LineChart(getContext()); // empty chart
+                return generateDailyTxChart(transactionsToChart, false); // empty chart
             case MONTHLY_EXPENSES:
-                return new LineChart(getContext()); // empty chart
+                return generateMonthlyTxChart();
             case INCOME_BY_CATEGORY:
                 return generateByCategoryChart(transactionsToChart, true);
             case DAILY_INCOME:
-                return new LineChart(getContext()); // empty chart
+                return generateDailyTxChart(transactionsToChart, true);
             case MONTHLY_INCOME:
-                return new LineChart(getContext()); // empty chart
+                return generateMonthlyTxChart();
             case DAILY_BALANCE:
                 return new LineChart(getContext()); // empty chart
             case INCOME_VS_EXPENSE:
@@ -176,8 +230,101 @@ public class ReportViewFragment extends Fragment {
 
     }
 
+    private String formatDate (Calendar c) {
+        return new SimpleDateFormat("MMM dd").format(c.getTime());
+    }
+
+    private BarChart generateMonthlyTxChart(){
+        return null;
+    }
+
+    private BarChart generateDailyTxChart(final List<Transaction> transactions, boolean income) {
+        Map<String, Double> dayTxMap = new HashMap<String, Double>();
+
+        Log.d(Utils.TAG, "transactions: " + transactions.size());
+
+        // Store string names of dates through the week
+        List<String> daysOfWeek = new ArrayList<>();
+        Calendar beginWeek = Calendar.getInstance();
+        for (int i = 0; i < 7; i ++) {
+            daysOfWeek.add(0, formatDate(beginWeek));
+            beginWeek.add(Calendar.DAY_OF_YEAR, -1);
+        }
+
+        // set to beginning of day to capture all tx for first day
+        beginWeek.set(Calendar.HOUR_OF_DAY, 0);
+        beginWeek.set(Calendar.MINUTE, 0);
+        // will reuse date obj
+
+        // Map income or expenses by category
+        for (Transaction tx : transactions) {
+            double amount = tx.getAmount();
+            boolean addToMap = false;
+            // Only count transactions according to flag
+            if (amount < 0.00) {
+                addToMap = !income; // expense
+                amount = -amount; // make positive to show in chart
+                // income
+            } else if (amount > 0.00) {
+                addToMap = income; // income
+            }
+
+            // only count transactions for last week
+            addToMap = addToMap && tx.getDate().after(beginWeek);
+
+            if (addToMap) {
+                // Convert date to readable month and day string, hash on that
+                String date = formatDate(tx.getDate());
+                if (!dayTxMap.containsKey(date)) {
+                    dayTxMap.put(date, amount);
+                } else {
+                    dayTxMap.put(date, dayTxMap.get(date) + amount);
+                }
+            }
+        }
+
+        // Convert to chart entries
+        List<BarEntry> entries = new ArrayList<>();
+
+        // Map index of days of week to bar entries
+        for (int i = 0; i < daysOfWeek.size(); i++) {
+            String day = daysOfWeek.get(i);
+            if (dayTxMap.containsKey(day)) {
+                entries.add(new BarEntry(i, dayTxMap.get(day).floatValue()));
+            } else {
+                entries.add(new BarEntry(i, 0f));
+            }
+        }
+
+        // Connect dataset to chart
+        BarDataSet set = new BarDataSet(entries,
+                "Daily " + (income ? "Income" : "Expenses"));
+        set.setColors(new int[]{ income ? R.color.chart_green : R.color.chart_red}, getContext());
+
+        BarData data = new BarData(set);
+        BarChart chart = new BarChart(getContext());
+
+        // Set data and style
+        chart.setData(data);
+        chart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(daysOfWeek));
+        chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+        chart.getXAxis().setDrawGridLines(false);
+        chart.getAxisLeft().setAxisMinimum(0f);
+        chart.getAxisRight().setDrawLabels(false);
+        chart.getAxisRight().setDrawGridLines(false);
+        chart.getLegend().setEnabled(false);
+        chart.setDescription(null);
+
+        chart.invalidate();
+
+        return chart;
+    }
+
     private PieChart generateByCategoryChart(List<Transaction> transactions, boolean income) {
         Map<String, Double> catAmtMap = new HashMap<String, Double>();
+
+        Log.d(Utils.TAG, "transactions: " + transactions.size());
+
 
         // Map income or expenses by category
         for (Transaction tx : transactions) {
@@ -215,11 +362,13 @@ public class ReportViewFragment extends Fragment {
         // Connect chart parts and return
         PieDataSet set = new PieDataSet(entries,
                 (income ? "Income" : "Expenses") + " by Category");
-        set.setColors(GRAPH_COLORS, getContext());
+        set.setColors(graphColours, getContext());
 
         PieData data = new PieData(set);
         PieChart chart = new PieChart(getContext());
+
         chart.setData(data);
+        chart.invalidate();
 
         return chart;
     }
