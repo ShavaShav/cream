@@ -12,6 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.shaverz.cream.utils.ChartGenerator;
+
 
 public class ReportsFragment extends Fragment {
 
@@ -152,35 +154,35 @@ public class ReportsFragment extends Fragment {
             switch (view.getId()) {
                 case R.id.report_expense_by_category:
                     arguments.putInt(ReportViewFragment.ARG_REPORT_TYPE,
-                            ReportViewFragment.EXPENSE_BY_CATEGORY);
+                            ChartGenerator.EXPENSE_BY_CATEGORY);
                     break;
                 case R.id.report_daily_expense:
                     arguments.putInt(ReportViewFragment.ARG_REPORT_TYPE,
-                            ReportViewFragment.DAILY_EXPENSES);
+                            ChartGenerator.DAILY_EXPENSES);
                     break;
                 case R.id.report_monthly_expense:
                     arguments.putInt(ReportViewFragment.ARG_REPORT_TYPE,
-                            ReportViewFragment.MONTHLY_EXPENSES);
+                            ChartGenerator.MONTHLY_EXPENSES);
                     break;
                 case R.id.report_income_by_category:
                     arguments.putInt(ReportViewFragment.ARG_REPORT_TYPE,
-                            ReportViewFragment.INCOME_BY_CATEGORY);
+                            ChartGenerator.INCOME_BY_CATEGORY);
                     break;
                 case R.id.report_daily_income:
                     arguments.putInt(ReportViewFragment.ARG_REPORT_TYPE,
-                            ReportViewFragment.DAILY_INCOME);
+                            ChartGenerator.DAILY_INCOME);
                     break;
                 case R.id.report_monthly_income:
                     arguments.putInt(ReportViewFragment.ARG_REPORT_TYPE,
-                            ReportViewFragment.MONTHLY_INCOME);
+                            ChartGenerator.MONTHLY_INCOME);
                     break;
                 case R.id.report_income_vs_expense:
                     arguments.putInt(ReportViewFragment.ARG_REPORT_TYPE,
-                            ReportViewFragment.INCOME_VS_EXPENSE);
+                            ChartGenerator.INCOME_VS_EXPENSE);
                     break;
                 case R.id.report_daily_balance:
                     arguments.putInt(ReportViewFragment.ARG_REPORT_TYPE,
-                            ReportViewFragment.DAILY_BALANCE);
+                            ChartGenerator.DAILY_BALANCE);
                     break;
             }
 

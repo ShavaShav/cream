@@ -3,6 +3,7 @@ package com.shaverz.cream.utils;
 import android.content.Context;
 
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -16,7 +17,9 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.shaverz.cream.MainActivity;
 import com.shaverz.cream.R;
+import com.shaverz.cream.models.Account;
 import com.shaverz.cream.models.Transaction;
 
 import java.text.SimpleDateFormat;
@@ -35,6 +38,15 @@ import java.util.Random;
 
 public class ChartGenerator {
     private Context context;
+
+    public static final int EXPENSE_BY_CATEGORY = 1;
+    public static final int DAILY_EXPENSES = 2;
+    public static final int MONTHLY_EXPENSES = 3;
+    public static final int INCOME_BY_CATEGORY = 4;
+    public static final int DAILY_INCOME = 5;
+    public static final int MONTHLY_INCOME = 6;
+    public static final int DAILY_BALANCE = 7;
+    public static final int INCOME_VS_EXPENSE = 8;
     
     public ChartGenerator(Context context) {
         this.context = context;
@@ -67,8 +79,56 @@ public class ChartGenerator {
         }
     }
 
-    public int[] getGraphColours() {
-        return graphColours;
+    public Chart generateChart(int reportType, Account account, Period.DateRange dateRange) {
+
+        // trim transactions to show according to account and period settings
+        List<Transaction> transactionList;
+
+        if (account != null) {
+            transactionList = MainActivity.CURRENT_USER.getAccount(account.getId()).getTransactionList();
+        } else {
+            transactionList = MainActivity.CURRENT_USER.getTransactions(); // all by default
+        }
+
+        List<Transaction> transactionsToChart;
+        double openingTransactionListBalance = 0.0;
+
+        if (dateRange == null) {
+            // no period, no further filter
+            transactionsToChart = transactionList;
+            dateRange = new Period.DateRange();
+        } else {
+            // only show data for transactions within date range -> makes a copy so user models aren't overwritten
+            transactionsToChart = new ArrayList<>();
+            for (Transaction t : transactionList) {
+                if (t.getDate().after(dateRange.startDate) && t.getDate().before(dateRange.endDate)) {
+                    transactionsToChart.add(t);
+                } else if (t.getDate().before(dateRange.startDate)) {
+                    openingTransactionListBalance += t.getAmount();
+                }
+            }
+        }
+
+        switch (reportType) {
+            case EXPENSE_BY_CATEGORY:
+                return generateByCategoryChart(transactionsToChart, false);
+            case DAILY_EXPENSES:
+                return generateDailyTxChart(transactionsToChart, false);
+            case MONTHLY_EXPENSES:
+                return generateMonthlyTxChart(transactionsToChart, false, dateRange);
+            case INCOME_BY_CATEGORY:
+                return generateByCategoryChart(transactionsToChart, true);
+            case DAILY_INCOME:
+                return generateDailyTxChart(transactionsToChart, true);
+            case MONTHLY_INCOME:
+                return generateMonthlyTxChart(transactionsToChart, true, dateRange);
+            case DAILY_BALANCE:
+                return generateDailyBalanceChart(transactionsToChart, dateRange, openingTransactionListBalance);
+            case INCOME_VS_EXPENSE:
+                return generateIncomeVsExpensesChart(transactionsToChart);
+            default:
+                return new LineChart(context); // empty chart
+        }
     }
 
     /*
