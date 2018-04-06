@@ -1,12 +1,17 @@
 package com.shaverz.cream.utils;
 
+import com.shaverz.cream.MainActivity;
+import com.shaverz.cream.models.Transaction;
+
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by z on 06/04/2018.
  */
 
-public class CommonPeriod implements Period {
+public class RecentPeriod implements Period {
     private final String[] STRINGS = {
             "All",
             "Today",
@@ -44,7 +49,9 @@ public class CommonPeriod implements Period {
                 startDate.add(Calendar.YEAR, -1);
                 break;
             default: // show all
-                startDate.setTimeInMillis(Long.MIN_VALUE); // earliest possible time
+                List<Transaction> list = MainActivity.CURRENT_USER.getTransactions();
+                startDate.setTime(list.get(list.size()-1).getDate().getTime()); // earliest transaction
+                startDate.add(Calendar.DAY_OF_YEAR, -1); // move back a day, so comparisons are safe
                 break;
         }
         return new Period.DateRange(startDate,endDate);

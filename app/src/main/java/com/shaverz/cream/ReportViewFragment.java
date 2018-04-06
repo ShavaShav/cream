@@ -2,7 +2,6 @@ package com.shaverz.cream;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,34 +10,18 @@ import android.widget.ArrayAdapter;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 
-import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
 
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.shaverz.cream.models.Account;
 import com.shaverz.cream.models.Transaction;
 import com.shaverz.cream.utils.AnnualPeriod;
-import com.shaverz.cream.utils.CommonPeriod;
+import com.shaverz.cream.utils.ChartGenerator;
+import com.shaverz.cream.utils.RecentPeriod;
 import com.shaverz.cream.utils.Period;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
 
 public class ReportViewFragment extends Fragment {
 
@@ -63,26 +46,7 @@ public class ReportViewFragment extends Fragment {
     private boolean periodExists;
     private Period period;
     private Chart chart;
-
-
-    private static int[] graphColours = new int[] {
-            R.color.chart_blue,
-            R.color.chart_green,
-            R.color.chart_orange,
-            R.color.chart_red,
-            R.color.chart_black };
-
-    private static void shuffleColours() {
-        Random rnd = new Random();
-        for (int i = graphColours.length - 1; i > 0; i--)
-        {
-            int index = rnd.nextInt(i + 1);
-            //  Swap
-            int temp = graphColours[index];
-            graphColours[index] = graphColours[i];
-            graphColours[i] = temp;
-        }
-    }
+    private ChartGenerator chartGen;
 
     public ReportViewFragment() {
         // Required empty public constructor
@@ -96,12 +60,14 @@ public class ReportViewFragment extends Fragment {
         } else {
             reportType = EXPENSE_BY_CATEGORY; // default
         }
-        shuffleColours(); // shuffle for initial view
+
+        chartGen = new ChartGenerator(getContext());
+        chartGen.shuffleColours(); // shuffle for initial view
 
         if (reportType == MONTHLY_EXPENSES || reportType == MONTHLY_INCOME) {
             period = new AnnualPeriod();
         } else {
-            period = new CommonPeriod();
+            period = new RecentPeriod();
         }
     }
 
@@ -197,6 +163,8 @@ public class ReportViewFragment extends Fragment {
         List<Transaction> transactionsToChart;
         Period.DateRange dateRange;
 
+        double openingTransactionListBalance = 0.0;
+
         if ( ! periodExists) {
             // no period, no further filter
             transactionsToChart = transactionList;
@@ -211,287 +179,33 @@ public class ReportViewFragment extends Fragment {
             for (Transaction t : transactionList){
                 if (t.getDate().after(dateRange.startDate) && t.getDate().before(dateRange.endDate)) {
                     transactionsToChart.add(t);
+                } else if (t.getDate().before(dateRange.startDate)) {
+                    openingTransactionListBalance += t.getAmount();
                 }
             }
         }
 
         switch (reportType) {
             case EXPENSE_BY_CATEGORY:
-                return generateByCategoryChart(transactionsToChart, false);
+                return chartGen.generateByCategoryChart(transactionsToChart, false);
             case DAILY_EXPENSES:
-                return generateDailyTxChart(transactionsToChart, false);
+                return chartGen.generateDailyTxChart(transactionsToChart, false);
             case MONTHLY_EXPENSES:
-                return generateMonthlyTxChart(transactionsToChart, false, dateRange);
+                return chartGen.generateMonthlyTxChart(transactionsToChart, false, dateRange);
             case INCOME_BY_CATEGORY:
-                return generateByCategoryChart(transactionsToChart, true);
+                return chartGen.generateByCategoryChart(transactionsToChart, true);
             case DAILY_INCOME:
-                return generateDailyTxChart(transactionsToChart, true);
+                return chartGen.generateDailyTxChart(transactionsToChart, true);
             case MONTHLY_INCOME:
-                return generateMonthlyTxChart(transactionsToChart, true, dateRange);
+                return chartGen.generateMonthlyTxChart(transactionsToChart, true, dateRange);
             case DAILY_BALANCE:
-                return new LineChart(getContext()); // empty chart
+                return chartGen.generateDailyBalanceChart(transactionsToChart, dateRange, openingTransactionListBalance);
             case INCOME_VS_EXPENSE:
-                return generateIncomeVsExpensesChart(transactionsToChart);
+                return chartGen.generateIncomeVsExpensesChart(transactionsToChart);
             default:
                 return new LineChart(getContext()); // empty chart
         }
 
     }
 
-    private String formatDate (Calendar c) {
-        return new SimpleDateFormat("MMM dd").format(c.getTime());
-    }
-
-    private String formatMonth (Calendar c) {
-        return new SimpleDateFormat("MMM").format(c.getTime());
-    }
-
-    private BarChart generateMonthlyTxChart(final List<Transaction> transactions, boolean income, Period.DateRange dateRange){
-        Map<String, Double> monthTxMap = new HashMap<String, Double>();
-
-        // Store string names of months
-        List<String> monthsOfYear = new ArrayList<>();
-        Calendar c = (Calendar) dateRange.startDate.clone();
-        // each month in range
-        for (c.set(c.get(Calendar.YEAR), c.get(Calendar.MONTH), 1, 0, 0, 0);
-             c.before(dateRange.endDate);
-             c.add(Calendar.MONTH, 1)) {
-            Log.d(Utils.TAG, "c:" + c.toString());
-            monthsOfYear.add(formatMonth(c));
-        }
-
-        // Map income or expenses by category
-        for (Transaction tx : transactions) {
-            double amount = tx.getAmount();
-            boolean addToMap = false;
-            // Only count transactions according to flag
-            if (amount < 0.00) {
-                addToMap = !income; // expense
-                amount = -amount; // make positive to show in chart
-                // income
-            } else if (amount > 0.00) {
-                addToMap = income; // income
-            }
-
-            if (addToMap) {
-                // Convert date to readable month string, hash on that
-                String month = formatMonth(tx.getDate());
-                if (!monthTxMap.containsKey(month)) {
-                    monthTxMap.put(month, amount);
-                } else {
-                    monthTxMap.put(month, monthTxMap.get(month) + amount);
-                }
-            }
-        }
-
-        // Convert to chart entries
-        List<BarEntry> entries = new ArrayList<>();
-
-        // Map index of months of year to bar entries
-        for (int i = 0; i < monthsOfYear.size(); i++) {
-            String month = monthsOfYear.get(i);
-            if (monthTxMap.containsKey(month)) {
-                entries.add(new BarEntry(i, monthTxMap.get(month).floatValue()));
-            } else {
-                entries.add(new BarEntry(i, 0f)); // create data for empty months
-            }
-        }
-
-        // Connect dataset to chart
-        BarDataSet set = new BarDataSet(entries,
-                "Monthly " + (income ? "Income" : "Expenses"));
-        set.setColors(new int[]{ income ? R.color.chart_green : R.color.chart_red}, getContext());
-
-        BarData data = new BarData(set);
-        BarChart chart = new BarChart(getContext());
-
-        // Set data and style
-        chart.setData(data);
-        chart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(monthsOfYear));
-        chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
-        chart.getXAxis().setDrawGridLines(false);
-        chart.getAxisLeft().setAxisMinimum(0f);
-        chart.getAxisRight().setDrawLabels(false);
-        chart.getAxisRight().setDrawGridLines(false);
-        chart.getLegend().setEnabled(false);
-        chart.setDescription(null);
-        chart.getXAxis().setLabelCount(monthsOfYear.size());
-
-        chart.invalidate();
-
-        return chart;
-    }
-
-    private BarChart generateDailyTxChart(final List<Transaction> transactions, boolean income) {
-        Map<String, Double> dayTxMap = new HashMap<String, Double>();
-
-        Log.d(Utils.TAG, "transactions: " + transactions.size());
-
-        // Store string names of dates through the week
-        List<String> daysOfWeek = new ArrayList<>();
-        Calendar beginWeek = Calendar.getInstance();
-        for (int i = 0; i < 7; i ++) {
-            daysOfWeek.add(0, formatDate(beginWeek));
-            beginWeek.add(Calendar.DAY_OF_YEAR, -1);
-        }
-
-        // set to beginning of day to capture all tx for first day
-        beginWeek.set(Calendar.HOUR_OF_DAY, 0);
-        beginWeek.set(Calendar.MINUTE, 0);
-        // will reuse date obj
-
-        // Map income or expenses by category
-        for (Transaction tx : transactions) {
-            double amount = tx.getAmount();
-            boolean addToMap = false;
-            // Only count transactions according to flag
-            if (amount < 0.00) {
-                addToMap = !income; // expense
-                amount = -amount; // make positive to show in chart
-                // income
-            } else if (amount > 0.00) {
-                addToMap = income; // income
-            }
-
-            // only count transactions for last week
-            addToMap = addToMap && tx.getDate().after(beginWeek);
-
-            if (addToMap) {
-                // Convert date to readable month and day string, hash on that
-                String date = formatDate(tx.getDate());
-                if (!dayTxMap.containsKey(date)) {
-                    dayTxMap.put(date, amount);
-                } else {
-                    dayTxMap.put(date, dayTxMap.get(date) + amount);
-                }
-            }
-        }
-
-        // Convert to chart entries
-        List<BarEntry> entries = new ArrayList<>();
-
-        // Map index of days of week to bar entries
-        for (int i = 0; i < daysOfWeek.size(); i++) {
-            String day = daysOfWeek.get(i);
-            if (dayTxMap.containsKey(day)) {
-                entries.add(new BarEntry(i, dayTxMap.get(day).floatValue()));
-            } else {
-                entries.add(new BarEntry(i, 0f));
-            }
-        }
-
-        // Connect dataset to chart
-        BarDataSet set = new BarDataSet(entries,
-                "Daily " + (income ? "Income" : "Expenses"));
-        set.setColors(new int[]{ income ? R.color.chart_green : R.color.chart_red}, getContext());
-
-        BarData data = new BarData(set);
-        BarChart chart = new BarChart(getContext());
-
-        // Set data and style
-        chart.setData(data);
-        chart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(daysOfWeek));
-        chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
-        chart.getXAxis().setDrawGridLines(false);
-        chart.getAxisLeft().setAxisMinimum(0f);
-        chart.getAxisRight().setDrawLabels(false);
-        chart.getAxisRight().setDrawGridLines(false);
-        chart.getLegend().setEnabled(false);
-        chart.setDescription(null);
-        chart.getXAxis().setLabelCount(daysOfWeek.size());
-
-        chart.invalidate();
-
-        return chart;
-    }
-
-    private PieChart generateByCategoryChart(List<Transaction> transactions, boolean income) {
-        Map<String, Double> catAmtMap = new HashMap<String, Double>();
-
-        Log.d(Utils.TAG, "transactions: " + transactions.size());
-
-
-        // Map income or expenses by category
-        for (Transaction tx : transactions) {
-            double amount = tx.getAmount();
-            boolean addToMap = false;
-            // Only count transactions according to flag
-            if (amount < 0.00) {
-                addToMap = !income; // expense
-                amount = -amount; // make positive to show in chart
-                // income
-            } else if (amount > 0.00) {
-                addToMap = income; // income
-            }
-
-            if (addToMap) {
-                String cat = tx.getCategory();
-                if (!catAmtMap.containsKey(cat)) {
-                    catAmtMap.put(cat, amount);
-                } else {
-                    catAmtMap.put(cat, catAmtMap.get(cat) + amount);
-                }
-            }
-        }
-
-        // Convert to chart entries
-        List<PieEntry> entries = new ArrayList<>();
-
-        Iterator it = catAmtMap.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry<String, Double> pair = (Map.Entry) it.next();
-            entries.add(new PieEntry(pair.getValue().floatValue(), pair.getKey()));
-            it.remove(); // avoids a ConcurrentModificationException
-        }
-
-        // Connect chart parts and return
-        PieDataSet set = new PieDataSet(entries,
-                (income ? "Income" : "Expenses") + " by Category");
-        set.setColors(graphColours, getContext());
-
-        PieData data = new PieData(set);
-        PieChart chart = new PieChart(getContext());
-
-        chart.setData(data);
-        chart.invalidate();
-
-        return chart;
-    }
-
-    /*
-        INCOME VS EXPENSES
-     */
-
-    private PieChart generateIncomeVsExpensesChart(List<Transaction> transactions) {
-        Double totalExpenses = 0.00;
-        Double totalIncome = 0.00;
-
-        // Sum income and expenses
-        for (Transaction tx : transactions) {
-            double amount = tx.getAmount();
-            // Only count transactions according to flag
-            if (amount < 0.00) {
-                totalExpenses -= amount;
-            } else if (amount > 0.00) {
-                totalIncome += amount; // income
-            }
-        }
-
-        // Convert to chart entries
-        List<PieEntry> entries = new ArrayList<>();
-        entries.add(new PieEntry(totalIncome.floatValue(), "Income"));
-        entries.add(new PieEntry(totalExpenses.floatValue(), "Expenses"));
-
-        // Connect chart parts and return
-        PieDataSet set = new PieDataSet(entries, "Income vs Expenses");
-        set.setColors(new int[]{R.color.chart_green, R.color.chart_red}, getContext());
-
-        PieData data = new PieData(set);
-        PieChart chart = new PieChart(getContext());
-
-        chart.setData(data);
-        chart.invalidate();
-
-        return chart;
-    }
 }

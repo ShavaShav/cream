@@ -20,7 +20,7 @@ import android.widget.TextView;
 import com.shaverz.cream.models.Account;
 import com.shaverz.cream.models.Transaction;
 import com.shaverz.cream.models.User;
-import com.shaverz.cream.utils.CommonPeriod;
+import com.shaverz.cream.utils.RecentPeriod;
 import com.shaverz.cream.utils.Period;
 import com.shaverz.cream.views.TransactionRecyclerViewAdapter;
 
@@ -56,7 +56,7 @@ public class TransactionFragment extends Fragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        period = new CommonPeriod();
+        period = new RecentPeriod();
     }
 
     @Override
