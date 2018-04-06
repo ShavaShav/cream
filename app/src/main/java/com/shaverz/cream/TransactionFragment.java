@@ -20,6 +20,8 @@ import android.widget.TextView;
 import com.shaverz.cream.models.Account;
 import com.shaverz.cream.models.Transaction;
 import com.shaverz.cream.models.User;
+import com.shaverz.cream.utils.RecentPeriod;
+import com.shaverz.cream.utils.Period;
 import com.shaverz.cream.views.TransactionRecyclerViewAdapter;
 
 import java.util.ArrayList;
@@ -43,6 +45,7 @@ public class TransactionFragment extends Fragment implements
     private ArrayAdapter<String> periodArrayAdapter;
     private TextView periodOpeningView;
     private TextView periodClosingView;
+    private Period period;
 
     private static final int LIST_LOADER = 0;
     private boolean reverseOrder = false;
@@ -53,6 +56,7 @@ public class TransactionFragment extends Fragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        period = new RecentPeriod();
     }
 
     @Override
@@ -83,7 +87,7 @@ public class TransactionFragment extends Fragment implements
 
         periodArrayAdapter = new ArrayAdapter<String>(getContext(),
                 android.R.layout.simple_spinner_item,
-                Period.strings);
+                period.getPeriodStrings());
 
         periodArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         periodSpinner.setAdapter(periodArrayAdapter);
@@ -160,14 +164,14 @@ public class TransactionFragment extends Fragment implements
 
         // get spinner values
         Account a = accountArrayAdapter.getItem(accountSpinner.getSelectedItemPosition());
-        String period = periodArrayAdapter.getItem(periodSpinner.getSelectedItemPosition());
+        String periodString = periodArrayAdapter.getItem(periodSpinner.getSelectedItemPosition());
 
         // if specific account selected, use that accounts list. (Fake "All" account has negative id)
         if (Integer.parseInt(a.getId()) > 0) {
             transactionList =  MainActivity.CURRENT_USER.getAccount(a.getId()).getTransactionList();
         }
 
-        Period.DateRange dateRange = Period.getDateRange(period);
+        Period.DateRange dateRange = period.getDateRange(periodString);
 
         // only show transactions within date range -> makes a copy so user models aren't overwritten
         final ArrayList<Transaction> transactionsToShow = new ArrayList<>();

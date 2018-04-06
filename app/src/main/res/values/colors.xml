@@ -17,4 +17,13 @@
     <color name="text_negative">#d93e3e</color>
     <color name="text_positive">#3ab63e</color>
     <color name="text_neutral">#808080</color>
+
+    <!-- chart colours -->
+    <color name="chart_red">#f55b5b</color>
+    <color name="chart_green">#40ec46</color>
+    <color name="chart_orange">#ffbe3a</color>
+    <color name="chart_blue">#6c88ff</color>
+    <color name="chart_yellow">#fff75f</color>
+    <color name="chart_black">#282828</color>
+
 </resources>

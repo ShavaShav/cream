@@ -14,10 +14,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
+import com.github.mikephil.charting.charts.Chart;
 import com.shaverz.cream.models.Account;
 import com.shaverz.cream.models.Transaction;
 import com.shaverz.cream.models.User;
+import com.shaverz.cream.utils.ChartGenerator;
 import com.shaverz.cream.views.AccountRecyclerViewAdapter;
 import com.shaverz.cream.views.TransactionRecyclerViewAdapter;
 
@@ -37,13 +40,16 @@ public class OverviewFragment extends Fragment implements
     private RecyclerView recentTransactionRecyclerView;
     private AccountRecyclerViewAdapter myAccountsAdapter;
     private RecyclerView myAccountsRecyclerView;
-
+    private RelativeLayout incomeVsExpensesGraphFrame;
+    private RelativeLayout.LayoutParams chartParams = new RelativeLayout.LayoutParams(
+            RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+    private ChartGenerator chartGen;
     private static final int USER_LOADER = 0;
 
     private boolean isAccountsCompact = true;
 
     public OverviewFragment() {
-        // Required empty public constructor
+
     }
 
     @Override
@@ -54,16 +60,18 @@ public class OverviewFragment extends Fragment implements
 
         // Fragment has own menu for customization
         setHasOptionsMenu(true);
-
         accountsCardView = mView.findViewById(R.id.card_view_my_accounts);
         transactionsCardView = mView.findViewById(R.id.card_view_transactions);
         incomeVsExpenseCardView = mView.findViewById(R.id.card_view_income_vs_expense);
+        incomeVsExpensesGraphFrame = mView.findViewById(R.id.incomevsexpense_chart_frame);
 
         recentTransactionRecyclerView = (RecyclerView) mView.findViewById(R.id.recent_transactions_list);
         myAccountsRecyclerView = (RecyclerView) mView.findViewById(R.id.my_accounts_list);
 
         recentTransactionRecyclerView.setAdapter(new TransactionRecyclerViewAdapter(new ArrayList<Transaction>()));
         myAccountsRecyclerView.setAdapter(new AccountRecyclerViewAdapter(new ArrayList<Account>(), isAccountsCompact));
+
+        chartGen = new ChartGenerator(getContext());
 
         // Attach settings menu to accounts card
         Toolbar accountsToolbar = (Toolbar) mView.findViewById(R.id.toolbar_accounts);
@@ -201,12 +209,14 @@ public class OverviewFragment extends Fragment implements
 
         refreshRecentTransactions();
         refreshMyAccounts();
+        refreshIncomeVsExpenses();
     }
 
     @Override
     public void onLoaderReset(Loader<User> loader) {
         recentTransactionRecyclerView.setAdapter(null);
         myAccountsRecyclerView.setAdapter(null);
+        incomeVsExpensesGraphFrame.removeAllViews();
     }
 
     private void refreshRecentTransactions() {
@@ -223,6 +233,13 @@ public class OverviewFragment extends Fragment implements
         // create recentTransactionsAdapter and set view to use
         recentTransactionsAdapter = new TransactionRecyclerViewAdapter(recentTransactions);
         recentTransactionRecyclerView.setAdapter(recentTransactionsAdapter);
+    }
+
+    private void refreshIncomeVsExpenses() {
+        //TODO: filter by daterange
+        Chart chart = chartGen.generateIncomeVsExpensesChart(MainActivity.CURRENT_USER.getTransactions());
+
+        incomeVsExpensesGraphFrame.addView(chart, chartParams);
     }
 
     private void refreshMyAccounts() {
