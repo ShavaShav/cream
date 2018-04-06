@@ -1,6 +1,7 @@
 package com.shaverz.cream.utils;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.Chart;
@@ -19,6 +20,7 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.shaverz.cream.MainActivity;
 import com.shaverz.cream.R;
+import com.shaverz.cream.Utils;
 import com.shaverz.cream.models.Account;
 import com.shaverz.cream.models.Transaction;
 
@@ -96,7 +98,6 @@ public class ChartGenerator {
         if (dateRange == null) {
             // no period, no further filter
             transactionsToChart = transactionList;
-            dateRange = new Period.DateRange();
         } else {
             // only show data for transactions within date range -> makes a copy so user models aren't overwritten
             transactionsToChart = new ArrayList<>();
@@ -348,6 +349,8 @@ public class ChartGenerator {
     public PieChart generateIncomeVsExpensesChart(List<Transaction> transactions) {
         Double totalExpenses = 0.00;
         Double totalIncome = 0.00;
+
+        Log.d(Utils.TAG, "trans: " + transactions.size());
 
         // Sum income and expenses
         for (Transaction tx : transactions) {
