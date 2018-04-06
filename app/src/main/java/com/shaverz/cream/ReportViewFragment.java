@@ -26,6 +26,7 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.shaverz.cream.models.Account;
 import com.shaverz.cream.models.Transaction;
+import com.shaverz.cream.utils.AnnualPeriod;
 import com.shaverz.cream.utils.CommonPeriod;
 import com.shaverz.cream.utils.Period;
 
@@ -97,7 +98,11 @@ public class ReportViewFragment extends Fragment {
         }
         shuffleColours(); // shuffle for initial view
 
-        period = new CommonPeriod();
+        if (reportType == MONTHLY_EXPENSES || reportType == MONTHLY_INCOME) {
+            period = new AnnualPeriod();
+        } else {
+            period = new CommonPeriod();
+        }
     }
 
     @Override
@@ -129,10 +134,6 @@ public class ReportViewFragment extends Fragment {
         if (reportType != DAILY_EXPENSES && reportType != DAILY_INCOME) {
 
             periodExists = true;
-
-            if (reportType == MONTHLY_EXPENSES || reportType == MONTHLY_INCOME) {
-
-            }
 
             periodSpinner = (Spinner) view.findViewById(R.id.spinner_period);
             periodArrayAdapter = new ArrayAdapter<String>(getContext(),
@@ -194,14 +195,16 @@ public class ReportViewFragment extends Fragment {
         }
 
         List<Transaction> transactionsToChart;
+        Period.DateRange dateRange;
 
         if ( ! periodExists) {
             // no period, no further filter
             transactionsToChart = transactionList;
+            dateRange = new Period.DateRange();
         } else {
             // copy transactions within period
             String periodString = periodArrayAdapter.getItem(periodSpinner.getSelectedItemPosition());
-            Period.DateRange dateRange = period.getDateRange(periodString);
+            dateRange = period.getDateRange(periodString);
 
             // only show data for transactions within date range -> makes a copy so user models aren't overwritten
             transactionsToChart = new ArrayList<>();
@@ -216,15 +219,15 @@ public class ReportViewFragment extends Fragment {
             case EXPENSE_BY_CATEGORY:
                 return generateByCategoryChart(transactionsToChart, false);
             case DAILY_EXPENSES:
-                return generateDailyTxChart(transactionsToChart, false); // empty chart
+                return generateDailyTxChart(transactionsToChart, false);
             case MONTHLY_EXPENSES:
-                return generateMonthlyTxChart();
+                return generateMonthlyTxChart(transactionsToChart, false, dateRange);
             case INCOME_BY_CATEGORY:
                 return generateByCategoryChart(transactionsToChart, true);
             case DAILY_INCOME:
                 return generateDailyTxChart(transactionsToChart, true);
             case MONTHLY_INCOME:
-                return generateMonthlyTxChart();
+                return generateMonthlyTxChart(transactionsToChart, true, dateRange);
             case DAILY_BALANCE:
                 return new LineChart(getContext()); // empty chart
             case INCOME_VS_EXPENSE:
@@ -239,8 +242,84 @@ public class ReportViewFragment extends Fragment {
         return new SimpleDateFormat("MMM dd").format(c.getTime());
     }
 
-    private BarChart generateMonthlyTxChart(){
-        return null;
+    private String formatMonth (Calendar c) {
+        return new SimpleDateFormat("MMM").format(c.getTime());
+    }
+
+    private BarChart generateMonthlyTxChart(final List<Transaction> transactions, boolean income, Period.DateRange dateRange){
+        Map<String, Double> monthTxMap = new HashMap<String, Double>();
+
+        // Store string names of months
+        List<String> monthsOfYear = new ArrayList<>();
+        Calendar c = (Calendar) dateRange.startDate.clone();
+        // each month in range
+        for (c.set(c.get(Calendar.YEAR), c.get(Calendar.MONTH), 1, 0, 0, 0);
+             c.before(dateRange.endDate);
+             c.add(Calendar.MONTH, 1)) {
+            Log.d(Utils.TAG, "c:" + c.toString());
+            monthsOfYear.add(formatMonth(c));
+        }
+
+        // Map income or expenses by category
+        for (Transaction tx : transactions) {
+            double amount = tx.getAmount();
+            boolean addToMap = false;
+            // Only count transactions according to flag
+            if (amount < 0.00) {
+                addToMap = !income; // expense
+                amount = -amount; // make positive to show in chart
+                // income
+            } else if (amount > 0.00) {
+                addToMap = income; // income
+            }
+
+            if (addToMap) {
+                // Convert date to readable month string, hash on that
+                String month = formatMonth(tx.getDate());
+                if (!monthTxMap.containsKey(month)) {
+                    monthTxMap.put(month, amount);
+                } else {
+                    monthTxMap.put(month, monthTxMap.get(month) + amount);
+                }
+            }
+        }
+
+        // Convert to chart entries
+        List<BarEntry> entries = new ArrayList<>();
+
+        // Map index of months of year to bar entries
+        for (int i = 0; i < monthsOfYear.size(); i++) {
+            String month = monthsOfYear.get(i);
+            if (monthTxMap.containsKey(month)) {
+                entries.add(new BarEntry(i, monthTxMap.get(month).floatValue()));
+            } else {
+                entries.add(new BarEntry(i, 0f)); // create data for empty months
+            }
+        }
+
+        // Connect dataset to chart
+        BarDataSet set = new BarDataSet(entries,
+                "Monthly " + (income ? "Income" : "Expenses"));
+        set.setColors(new int[]{ income ? R.color.chart_green : R.color.chart_red}, getContext());
+
+        BarData data = new BarData(set);
+        BarChart chart = new BarChart(getContext());
+
+        // Set data and style
+        chart.setData(data);
+        chart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(monthsOfYear));
+        chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+        chart.getXAxis().setDrawGridLines(false);
+        chart.getAxisLeft().setAxisMinimum(0f);
+        chart.getAxisRight().setDrawLabels(false);
+        chart.getAxisRight().setDrawGridLines(false);
+        chart.getLegend().setEnabled(false);
+        chart.setDescription(null);
+        chart.getXAxis().setLabelCount(monthsOfYear.size());
+
+        chart.invalidate();
+
+        return chart;
     }
 
     private BarChart generateDailyTxChart(final List<Transaction> transactions, boolean income) {

@@ -47,21 +47,30 @@ public class AnnualPeriod implements Period {
             startDate.set(Calendar.DAY_OF_YEAR, 1);
             startDate.set(Calendar.HOUR, 0);
             startDate.set(Calendar.MINUTE, 0);
+            endDate.set(Calendar.SECOND, 0);
+            endDate.set(Calendar.MILLISECOND, 0);
 
-            // 1 year from start date
-            endDate.set(Calendar.YEAR, year + 1);
-            endDate.set(Calendar.DAY_OF_YEAR, 1);
-            endDate.set(Calendar.HOUR, 0);
-            endDate.set(Calendar.MINUTE, 0);
+            // 1 millisecond before new years
+            endDate.set(Calendar.YEAR, year);
+            endDate.set(Calendar.MONTH, 11);
+            endDate.set(Calendar.DAY_OF_MONTH, 31);
+            endDate.set(Calendar.HOUR, 23);
+            endDate.set(Calendar.MINUTE, 59);
+            endDate.set(Calendar.SECOND, 59);
+            endDate.set(Calendar.MILLISECOND, 59);
 
         } catch (Exception e) {
             // not a number, do others
             switch (periodString) {
                 case "Past 6 Months":
-                    startDate.add(Calendar.MONTH, -6);
+                    startDate.add(Calendar.MONTH, -5);
+                    startDate.set(Calendar.DAY_OF_MONTH, 1);
+                    startDate.set(Calendar.HOUR, 0);
+                    startDate.set(Calendar.MINUTE, 0);
+                    startDate.set(Calendar.SECOND, 0);
                     break;
                 case "Past Year":
-                    startDate.add(Calendar.YEAR, -1);
+                    startDate.add(Calendar.MONTH, -11);
                     break;
                 default: // past year
                     startDate.add(Calendar.YEAR, -1);

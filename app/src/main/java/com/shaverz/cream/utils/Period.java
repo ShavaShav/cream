@@ -24,6 +24,13 @@ public interface Period {
             this.startDate = startDate;
             this.endDate = endDate;
         }
+
+        public DateRange() {
+            this.startDate = Calendar.getInstance();
+            this.startDate.setTimeInMillis(Long.MIN_VALUE); // earliest possible time
+
+            this.endDate = Calendar.getInstance(); // now
+        }
     }
 
 }
