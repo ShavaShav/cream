@@ -231,7 +231,7 @@ public class ReportViewFragment extends Fragment {
             case DAILY_BALANCE:
                 return new LineChart(getContext()); // empty chart
             case INCOME_VS_EXPENSE:
-                return new LineChart(getContext()); // empty chart
+                return generateIncomeVsExpensesChart(transactionsToChart);
             default:
                 return new LineChart(getContext()); // empty chart
         }
@@ -398,6 +398,7 @@ public class ReportViewFragment extends Fragment {
         chart.getAxisRight().setDrawGridLines(false);
         chart.getLegend().setEnabled(false);
         chart.setDescription(null);
+        chart.getXAxis().setLabelCount(daysOfWeek.size());
 
         chart.invalidate();
 
@@ -447,6 +448,43 @@ public class ReportViewFragment extends Fragment {
         PieDataSet set = new PieDataSet(entries,
                 (income ? "Income" : "Expenses") + " by Category");
         set.setColors(graphColours, getContext());
+
+        PieData data = new PieData(set);
+        PieChart chart = new PieChart(getContext());
+
+        chart.setData(data);
+        chart.invalidate();
+
+        return chart;
+    }
+
+    /*
+        INCOME VS EXPENSES
+     */
+
+    private PieChart generateIncomeVsExpensesChart(List<Transaction> transactions) {
+        Double totalExpenses = 0.00;
+        Double totalIncome = 0.00;
+
+        // Sum income and expenses
+        for (Transaction tx : transactions) {
+            double amount = tx.getAmount();
+            // Only count transactions according to flag
+            if (amount < 0.00) {
+                totalExpenses -= amount;
+            } else if (amount > 0.00) {
+                totalIncome += amount; // income
+            }
+        }
+
+        // Convert to chart entries
+        List<PieEntry> entries = new ArrayList<>();
+        entries.add(new PieEntry(totalIncome.floatValue(), "Income"));
+        entries.add(new PieEntry(totalExpenses.floatValue(), "Expenses"));
+
+        // Connect chart parts and return
+        PieDataSet set = new PieDataSet(entries, "Income vs Expenses");
+        set.setColors(new int[]{R.color.chart_green, R.color.chart_red}, getContext());
 
         PieData data = new PieData(set);
         PieChart chart = new PieChart(getContext());
