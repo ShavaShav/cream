@@ -26,11 +26,12 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.shaverz.cream.models.Account;
 import com.shaverz.cream.models.Transaction;
+import com.shaverz.cream.utils.CommonPeriod;
+import com.shaverz.cream.utils.Period;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -59,6 +60,7 @@ public class ReportViewFragment extends Fragment {
                 RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
     private int reportType;
     private boolean periodExists;
+    private Period period;
     private Chart chart;
 
 
@@ -94,6 +96,8 @@ public class ReportViewFragment extends Fragment {
             reportType = EXPENSE_BY_CATEGORY; // default
         }
         shuffleColours(); // shuffle for initial view
+
+        period = new CommonPeriod();
     }
 
     @Override
@@ -122,17 +126,18 @@ public class ReportViewFragment extends Fragment {
 
         periodExists = false; // assume no period option
 
-        if (reportType != DAILY_EXPENSES
-                && reportType != DAILY_INCOME
-                && reportType != MONTHLY_EXPENSES
-                && reportType != MONTHLY_INCOME) {
+        if (reportType != DAILY_EXPENSES && reportType != DAILY_INCOME) {
 
             periodExists = true;
+
+            if (reportType == MONTHLY_EXPENSES || reportType == MONTHLY_INCOME) {
+
+            }
 
             periodSpinner = (Spinner) view.findViewById(R.id.spinner_period);
             periodArrayAdapter = new ArrayAdapter<String>(getContext(),
                     android.R.layout.simple_spinner_item,
-                    Period.strings);
+                    period.getPeriodStrings());
 
             periodArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             periodSpinner.setAdapter(periodArrayAdapter);
@@ -195,8 +200,8 @@ public class ReportViewFragment extends Fragment {
             transactionsToChart = transactionList;
         } else {
             // copy transactions within period
-            String period = periodArrayAdapter.getItem(periodSpinner.getSelectedItemPosition());
-            Period.DateRange dateRange = Period.getDateRange(period);
+            String periodString = periodArrayAdapter.getItem(periodSpinner.getSelectedItemPosition());
+            Period.DateRange dateRange = period.getDateRange(periodString);
 
             // only show data for transactions within date range -> makes a copy so user models aren't overwritten
             transactionsToChart = new ArrayList<>();
