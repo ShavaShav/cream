@@ -35,14 +35,16 @@ public class OverviewFragment extends Fragment implements
     private LinearLayout accountsCardView;
     private LinearLayout transactionsCardView;
     private LinearLayout incomeVsExpenseCardView;
+    private LinearLayout expenseByCategoryCardView;
 
     private TransactionRecyclerViewAdapter recentTransactionsAdapter;
     private RecyclerView recentTransactionRecyclerView;
     private AccountRecyclerViewAdapter myAccountsAdapter;
     private RecyclerView myAccountsRecyclerView;
-    private RelativeLayout incomeVsExpensesGraphFrame;
-    private RelativeLayout.LayoutParams chartParams = new RelativeLayout.LayoutParams(
-            RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+    private LinearLayout incomeVsExpensesGraphFrame;
+    private LinearLayout expensesByCategoryGraphFrame;
+    private LinearLayout.LayoutParams chartParams = new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, 1f);
     private ChartGenerator chartGen;
     private static final int USER_LOADER = 0;
 
@@ -64,7 +66,8 @@ public class OverviewFragment extends Fragment implements
         transactionsCardView = mView.findViewById(R.id.card_view_transactions);
         incomeVsExpenseCardView = mView.findViewById(R.id.card_view_income_vs_expense);
         incomeVsExpensesGraphFrame = mView.findViewById(R.id.incomevsexpense_chart_frame);
-
+        expenseByCategoryCardView = mView.findViewById(R.id.card_view_expense_by_category);
+        expensesByCategoryGraphFrame = mView.findViewById(R.id.expense_by_category_chart_frame);
         recentTransactionRecyclerView = (RecyclerView) mView.findViewById(R.id.recent_transactions_list);
         myAccountsRecyclerView = (RecyclerView) mView.findViewById(R.id.my_accounts_list);
 
@@ -151,6 +154,27 @@ public class OverviewFragment extends Fragment implements
             });
         }
 
+        // Attach settings menu to income vs expenses card
+        Toolbar expenseByCategoryBar = (Toolbar) mView.findViewById(R.id.toolbar_expense_by_category);
+        if (expenseByCategoryBar != null) {
+            expenseByCategoryBar.inflateMenu(R.menu.menu_overview_expense_by_category);
+            expenseByCategoryBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem menuItem) {
+                    switch (menuItem.getItemId()) {
+                        case R.id.action_hide:
+                            expenseByCategoryCardView.setVisibility(View.GONE);
+                            break;
+                        case R.id.action_reorder:
+                            break;
+                        case R.id.action_settings:
+                            break;
+                    }
+                    return true;
+                }
+            });
+        }
+
         getLoaderManager().initLoader(USER_LOADER, null, this).forceLoad();
 
         return mView;
@@ -210,6 +234,7 @@ public class OverviewFragment extends Fragment implements
         refreshRecentTransactions();
         refreshMyAccounts();
         refreshIncomeVsExpenses();
+        refreshExpensesByCategory();
     }
 
     @Override
@@ -240,6 +265,13 @@ public class OverviewFragment extends Fragment implements
         Chart chart = chartGen.generateIncomeVsExpensesChart(MainActivity.CURRENT_USER.getTransactions());
 
         incomeVsExpensesGraphFrame.addView(chart, chartParams);
+    }
+
+    private void refreshExpensesByCategory() {
+        //TODO: filter by daterange
+        Chart chart = chartGen.generateByCategoryChart(MainActivity.CURRENT_USER.getTransactions(), false);
+
+        expensesByCategoryGraphFrame.addView(chart, chartParams);
     }
 
     private void refreshMyAccounts() {

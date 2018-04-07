@@ -32,6 +32,7 @@
     <string name="title_accounts">My Accounts</string>
     <string name="title_transactions">Recent Transactions</string>
     <string name="title_income_vs_expense">Income Vs Expense</string>
+    <string name="title_expense_by_category">Expense By Category</string>
 
     <!-- Cardview menu items -->
     <string name="menu_hide">Hide</string>

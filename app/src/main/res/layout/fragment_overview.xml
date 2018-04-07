@@ -86,45 +86,88 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/card_view_income_vs_expense"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/fab_margin"
+            android:background="@drawable/common_border"
+            android:elevation="@dimen/common_elevation"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/fab_margin"
+            android:paddingLeft="@dimen/fab_margin"
+            android:paddingRight="@dimen/fab_margin">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar_income_vs_expense"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingBottom="@dimen/fab_margin"
-                android:paddingLeft="@dimen/fab_margin"
-                android:paddingRight="@dimen/fab_margin"
-                android:id="@+id/card_view_income_vs_expense"
-                android:layout_margin="@dimen/fab_margin"
-                android:background="@drawable/common_border"
-                android:elevation="@dimen/common_elevation">
+                android:layout_height="wrap_content">
 
-                <android.support.v7.widget.Toolbar
-                    android:id="@+id/toolbar_income_vs_expense"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/toolbar_title_income_vs_expense"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/title_income_vs_expense"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+            </android.support.v7.widget.Toolbar>
 
-                    <TextView
-                        android:id="@+id/toolbar_title_income_vs_expense"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="@string/title_income_vs_expense"
-                        android:textAppearance="?android:attr/textAppearanceLarge" />
-                </android.support.v7.widget.Toolbar>
-
-            <RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+            <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
                 xmlns:tools="http://schemas.android.com/tools"
                 android:id="@+id/incomevsexpense_chart_frame"
                 android:name="com.shaverz.cream.ReportViewFragment"
                 android:layout_width="match_parent"
-                android:layout_height="450dp"
+                android:layout_height="0dp"
                 android:layout_gravity="center|fill"
                 android:layout_weight="1"
                 android:background="@drawable/common_border"
-                android:elevation="@dimen/common_elevation">
+                android:elevation="@dimen/common_elevation"
+                android:minHeight="@dimen/min_chart_height"
+                android:orientation="vertical">
 
-            </RelativeLayout>
             </LinearLayout>
+        </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/card_view_expense_by_category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/fab_margin"
+            android:background="@drawable/common_border"
+            android:elevation="@dimen/common_elevation"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/fab_margin"
+            android:paddingLeft="@dimen/fab_margin"
+            android:paddingRight="@dimen/fab_margin">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar_expense_by_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/toolbar_title_expense_by_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/title_expense_by_category"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+            </android.support.v7.widget.Toolbar>
+
+            <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/expense_by_category_chart_frame"
+                android:name="com.shaverz.cream.ReportViewFragment"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="center|fill"
+                android:layout_weight="1"
+                android:background="@drawable/common_border"
+                android:elevation="@dimen/common_elevation"
+                android:minHeight="@dimen/min_chart_height"
+                android:orientation="vertical">
+
+            </LinearLayout>
+        </LinearLayout>
 
     </LinearLayout>
 
