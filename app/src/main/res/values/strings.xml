@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Cream</string>
+    <string name="preference_user_id">user_id</string>
 
     <!-- Navigation drawer menu -->
     <string name="nav_overview">Overview</string>
@@ -16,7 +17,6 @@
     <string name="titlebar_reports">VIEW REPORTS</string>
     <string name="title_activity_setup">SetupActivity</string>
     <string name="action_settings">Settings</string>
-    <string name="section_format">Hello World from section: %1$d</string>
 
     <!-- Setup Screens -->
     <string name="header_account_setup">ACCOUNT SETUP</string>
@@ -26,11 +26,13 @@
     <string name="header_cash">CASH</string>
     <string name="header_bank">BANK</string>
     <string name="text_optional">OPTIONAL</string>
+    <string name="default_opening_balance">0.00</string>
 
     <!-- Cardview titles -->
     <string name="title_accounts">My Accounts</string>
     <string name="title_transactions">Recent Transactions</string>
     <string name="title_income_vs_expense">Income Vs Expense</string>
+    <string name="title_expense_by_category">Expense By Category</string>
 
     <!-- Cardview menu items -->
     <string name="menu_hide">Hide</string>
@@ -40,5 +42,81 @@
     <string name="menu_switch_compact_mode">Switch To Compact Mode</string>
     <string name="menu_switch_list_mode">Switch To List Mode</string>
     <string name="menu_settings">Settings</string>
+
+    <!-- Transactions -->
+    <string name="action_reorder">Reverse order</string>
+    <string name="period_open">Period Opening</string>
+    <string name="period_close">Period Closing</string>
+    <string name="tx_account">ACCOUNT</string>
+    <string name="tx_period">PERIOD</string>
+
+    <!-- Reports -->
+    <string name="title_activity_reports">ReportsActivity</string>
+    <string name="tab_text_1">EXPENSE</string>
+    <string name="tab_text_2">INCOME</string>
+    <string name="tab_text_3">CASH\nFLOW</string>
+    <string name="tab_text_4">BALANCE</string>
+
+    <string name="report_title_expense_by_category">Expense By Category</string>
+    <string name="report_title_daily_expense">Daily Expense</string>
+    <string name="report_title_monthly_expense">Monthly Expense</string>
+    <string name="report_title_income_by_category">Income By Category</string>
+    <string name="report_title_daily_income">Daily Income</string>
+    <string name="report_title_monthly_income">Monthly Income</string>
+    <string name="report_title_income_vs_expense">Income Vs Expense</string>
+    <string name="report_title_daily_balance">Daily Balance</string>
+
+    <string name="report_description_expense_by_category">View your expenses broken down by categories for specific accounts and date periods</string>
+    <string name="report_description_daily_expense">View last seven days breakdown of your expenses by specific accounts</string>
+    <string name="report_description_monthly_expense">View a month by month breakdown of your expenses by specific accounts</string>
+    <string name="report_description_income_by_category">View all incomes sorted by category type</string>
+    <string name="report_description_daily_income">View last seven days breakdown of your incomes by specific accounts</string>
+    <string name="report_description_monthly_income">View a month by month breakdown of your incomes by specific accounts</string>
+    <string name="report_description_income_vs_expense">Compare your total expenses and income</string>
+    <string name="report_description_daily_balance">Compare your income and expenses on a daily basis</string>
+
+    <!-- DB helper -->
+    <string name="invalid_query_uri">Invalid query Uri: </string>
+    <string name="invalid_insert_uri">Invalid insert Uri: </string>
+    <string name="invalid_update_uri">Invalid update Uri: </string>
+    <string name="invalid_delete_uri">Invalid delete Uri: </string>
+    <string name="insert_failed">Insert failed:</string>
+    <string name="title_activity_login">Sign in</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_username">Username</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_username">This username is too short</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="error_invalid_number">This must be a valid number</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+
+    <!-- Add/Edit transaction and account-->
+    <string name="add_transaction_ok">Added transaction!</string>
+    <string name="add_transaction_fail">Failed to add transaction</string>
+    <string name="edit_transaction_ok">Edited transaction!</string>
+    <string name="edit_transaction_fail">Failed to edit transaction</string>
+    <string name="add_account_ok">Added account!</string>
+    <string name="add_account_fail">Failed to add account</string>
+    <string name="edit_account_ok">Edited account!</string>
+    <string name="edit_account_fail">Failed to edit account</string>
+
+    <string name="toggle_expense">Expense</string>
+    <string name="toggle_income">Income</string>
+    <string name="hint_payer">Payer</string>
+    <string name="hint_payee">Payee</string>
+    <string name="hint_amount">Amount</string>
+    <string name="hint_date">Date</string>
+    <string name="hint_account">Account</string>
+    <string name="hint_category">Category</string>
+    <string name="hint_opening_balance">Opening Balance</string>
+    <string name="opening_balance_category">Other</string>
+    <string name="opening_balance_payee">Opening Balance</string>
 
 </resources>

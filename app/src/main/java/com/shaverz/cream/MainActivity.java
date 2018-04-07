@@ -1,6 +1,7 @@
 package com.shaverz.cream;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.design.widget.NavigationView;
@@ -9,18 +10,30 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
+
+import com.shaverz.cream.models.User;
+
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    public static User CURRENT_USER;
+    public static final String TRANSACTION_OBJECT = "transaction";
+    public static final String ACCOUNT_OBJECT = "account";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        CURRENT_USER = Utils.fetchUserModel(this);
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, new OverviewFragment())
@@ -29,7 +42,6 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        toggle.setHomeAsUpIndicator(R.drawable.ic_hamburger);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
@@ -66,10 +78,10 @@ public class MainActivity extends AppCompatActivity
                 fragment = new AccountsFragment();
                 break;
             case R.id.nav_transactions:
-                changeFragment = false;
+                fragment = new TransactionFragment();
                 break;
             case R.id.nav_reports:
-                changeFragment = false;
+                fragment = new ReportsFragment();
                 break;
             default:
                 changeFragment = false;
@@ -86,4 +98,5 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 }

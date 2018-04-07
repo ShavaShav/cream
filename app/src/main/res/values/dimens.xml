@@ -11,4 +11,11 @@
     <dimen name="header_2_size">16sp</dimen>
     <dimen name="app_bar_height">180dp</dimen>
     <dimen name="text_margin">16dp</dimen>
+    <dimen name="common_elevation">6dp</dimen>
+    <dimen name="report_list_item_padding">6dp</dimen>
+    <dimen name="text_description">12sp</dimen>
+    <dimen name="text_amount">26sp</dimen>
+    <dimen name="text_account">22sp</dimen>
+    <dimen name="common_grid_padding">6dp</dimen>
+    <dimen name="min_chart_height">425dp</dimen>
 </resources>

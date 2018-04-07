@@ -2,9 +2,28 @@
 <resources>
     <color name="colorPrimary">#ffffff</color>
     <color name="colorPrimaryDark">#c1c1c1</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#537eff</color>
     <color name="background_color">#d9d9d9</color>
     <color name="app_bar_title_color">#000000</color>
     <color name="nav_icon_colour">#000000</color>
+
+    <!-- Report colors -->
+    <color name="bg_expense">#f28888</color>
+    <color name="bg_income">#68ef6d</color>
+    <color name="bg_cash_flow">#f2bf58</color>
+    <color name="bg_balance">#aab9fa</color>
+
+    <!-- Colours for text -->
+    <color name="text_negative">#d93e3e</color>
+    <color name="text_positive">#3ab63e</color>
+    <color name="text_neutral">#808080</color>
+
+    <!-- chart colours -->
+    <color name="chart_red">#f55b5b</color>
+    <color name="chart_green">#40ec46</color>
+    <color name="chart_orange">#ffbe3a</color>
+    <color name="chart_blue">#6c88ff</color>
+    <color name="chart_yellow">#fff75f</color>
+    <color name="chart_black">#282828</color>
 
 </resources>

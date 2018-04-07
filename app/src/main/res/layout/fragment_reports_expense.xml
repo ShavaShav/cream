@@ -1,0 +1,166 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.shaverz.cream.ReportsFragment">
+
+    <RelativeLayout
+        android:id="@+id/report_expense_by_category"
+        android:layout_width="fill_parent"
+        android:layout_height="?android:attr/listPreferredItemHeight"
+        android:layout_marginLeft="@dimen/report_list_item_padding"
+        android:layout_marginRight="@dimen/report_list_item_padding"
+        android:layout_marginTop="@dimen/report_list_item_padding"
+        android:background="@drawable/common_border"
+        android:padding="@dimen/report_list_item_padding">
+
+        <ImageView
+            android:id="@+id/report_icon_1"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="@dimen/report_list_item_padding"
+            android:background="@drawable/circle_border"
+            android:backgroundTint="@color/bg_expense"
+            android:padding="@dimen/report_list_item_padding"
+            android:src="@drawable/ic_pie_chart" />
+
+        <TextView
+            android:id="@+id/report_title_1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/report_description_1"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignWithParentIfMissing="true"
+            android:layout_toRightOf="@id/report_icon_1"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/report_list_item_padding"
+            android:text="@string/report_title_expense_by_category"
+            android:textSize="@dimen/header_2_size" />
+
+        <TextView
+            android:id="@+id/report_description_1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@id/report_icon_1"
+            android:ellipsize="marquee"
+            android:maxLines="2"
+            android:minLines="2"
+            android:paddingLeft="@dimen/report_list_item_padding"
+            android:text="@string/report_description_expense_by_category"
+            android:textSize="@dimen/text_description" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/report_daily_expense"
+        android:layout_width="fill_parent"
+        android:layout_height="?android:attr/listPreferredItemHeight"
+        android:layout_marginLeft="@dimen/report_list_item_padding"
+        android:layout_marginRight="@dimen/report_list_item_padding"
+        android:layout_marginTop="@dimen/report_list_item_padding"
+        android:background="@drawable/common_border"
+        android:padding="@dimen/report_list_item_padding">
+
+        <ImageView
+            android:id="@+id/report_icon_2"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="@dimen/report_list_item_padding"
+            android:background="@drawable/circle_border"
+            android:backgroundTint="@color/bg_expense"
+            android:padding="@dimen/report_list_item_padding"
+            android:src="@drawable/ic_show_chart" />
+
+        <TextView
+            android:id="@+id/report_title_2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/report_description_2"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignWithParentIfMissing="true"
+            android:layout_marginLeft="@dimen/report_list_item_padding"
+            android:layout_toRightOf="@id/report_icon_2"
+            android:gravity="center_vertical"
+            android:text="@string/report_title_daily_expense"
+            android:textSize="@dimen/header_2_size" />
+
+        <TextView
+            android:id="@+id/report_description_2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="@dimen/report_list_item_padding"
+            android:layout_toRightOf="@id/report_icon_2"
+            android:ellipsize="marquee"
+            android:maxLines="2"
+            android:minLines="2"
+            android:text="@string/report_description_daily_expense"
+            android:textSize="@dimen/text_description" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/report_monthly_expense"
+        android:layout_width="fill_parent"
+        android:layout_height="?android:attr/listPreferredItemHeight"
+        android:layout_marginLeft="@dimen/report_list_item_padding"
+        android:layout_marginRight="@dimen/report_list_item_padding"
+        android:layout_marginTop="@dimen/report_list_item_padding"
+        android:background="@drawable/common_border"
+        android:padding="@dimen/report_list_item_padding">
+
+        <ImageView
+            android:id="@+id/report_icon_3"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="@dimen/report_list_item_padding"
+            android:background="@drawable/circle_border"
+            android:backgroundTint="@color/bg_expense"
+            android:padding="@dimen/report_list_item_padding"
+            android:src="@drawable/ic_show_chart" />
+
+        <TextView
+            android:id="@+id/report_title_3"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/report_description_3"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignWithParentIfMissing="true"
+            android:layout_marginLeft="@dimen/report_list_item_padding"
+            android:layout_toRightOf="@id/report_icon_3"
+            android:gravity="center_vertical"
+            android:text="@string/report_title_monthly_expense"
+            android:textSize="@dimen/header_2_size" />
+
+        <TextView
+            android:id="@+id/report_description_3"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="@dimen/report_list_item_padding"
+            android:layout_toRightOf="@id/report_icon_3"
+            android:ellipsize="marquee"
+            android:maxLines="2"
+            android:minLines="2"
+            android:text="@string/report_description_monthly_expense"
+            android:textSize="@dimen/text_description" />
+
+    </RelativeLayout>
+
+</LinearLayout>
