@@ -12,7 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.github.mikephil.charting.utils.Utils;
 import com.shaverz.cream.utils.ChartGenerator;
+import com.shaverz.cream.utils.CommonUtils;
 
 
 public class ReportsFragment extends Fragment {
@@ -29,8 +31,6 @@ public class ReportsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        Log.d("tag", "Creating view for reports");
         // preload fragments
         reportTabFragments = new Fragment[] {
                 new ExpenseFragment(),
@@ -47,7 +47,7 @@ public class ReportsFragment extends Fragment {
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getActivity().getSupportFragmentManager());
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getChildFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) view.findViewById(R.id.reports_container);
