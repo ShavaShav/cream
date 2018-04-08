@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.shaverz.cream.AddEditAccountFragment;
 import com.shaverz.cream.MainActivity;
 import com.shaverz.cream.R;
-import com.shaverz.cream.Utils;
+import com.shaverz.cream.utils.CommonUtils;
 import com.shaverz.cream.models.Account;
 
 import java.util.List;
@@ -47,7 +47,7 @@ public class AccountRecyclerViewAdapter extends RecyclerView.Adapter<AccountRecy
         Account a = accounts.get(position);
 
         holder.nameView.setText(a.getName());
-        Utils.setCurrencyTextView(context, holder.balanceView, a.getBalance());
+        CommonUtils.setCurrencyTextView(context, holder.balanceView, a.getBalance());
     }
 
     @Override

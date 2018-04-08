@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.shaverz.cream.AddEditTransactionFragment;
 import com.shaverz.cream.MainActivity;
 import com.shaverz.cream.R;
-import com.shaverz.cream.Utils;
+import com.shaverz.cream.utils.CommonUtils;
 import com.shaverz.cream.models.Transaction;
 
 import java.text.SimpleDateFormat;
@@ -44,7 +44,7 @@ public class TransactionRecyclerViewAdapter extends RecyclerView.Adapter<Transac
         holder.categoryView.setText(t.getCategory());
 
         // Format currency according to locale from main activity
-        Utils.setCurrencyTextView(context, holder.amountView, t.getAmount());
+        CommonUtils.setCurrencyTextView(context, holder.amountView, t.getAmount());
     }
 
     @Override
@@ -80,7 +80,7 @@ public class TransactionRecyclerViewAdapter extends RecyclerView.Adapter<Transac
                     addEditFrag.setArguments(arguments);
 
                     ((MainActivity)context).getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.fragment_container, addEditFrag, Utils.TAG)
+                            .replace(R.id.fragment_container, addEditFrag, CommonUtils.TAG)
                             .addToBackStack(null)
                             .commit();
                 }

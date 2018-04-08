@@ -26,6 +26,7 @@ import com.shaverz.cream.models.Account;
 import com.shaverz.cream.models.Transaction;
 import com.shaverz.cream.models.User;
 import com.shaverz.cream.utils.ChartGenerator;
+import com.shaverz.cream.utils.CommonUtils;
 import com.shaverz.cream.views.AccountRecyclerViewAdapter;
 import com.shaverz.cream.views.TransactionRecyclerViewAdapter;
 
@@ -47,6 +48,7 @@ public class OverviewFragment extends Fragment implements
     private LinearLayout highSpendingAlertsCardView;
     private LinearLayout overviewFrame;
 
+    private List<View> cardViews;
     private TextView highSpendingTextView;
     private TransactionRecyclerViewAdapter recentTransactionsAdapter;
     private RecyclerView recentTransactionRecyclerView;
@@ -54,12 +56,10 @@ public class OverviewFragment extends Fragment implements
     private RecyclerView myAccountsRecyclerView;
 
     private ChartGenerator chartGen;
-    private static final int USER_LOADER = 0;
-    private List<View> cardViews;
-
     private PieChart incomeVsExpenseChart;
     private PieChart expenseByCategoryChart;
 
+    private static final int USER_LOADER = 0;
     private boolean isAccountsCompact = true;
 
     public OverviewFragment() {
@@ -261,7 +261,7 @@ public class OverviewFragment extends Fragment implements
 
     @Override
     public Loader<User> onCreateLoader(int id, Bundle args) {
-        return new Utils.UserLoader(this.getContext());
+        return new CommonUtils.UserLoader(this.getContext());
     }
 
     @Override
@@ -305,7 +305,7 @@ public class OverviewFragment extends Fragment implements
 
     private void refreshHighSpendingAlert() {
         double todaysExpense = MainActivity.CURRENT_USER.getAmountSpentToday();
-        Log.d(Utils.TAG, "todays expense: " + todaysExpense);
+        Log.d(CommonUtils.TAG, "todays expense: " + todaysExpense);
         if (todaysExpense >= 500.0) {
             String message = "You have spent " + NumberFormat
                     .getCurrencyInstance(MainActivity.CURRENT_USER.getCurrencyLocale())

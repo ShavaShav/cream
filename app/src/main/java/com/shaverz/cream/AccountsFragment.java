@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.shaverz.cream.models.Account;
 import com.shaverz.cream.models.User;
+import com.shaverz.cream.utils.CommonUtils;
 import com.shaverz.cream.views.AccountRecyclerViewAdapter;
 
 import java.util.ArrayList;
@@ -79,7 +80,7 @@ public class AccountsFragment extends Fragment implements
 
     @Override
     public Loader<User> onCreateLoader(int id, Bundle args) {
-        return new Utils.UserLoader(this.getContext());
+        return new CommonUtils.UserLoader(this.getContext());
     }
 
     @Override

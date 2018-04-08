@@ -24,6 +24,7 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 
 import com.shaverz.cream.data.DB;
+import com.shaverz.cream.utils.CommonUtils;
 
 public class SetupActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -36,8 +37,8 @@ public class SetupActivity extends AppCompatActivity implements View.OnClickList
     private ImageButton nextButton;
 
     // Store values from inner fragments
-    private static String currency = Utils.DEFAULT_CURRENCY;
-    private static String language = Utils.DEFAULT_LANGUAGE;
+    private static String currency = CommonUtils.DEFAULT_CURRENCY;
+    private static String language = CommonUtils.DEFAULT_LANGUAGE;
     private static double bankOpeningTransaction = 0.0;
     private static double cashOpeningTransaction = 0.0;
 
@@ -69,8 +70,8 @@ public class SetupActivity extends AppCompatActivity implements View.OnClickList
         contentValues.put(DB.User.COLUMN_CURRENCY, currency);
         contentValues.put(DB.User.COLUMN_LANGUAGE, language);
 
-        Uri currentUserURI = Utils.getCurrentUserURI(this);
-        Log.d(Utils.TAG, "URI: " + currentUserURI.toString());
+        Uri currentUserURI = CommonUtils.getCurrentUserURI(this);
+        Log.d(CommonUtils.TAG, "URI: " + currentUserURI.toString());
 
         // set currency and language for user
         getContentResolver().update(
@@ -80,8 +81,8 @@ public class SetupActivity extends AppCompatActivity implements View.OnClickList
                 null);
 
         // add Bank and Cash accounts
-        Utils.createNewAccount(this, "Bank", bankOpeningTransaction);
-        Utils.createNewAccount(this, "Cash", cashOpeningTransaction);
+        CommonUtils.createNewAccount(this, "Bank", bankOpeningTransaction);
+        CommonUtils.createNewAccount(this, "Cash", cashOpeningTransaction);
 
         Intent intent = new Intent(SetupActivity.this, MainActivity.class);
         startActivity(intent);

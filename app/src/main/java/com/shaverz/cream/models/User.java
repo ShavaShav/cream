@@ -2,7 +2,7 @@ package com.shaverz.cream.models;
 
 import android.util.Log;
 
-import com.shaverz.cream.Utils;
+import com.shaverz.cream.utils.CommonUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -27,11 +27,11 @@ public class User {
                 String visibleCustomization, String orderCustomization) {
         this.id = id;
         this.username = username;
-        this.currencyLocale = Utils.convertToLocale(currency);
+        this.currencyLocale = CommonUtils.convertToLocale(currency);
         this.language = language;
         this.accountList = new ArrayList<>();
         this.overviewCustomization = new OverviewCustomization(visibleCustomization, orderCustomization);
-        Log.d(Utils.TAG, "Made user, visibilities: " + overviewCustomization.getOverviewVisibilityList().toString());
+        Log.d(CommonUtils.TAG, "Made user, visibilities: " + overviewCustomization.getOverviewVisibilityList().toString());
     }
 
     public double getAmountSpentToday() {

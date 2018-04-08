@@ -21,6 +21,7 @@ import android.widget.ToggleButton;
 import com.shaverz.cream.data.DB;
 import com.shaverz.cream.models.Account;
 import com.shaverz.cream.models.Transaction;
+import com.shaverz.cream.utils.CommonUtils;
 
 public class AddEditTransactionFragment extends Fragment {
 
@@ -170,7 +171,7 @@ public class AddEditTransactionFragment extends Fragment {
             amount = -amount;
         }
 
-        Log.d(Utils.TAG, "amount: " + amount);
+        Log.d(CommonUtils.TAG, "amount: " + amount);
 
         // create ContentValues object containing transactions's key-value pairs
         ContentValues contentValues = new ContentValues();

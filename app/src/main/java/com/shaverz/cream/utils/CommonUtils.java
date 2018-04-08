@@ -1,4 +1,4 @@
-package com.shaverz.cream;
+package com.shaverz.cream.utils;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -10,6 +10,8 @@ import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
 import android.widget.TextView;
 
+import com.shaverz.cream.MainActivity;
+import com.shaverz.cream.R;
 import com.shaverz.cream.data.DB;
 import com.shaverz.cream.models.Account;
 import com.shaverz.cream.models.Transaction;
@@ -21,7 +23,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-public class Utils {
+public class CommonUtils {
     public static final String DEFAULT_CURRENCY = "CAD";
     public static final String DEFAULT_LANGUAGE = "English";
 
@@ -50,7 +52,7 @@ public class Utils {
 
     public static User fetchUserModel (Context context) {
         User user = null;
-        String userId = Utils.getCurrentUserID(context);
+        String userId = CommonUtils.getCurrentUserID(context);
 
         Cursor cursor = context.getContentResolver().query(
                 getCurrentUserURI(context),
@@ -156,14 +158,14 @@ public class Utils {
     public static Uri createNewAccount(Context context, String name, double openingBalance) {
         // insert account
         ContentValues contentValues = new ContentValues();
-        contentValues.put(DB.Account.COLUMN_USER_ID, Utils.getCurrentUserID(context));
+        contentValues.put(DB.Account.COLUMN_USER_ID, CommonUtils.getCurrentUserID(context));
         contentValues.put(DB.Account.COLUMN_NAME, name);
 
         String accountID = context.getContentResolver()
                 .insert(DB.Account.CONTENT_URI, contentValues)
                 .getLastPathSegment();
 
-        Log.d(Utils.TAG, "New account created with id #" + accountID);
+        Log.d(CommonUtils.TAG, "New account created with id #" + accountID);
 
         contentValues.clear();
         contentValues.put(DB.Transaction.COLUMN_ACCOUNT_ID, accountID);
@@ -176,7 +178,7 @@ public class Utils {
                 .insert(DB.Transaction.CONTENT_URI, contentValues)
                 .getLastPathSegment();
 
-        Log.d(Utils.TAG, "Opening balance added as transaction #" + transactionID);
+        Log.d(CommonUtils.TAG, "Opening balance added as transaction #" + transactionID);
 
         return DB.Account.buildAccountUri(Long.parseLong(accountID));
     }

@@ -26,6 +26,7 @@ import android.widget.TextView;
 
 import com.shaverz.cream.data.DB;
 import com.shaverz.cream.models.OverviewCustomization;
+import com.shaverz.cream.utils.CommonUtils;
 
 /**
  * A login screen that offers login via username/password.
@@ -210,8 +211,8 @@ public class LoginActivity extends AppCompatActivity {
                 if (mPassword.equals(password)) {
                     // Build user uri and save it
                     Uri userUri = DB.User.buildUserUri(userId);
-                    Utils.storeCurrentUserURI(LoginActivity.this, userUri);
-                    Log.d(Utils.TAG, "Existent user uri: " + userUri.toString());
+                    CommonUtils.storeCurrentUserURI(LoginActivity.this, userUri);
+                    Log.d(CommonUtils.TAG, "Existent user uri: " + userUri.toString());
                     return true;
                 } else {
                     return false;
@@ -224,8 +225,8 @@ public class LoginActivity extends AppCompatActivity {
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(DB.User.COLUMN_USERNAME, mUsername);
                 contentValues.put(DB.User.COLUMN_PASSWORD, mPassword);
-                contentValues.put(DB.User.COLUMN_CURRENCY, Utils.DEFAULT_CURRENCY);
-                contentValues.put(DB.User.COLUMN_LANGUAGE, Utils.DEFAULT_LANGUAGE);
+                contentValues.put(DB.User.COLUMN_CURRENCY, CommonUtils.DEFAULT_CURRENCY);
+                contentValues.put(DB.User.COLUMN_LANGUAGE, CommonUtils.DEFAULT_LANGUAGE);
 
                 // Use default overview customization options
                 OverviewCustomization oc = new OverviewCustomization();
@@ -240,8 +241,8 @@ public class LoginActivity extends AppCompatActivity {
                 if (newUserUri == null) {
                     return false; // failed somehow
                 } else {
-                    Utils.storeCurrentUserURI(LoginActivity.this, newUserUri);
-                    Log.d(Utils.TAG, "New user uri: " + newUserUri.toString());
+                    CommonUtils.storeCurrentUserURI(LoginActivity.this, newUserUri);
+                    Log.d(CommonUtils.TAG, "New user uri: " + newUserUri.toString());
 
                     isNewUser = true;
                     return true;

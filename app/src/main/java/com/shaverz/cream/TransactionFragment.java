@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.shaverz.cream.models.Account;
 import com.shaverz.cream.models.Transaction;
 import com.shaverz.cream.models.User;
+import com.shaverz.cream.utils.CommonUtils;
 import com.shaverz.cream.utils.RecentPeriod;
 import com.shaverz.cream.utils.Period;
 import com.shaverz.cream.views.TransactionRecyclerViewAdapter;
@@ -104,7 +105,7 @@ public class TransactionFragment extends Fragment implements
                 // no args for regular add
                 AddEditTransactionFragment addEditFrag = new AddEditTransactionFragment();
                 getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, addEditFrag, Utils.TAG)
+                        .replace(R.id.fragment_container, addEditFrag, CommonUtils.TAG)
                         .addToBackStack(null)
                         .commit();
             }
@@ -155,7 +156,7 @@ public class TransactionFragment extends Fragment implements
 
     @Override
     public Loader<User> onCreateLoader(int id, Bundle args) {
-        return new Utils.UserLoader(this.getContext());
+        return new CommonUtils.UserLoader(this.getContext());
     }
 
     private void refreshSelectedTransactions() {
@@ -191,8 +192,8 @@ public class TransactionFragment extends Fragment implements
         double closingPeriodBalance = openingPeriodBalance + periodBalance;
 
         // Format currency according to locale from main activity
-        Utils.setCurrencyTextView(getContext(), periodOpeningView, openingPeriodBalance);
-        Utils.setCurrencyTextView(getContext(), periodClosingView, closingPeriodBalance);
+        CommonUtils.setCurrencyTextView(getContext(), periodOpeningView, openingPeriodBalance);
+        CommonUtils.setCurrencyTextView(getContext(), periodClosingView, closingPeriodBalance);
 
         // Sort transactions
         Comparator<Transaction> cmp = null;

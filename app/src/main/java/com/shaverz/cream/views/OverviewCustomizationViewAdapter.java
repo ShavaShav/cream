@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.shaverz.cream.MainActivity;
 import com.shaverz.cream.R;
-import com.shaverz.cream.Utils;
+import com.shaverz.cream.utils.CommonUtils;
 import com.shaverz.cream.data.DB;
 import com.shaverz.cream.models.OverviewCustomization;
 
@@ -127,7 +127,7 @@ public class OverviewCustomizationViewAdapter extends ArrayAdapter<String> {
                     @Override
                     public void onCheckedChanged(CompoundButton compoundButton, boolean isVisible) {
                         if (!reordering) {
-                            Log.d(Utils.TAG, "pos " + position + " visible: " + isVisible);
+                            Log.d(CommonUtils.TAG, "pos " + position + " visible: " + isVisible);
                             isVisibleList.set(orderList.get(position), isVisible);
                             saveVisibilityList();
                         }

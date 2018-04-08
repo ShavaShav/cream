@@ -20,7 +20,6 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.shaverz.cream.MainActivity;
 import com.shaverz.cream.R;
-import com.shaverz.cream.Utils;
 import com.shaverz.cream.models.Account;
 import com.shaverz.cream.models.Transaction;
 
@@ -362,7 +361,7 @@ public class ChartGenerator {
         Double totalExpenses = 0.00;
         Double totalIncome = 0.00;
 
-        Log.d(Utils.TAG, "trans: " + transactions.size());
+        Log.d(CommonUtils.TAG, "trans: " + transactions.size());
 
         // Sum income and expenses
         for (Transaction tx : transactions) {
