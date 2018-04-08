@@ -2,6 +2,7 @@ package com.shaverz.cream;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -53,6 +54,19 @@ public class AccountsFragment extends Fragment implements
                 }
             });
         }
+
+        FloatingActionButton addAccountButton = mView.findViewById(R.id.fab);
+        addAccountButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // no args for regular add
+                AddEditAccountFragment addEditFrag = new AddEditAccountFragment();
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, addEditFrag, "addEditFrag")
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
 
         getLoaderManager().initLoader(USER_LOADER, null, this).forceLoad();
 
