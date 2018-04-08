@@ -11,6 +11,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.shaverz.cream.MainActivity;
 import com.shaverz.cream.R;
@@ -127,6 +128,14 @@ public class OverviewCustomizationViewAdapter extends ArrayAdapter<String> {
                         if (!reordering) {
                             isVisibleList.set(orderList.get(position), isVisible);
                             saveVisibilityList();
+
+                            // Show message for high spending so user knows how it works
+                            if (orderList.get(position) == OverviewCustomization.HIGH_SPENDING
+                                    && isVisible) {
+                                Toast.makeText(getContext(),
+                                        R.string.toast_highspending_enable,
+                                        Toast.LENGTH_LONG).show();
+                            }
                         }
                     }
                 });

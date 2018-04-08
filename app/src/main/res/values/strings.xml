@@ -122,4 +122,5 @@
     <string name="opening_balance_category">Other</string>
     <string name="opening_balance_payee">Opening Balance</string>
 
+    <string name="toast_highspending_enable">Alert will show if you spend over $500 in 24hrs.</string>
 </resources>
