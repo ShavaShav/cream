@@ -13,18 +13,13 @@
         android:title="@string/menu_reorder"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_reorder_account"
-        android:orderInCategory="3"
-        android:title="@string/menu_reorder_account"
-        app:showAsAction="never" />
-    <item
         android:id="@+id/action_new_account"
-        android:orderInCategory="4"
+        android:orderInCategory="3"
         android:title="@string/menu_new_account"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_switch_mode"
-        android:orderInCategory="5"
+        android:orderInCategory="4"
         android:title="@string/menu_switch_list_mode"
         app:showAsAction="never" />
 </menu>

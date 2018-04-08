@@ -118,8 +118,6 @@ public class OverviewFragment extends Fragment implements
                         case R.id.action_reorder:
                             startOverViewCustomizationActivity();
                             break;
-                        case R.id.action_reorder_account:
-                            break;
                         case R.id.action_new_account:
                             // no args for regular add
                             AddEditAccountFragment addEditFrag = new AddEditAccountFragment();
