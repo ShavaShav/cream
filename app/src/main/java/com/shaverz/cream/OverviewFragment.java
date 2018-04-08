@@ -303,7 +303,6 @@ public class OverviewFragment extends Fragment implements
 
     private void refreshHighSpendingAlert() {
         double todaysExpense = MainActivity.CURRENT_USER.getAmountSpentToday();
-        Log.d(CommonUtils.TAG, "todays expense: " + todaysExpense);
         if (todaysExpense >= 500.0) {
             String message = "You have spent " + NumberFormat
                     .getCurrencyInstance(MainActivity.CURRENT_USER.getCurrencyLocale())

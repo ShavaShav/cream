@@ -361,8 +361,6 @@ public class ChartGenerator {
         Double totalExpenses = 0.00;
         Double totalIncome = 0.00;
 
-        Log.d(CommonUtils.TAG, "trans: " + transactions.size());
-
         // Sum income and expenses
         for (Transaction tx : transactions) {
             double amount = tx.getAmount();

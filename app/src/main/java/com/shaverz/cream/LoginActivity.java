@@ -212,7 +212,6 @@ public class LoginActivity extends AppCompatActivity {
                     // Build user uri and save it
                     Uri userUri = DB.User.buildUserUri(userId);
                     CommonUtils.storeCurrentUserURI(LoginActivity.this, userUri);
-                    Log.d(CommonUtils.TAG, "Existent user uri: " + userUri.toString());
                     return true;
                 } else {
                     return false;
@@ -242,8 +241,6 @@ public class LoginActivity extends AppCompatActivity {
                     return false; // failed somehow
                 } else {
                     CommonUtils.storeCurrentUserURI(LoginActivity.this, newUserUri);
-                    Log.d(CommonUtils.TAG, "New user uri: " + newUserUri.toString());
-
                     isNewUser = true;
                     return true;
                 }

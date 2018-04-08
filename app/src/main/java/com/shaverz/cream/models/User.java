@@ -31,7 +31,6 @@ public class User {
         this.language = language;
         this.accountList = new ArrayList<>();
         this.overviewCustomization = new OverviewCustomization(visibleCustomization, orderCustomization);
-        Log.d(CommonUtils.TAG, "Made user, visibilities: " + overviewCustomization.getOverviewVisibilityList().toString());
     }
 
     public double getAmountSpentToday() {

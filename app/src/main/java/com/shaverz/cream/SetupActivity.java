@@ -71,7 +71,6 @@ public class SetupActivity extends AppCompatActivity implements View.OnClickList
         contentValues.put(DB.User.COLUMN_LANGUAGE, language);
 
         Uri currentUserURI = CommonUtils.getCurrentUserURI(this);
-        Log.d(CommonUtils.TAG, "URI: " + currentUserURI.toString());
 
         // set currency and language for user
         getContentResolver().update(

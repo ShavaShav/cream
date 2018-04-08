@@ -171,8 +171,6 @@ public class AddEditTransactionFragment extends Fragment {
             amount = -amount;
         }
 
-        Log.d(CommonUtils.TAG, "amount: " + amount);
-
         // create ContentValues object containing transactions's key-value pairs
         ContentValues contentValues = new ContentValues();
         contentValues.put(DB.Transaction.COLUMN_ACCOUNT_ID, account.getId());

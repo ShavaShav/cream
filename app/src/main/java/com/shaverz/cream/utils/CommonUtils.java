@@ -165,8 +165,6 @@ public class CommonUtils {
                 .insert(DB.Account.CONTENT_URI, contentValues)
                 .getLastPathSegment();
 
-        Log.d(CommonUtils.TAG, "New account created with id #" + accountID);
-
         contentValues.clear();
         contentValues.put(DB.Transaction.COLUMN_ACCOUNT_ID, accountID);
         contentValues.put(DB.Transaction.COLUMN_AMOUNT, openingBalance);
@@ -177,8 +175,6 @@ public class CommonUtils {
         String transactionID = context.getContentResolver()
                 .insert(DB.Transaction.CONTENT_URI, contentValues)
                 .getLastPathSegment();
-
-        Log.d(CommonUtils.TAG, "Opening balance added as transaction #" + transactionID);
 
         return DB.Account.buildAccountUri(Long.parseLong(accountID));
     }

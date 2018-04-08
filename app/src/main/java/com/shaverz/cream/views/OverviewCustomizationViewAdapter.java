@@ -127,7 +127,6 @@ public class OverviewCustomizationViewAdapter extends ArrayAdapter<String> {
                     @Override
                     public void onCheckedChanged(CompoundButton compoundButton, boolean isVisible) {
                         if (!reordering) {
-                            Log.d(CommonUtils.TAG, "pos " + position + " visible: " + isVisible);
                             isVisibleList.set(orderList.get(position), isVisible);
                             saveVisibilityList();
                         }
