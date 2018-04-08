@@ -1,6 +1,5 @@
 package com.shaverz.cream;
 
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -9,7 +8,6 @@ import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
-import android.util.Pair;
 import android.widget.TextView;
 
 import com.shaverz.cream.data.DB;
@@ -17,16 +15,11 @@ import com.shaverz.cream.models.Account;
 import com.shaverz.cream.models.Transaction;
 import com.shaverz.cream.models.User;
 
-import java.text.DateFormat;
 import java.text.NumberFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.TimeZone;
 
 public class Utils {
     public static final String DEFAULT_CURRENCY = "CAD";

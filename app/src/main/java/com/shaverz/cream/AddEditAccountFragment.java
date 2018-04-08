@@ -9,7 +9,6 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +16,6 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.shaverz.cream.data.DB;
 import com.shaverz.cream.models.Account;
-
-import org.w3c.dom.Text;
 
 public class AddEditAccountFragment extends Fragment {
 

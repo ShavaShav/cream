@@ -18,14 +18,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
 import com.shaverz.cream.models.Account;
-import com.shaverz.cream.models.OverviewCustomization;
 import com.shaverz.cream.models.Transaction;
 import com.shaverz.cream.models.User;
 import com.shaverz.cream.utils.ChartGenerator;
@@ -55,16 +52,13 @@ public class OverviewFragment extends Fragment implements
     private RecyclerView recentTransactionRecyclerView;
     private AccountRecyclerViewAdapter myAccountsAdapter;
     private RecyclerView myAccountsRecyclerView;
-    private LinearLayout incomeVsExpensesGraphFrame;
-    private LinearLayout expensesByCategoryGraphFrame;
-    private LinearLayout.LayoutParams chartParams = new LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, 1f);
 
     private ChartGenerator chartGen;
     private static final int USER_LOADER = 0;
     private List<View> cardViews;
 
     private PieChart incomeVsExpenseChart;
+    private PieChart expenseByCategoryChart;
 
     private boolean isAccountsCompact = true;
 
@@ -99,8 +93,6 @@ public class OverviewFragment extends Fragment implements
         cardViews.add(incomeVsExpenseCardView);
         cardViews.add(expenseByCategoryCardView);
 
-        incomeVsExpensesGraphFrame = mView.findViewById(R.id.incomevsexpense_chart_frame);
-        expensesByCategoryGraphFrame = mView.findViewById(R.id.expense_by_category_chart_frame);
         recentTransactionRecyclerView = (RecyclerView) mView.findViewById(R.id.recent_transactions_list);
         myAccountsRecyclerView = (RecyclerView) mView.findViewById(R.id.my_accounts_list);
 
@@ -110,6 +102,7 @@ public class OverviewFragment extends Fragment implements
         chartGen = new ChartGenerator(getContext());
 
         incomeVsExpenseChart = (PieChart) mView.findViewById(R.id.incomevsexpensePieChart);
+        expenseByCategoryChart = (PieChart) mView.findViewById(R.id.expenseByCategoryChart);
 
         // Attach settings menu to accounts card
         Toolbar accountsToolbar = (Toolbar) mView.findViewById(R.id.toolbar_accounts);
@@ -279,8 +272,6 @@ public class OverviewFragment extends Fragment implements
         List<Boolean> isVisibleList = data.getOverviewCustomization().getOverviewVisibilityList();
         List<Integer> orderList = data.getOverviewCustomization().getOverviewOrderList();
 
-        incomeVsExpensesGraphFrame.removeAllViews();
-        expensesByCategoryGraphFrame.removeAllViews();
         overviewFrame.removeAllViews();
 
         // add all views back in order, make some invisible
@@ -349,14 +340,14 @@ public class OverviewFragment extends Fragment implements
         incomeVsExpenseChart.setData(data);
         incomeVsExpenseChart.notifyDataSetChanged();
         incomeVsExpenseChart.invalidate();
-//        incomeVsExpensesGraphFrame.addView(chart, chartParams);
     }
 
     private void refreshExpensesByCategory() {
         //TODO: filter by daterange
-        Chart chart = chartGen.generateByCategoryChart(MainActivity.CURRENT_USER.getTransactions(), false);
-
-        expensesByCategoryGraphFrame.addView(chart, chartParams);
+        PieData data = chartGen.generateByCategoryData(MainActivity.CURRENT_USER.getTransactions(), false);
+        expenseByCategoryChart.setData(data);
+        expenseByCategoryChart.notifyDataSetChanged();
+        expenseByCategoryChart.invalidate();
     }
 
     private void refreshMyAccounts() {

@@ -218,7 +218,11 @@
                 android:elevation="@dimen/common_elevation"
                 android:minHeight="@dimen/min_chart_height"
                 android:orientation="vertical">
-
+                <com.github.mikephil.charting.charts.PieChart
+                    android:id="@+id/expenseByCategoryChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:minHeight="450dp" />
             </LinearLayout>
 
         </LinearLayout>

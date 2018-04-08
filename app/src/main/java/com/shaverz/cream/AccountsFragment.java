@@ -1,7 +1,6 @@
 package com.shaverz.cream;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -14,14 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.shaverz.cream.models.Account;
-import com.shaverz.cream.models.Transaction;
 import com.shaverz.cream.models.User;
 import com.shaverz.cream.views.AccountRecyclerViewAdapter;
-import com.shaverz.cream.views.TransactionRecyclerViewAdapter;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class AccountsFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<User>{

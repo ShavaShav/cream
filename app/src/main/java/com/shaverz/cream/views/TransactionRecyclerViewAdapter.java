@@ -11,11 +11,9 @@ import android.widget.TextView;
 import com.shaverz.cream.AddEditTransactionFragment;
 import com.shaverz.cream.MainActivity;
 import com.shaverz.cream.R;
-import com.shaverz.cream.TransactionFragment;
 import com.shaverz.cream.Utils;
 import com.shaverz.cream.models.Transaction;
 
-import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
 

@@ -9,14 +9,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.shaverz.cream.AddEditAccountFragment;
-import com.shaverz.cream.AddEditTransactionFragment;
 import com.shaverz.cream.MainActivity;
 import com.shaverz.cream.R;
 import com.shaverz.cream.Utils;
 import com.shaverz.cream.models.Account;
-import com.shaverz.cream.models.Transaction;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class AccountRecyclerViewAdapter extends RecyclerView.Adapter<AccountRecyclerViewAdapter.ViewHolder> {

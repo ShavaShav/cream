@@ -293,6 +293,15 @@ public class ChartGenerator {
     }
 
     public PieChart generateByCategoryChart(List<Transaction> transactions, boolean income) {
+        PieChart chart = new PieChart(context);
+
+        chart.setData(generateByCategoryData(transactions, income));
+        chart.invalidate();
+
+        return chart;
+    }
+
+    public PieData generateByCategoryData(List<Transaction> transactions, boolean income){
         Map<String, Double> catAmtMap = new HashMap<String, Double>();
 
         // Map income or expenses by category
@@ -333,13 +342,7 @@ public class ChartGenerator {
                 (income ? "Income" : "Expenses") + " by Category");
         set.setColors(graphColours, context);
 
-        PieData data = new PieData(set);
-        PieChart chart = new PieChart(context);
-
-        chart.setData(data);
-        chart.invalidate();
-
-        return chart;
+        return new PieData(set);
     }
 
     /*
@@ -347,35 +350,9 @@ public class ChartGenerator {
      */
 
     public PieChart generateIncomeVsExpensesChart(List<Transaction> transactions) {
-        Double totalExpenses = 0.00;
-        Double totalIncome = 0.00;
-
-        Log.d(Utils.TAG, "trans: " + transactions.size());
-
-        // Sum income and expenses
-        for (Transaction tx : transactions) {
-            double amount = tx.getAmount();
-            // Only count transactions according to flag
-            if (amount < 0.00) {
-                totalExpenses -= amount;
-            } else if (amount > 0.00) {
-                totalIncome += amount; // income
-            }
-        }
-
-        // Convert to chart entries
-        List<PieEntry> entries = new ArrayList<>();
-        entries.add(new PieEntry(totalIncome.floatValue(), "Income"));
-        entries.add(new PieEntry(totalExpenses.floatValue(), "Expenses"));
-
-        // Connect chart parts and return
-        PieDataSet set = new PieDataSet(entries, "Income vs Expenses");
-        set.setColors(new int[]{R.color.chart_green, R.color.chart_red}, context);
-
-        PieData data = new PieData(set);
         PieChart chart = new PieChart(context);
 
-        chart.setData(data);
+        chart.setData(generateIncomeVsExpensesData(transactions));
         chart.invalidate();
 
         return chart;
@@ -413,7 +390,7 @@ public class ChartGenerator {
     }
 
     /*
-        INCOME VS EXPENSES
+        DAILY BALANCE
      */
 
     public LineChart generateDailyBalanceChart(List<Transaction> transactions,

@@ -2,14 +2,11 @@ package com.shaverz.cream.views;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -18,7 +15,6 @@ import android.widget.TextView;
 
 import com.shaverz.cream.MainActivity;
 import com.shaverz.cream.R;
-import com.shaverz.cream.ReportViewFragment;
 import com.shaverz.cream.Utils;
 import com.shaverz.cream.data.DB;
 import com.shaverz.cream.models.OverviewCustomization;
