@@ -1,7 +1,6 @@
 package com.shaverz.cream.utils;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.Chart;

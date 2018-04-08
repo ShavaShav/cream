@@ -1,6 +1,5 @@
 package com.shaverz.cream.models;
 
-
 import android.os.Parcel;
 import android.os.Parcelable;
 

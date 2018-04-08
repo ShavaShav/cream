@@ -1,7 +1,5 @@
 package com.shaverz.cream.models;
 
-import android.util.Log;
-
 import com.shaverz.cream.utils.CommonUtils;
 
 import java.util.ArrayList;

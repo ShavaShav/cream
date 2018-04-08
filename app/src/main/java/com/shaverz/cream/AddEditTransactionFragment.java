@@ -9,7 +9,6 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +20,6 @@ import android.widget.ToggleButton;
 import com.shaverz.cream.data.DB;
 import com.shaverz.cream.models.Account;
 import com.shaverz.cream.models.Transaction;
-import com.shaverz.cream.utils.CommonUtils;
 
 public class AddEditTransactionFragment extends Fragment {
 

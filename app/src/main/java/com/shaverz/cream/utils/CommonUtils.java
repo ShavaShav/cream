@@ -26,13 +26,8 @@ import java.util.Locale;
 public class CommonUtils {
     public static final String DEFAULT_CURRENCY = "CAD";
     public static final String DEFAULT_LANGUAGE = "English";
-
     public static final String TAG = "Cream";
-
     public static final String PREF_USER_URI = "user_uri";
-    private static final String strSeparator = "__,__";
-
-    public static final boolean DEBUG = true;
 
     public static void storeCurrentUserURI(Context context, Uri userURI) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);

@@ -11,10 +11,8 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 
 import com.github.mikephil.charting.charts.Chart;
-import com.github.mikephil.charting.charts.LineChart;
 
 import com.shaverz.cream.models.Account;
-import com.shaverz.cream.models.Transaction;
 import com.shaverz.cream.utils.AnnualPeriod;
 import com.shaverz.cream.utils.ChartGenerator;
 import com.shaverz.cream.utils.RecentPeriod;

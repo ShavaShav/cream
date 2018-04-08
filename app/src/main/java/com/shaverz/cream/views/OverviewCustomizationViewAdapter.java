@@ -3,7 +3,6 @@ package com.shaverz.cream.views;
 import android.content.ContentValues;
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,6 @@ import android.widget.TextView;
 
 import com.shaverz.cream.MainActivity;
 import com.shaverz.cream.R;
-import com.shaverz.cream.utils.CommonUtils;
 import com.shaverz.cream.data.DB;
 import com.shaverz.cream.models.OverviewCustomization;
 

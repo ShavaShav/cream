@@ -1,26 +1,12 @@
 package com.shaverz.cream;
 
-import android.app.Activity;
-import android.content.Context;
-import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Switch;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.shaverz.cream.views.OverviewCustomizationViewAdapter;
-
-import java.util.List;
 
 public class OverviewCustomizationActivity extends AppCompatActivity {
 

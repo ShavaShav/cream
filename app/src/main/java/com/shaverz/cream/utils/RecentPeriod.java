@@ -4,7 +4,6 @@ import com.shaverz.cream.MainActivity;
 import com.shaverz.cream.models.Transaction;
 
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 
 /**
