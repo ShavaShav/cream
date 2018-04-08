@@ -80,6 +80,12 @@ public class MainActivity extends AppCompatActivity
             case R.id.nav_reports:
                 fragment = new ReportsFragment();
                 break;
+            case R.id.nav_exit:
+                // Kill the app, user will have to log back in
+                moveTaskToBack(true);
+                android.os.Process.killProcess(android.os.Process.myPid());
+                System.exit(0);
+                break;
             default:
                 changeFragment = false;
         }
