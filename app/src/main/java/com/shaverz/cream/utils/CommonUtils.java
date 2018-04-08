@@ -69,6 +69,8 @@ public class CommonUtils {
             return null;
         }
 
+        cursor.close();
+
         // Get accounts for current user
         cursor = context.getContentResolver().query(
                 DB.Account.CONTENT_URI,
@@ -88,7 +90,7 @@ public class CommonUtils {
         }
 
         for (Account account : accounts) {
-
+            if (cursor != null) cursor.close();
             // get transactions for account
             cursor = context.getContentResolver().query(
                     DB.Transaction.CONTENT_URI,
