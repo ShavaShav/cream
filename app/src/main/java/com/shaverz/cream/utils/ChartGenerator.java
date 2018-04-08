@@ -381,6 +381,37 @@ public class ChartGenerator {
         return chart;
     }
 
+    public PieData generateIncomeVsExpensesData(List<Transaction> transactions) {
+        Double totalExpenses = 0.00;
+        Double totalIncome = 0.00;
+
+        Log.d(Utils.TAG, "trans: " + transactions.size());
+
+        // Sum income and expenses
+        for (Transaction tx : transactions) {
+            double amount = tx.getAmount();
+            // Only count transactions according to flag
+            if (amount < 0.00) {
+                totalExpenses -= amount;
+            } else if (amount > 0.00) {
+                totalIncome += amount; // income
+            }
+        }
+
+        // Convert to chart entries
+        List<PieEntry> entries = new ArrayList<>();
+        entries.add(new PieEntry(totalIncome.floatValue(), "Income"));
+        entries.add(new PieEntry(totalExpenses.floatValue(), "Expenses"));
+
+        // Connect chart parts and return
+        PieDataSet set = new PieDataSet(entries, "Income vs Expenses");
+        set.setColors(new int[]{R.color.chart_green, R.color.chart_red}, context);
+
+        PieData data = new PieData(set);
+
+        return data;
+    }
+
     /*
         INCOME VS EXPENSES
      */

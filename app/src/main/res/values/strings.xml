@@ -15,6 +15,8 @@
     <string name="titlebar_overview">OVERVIEW</string>
     <string name="titlebar_transactions">TRANSACTIONS</string>
     <string name="titlebar_reports">VIEW REPORTS</string>
+    <string name="titlebar_overview_customization">OVERVIEW CUSTOMIZATION</string>
+
     <string name="title_activity_setup">SetupActivity</string>
     <string name="action_settings">Settings</string>
 

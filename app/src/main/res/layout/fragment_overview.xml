@@ -162,6 +162,7 @@
                 android:name="com.shaverz.cream.ReportViewFragment"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+
                 android:layout_gravity="center|fill"
                 android:layout_weight="1"
                 android:background="@drawable/common_border"
@@ -169,7 +170,14 @@
                 android:minHeight="@dimen/min_chart_height"
                 android:orientation="vertical">
 
+
+                <com.github.mikephil.charting.charts.PieChart
+                    android:id="@+id/incomevsexpensePieChart"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:minHeight="450dp" />
             </LinearLayout>
+
         </LinearLayout>
 
         <LinearLayout
@@ -212,6 +220,7 @@
                 android:orientation="vertical">
 
             </LinearLayout>
+
         </LinearLayout>
 
     </LinearLayout>
