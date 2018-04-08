@@ -35,6 +35,7 @@ public class Utils {
     public static final String TAG = "Cream";
 
     public static final String PREF_USER_URI = "user_uri";
+    private static final String strSeparator = "__,__";
 
     public static final boolean DEBUG = true;
 
@@ -69,8 +70,9 @@ public class Utils {
             String name = cursor.getString(cursor.getColumnIndex(DB.User.COLUMN_USERNAME));
             String currency = cursor.getString(cursor.getColumnIndex(DB.User.COLUMN_CURRENCY));
             String language = cursor.getString(cursor.getColumnIndex(DB.User.COLUMN_LANGUAGE));
-
-            user = new User(userId, name, currency, language);
+            String overviewVisibilityString = cursor.getString(cursor.getColumnIndex(DB.User.COLUMN_OVERVIEW_VISIBILITY));
+            String overviewOrderString = cursor.getString(cursor.getColumnIndex(DB.User.COLUMN_OVERVIEW_ORDER));
+            user = new User(userId, name, currency, language, overviewVisibilityString, overviewOrderString);
         } else {
             Log.e(TAG, "No user found with id: " + userId);
             if (cursor != null) cursor.close();
@@ -198,6 +200,5 @@ public class Utils {
             return fetchUserModel(super.getContext());
         }
     }
-
 
 }

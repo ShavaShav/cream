@@ -25,6 +25,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.shaverz.cream.data.DB;
+import com.shaverz.cream.models.OverviewCustomization;
 
 /**
  * A login screen that offers login via username/password.
@@ -225,6 +226,11 @@ public class LoginActivity extends AppCompatActivity {
                 contentValues.put(DB.User.COLUMN_PASSWORD, mPassword);
                 contentValues.put(DB.User.COLUMN_CURRENCY, Utils.DEFAULT_CURRENCY);
                 contentValues.put(DB.User.COLUMN_LANGUAGE, Utils.DEFAULT_LANGUAGE);
+
+                // Use default overview customization options
+                OverviewCustomization oc = new OverviewCustomization();
+                contentValues.put(DB.User.COLUMN_OVERVIEW_ORDER, oc.getOrderDBString());
+                contentValues.put(DB.User.COLUMN_OVERVIEW_VISIBILITY, oc.getVisibleDBString());
 
                 // use Activity's ContentResolver to invoke
                 // insert on the AppContentProvider

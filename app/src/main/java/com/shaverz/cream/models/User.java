@@ -1,8 +1,11 @@
 package com.shaverz.cream.models;
 
+import android.util.Log;
+
 import com.shaverz.cream.Utils;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -18,13 +21,29 @@ public class User {
     private String language;
 
     private List<Account> accountList;
+    private OverviewCustomization overviewCustomization;
 
-    public User(String id, String username, String currency, String language) {
+    public User(String id, String username, String currency, String language,
+                String visibleCustomization, String orderCustomization) {
         this.id = id;
         this.username = username;
         this.currencyLocale = Utils.convertToLocale(currency);
         this.language = language;
         this.accountList = new ArrayList<>();
+        this.overviewCustomization = new OverviewCustomization(visibleCustomization, orderCustomization);
+        Log.d(Utils.TAG, "Made user, visibilities: " + overviewCustomization.getOverviewVisibilityList().toString());
+    }
+
+    public double getAmountSpentToday() {
+        Calendar dayAgo = Calendar.getInstance();
+        dayAgo.add(Calendar.DAY_OF_YEAR, -1);
+        double amount = 0.0;
+        for (Transaction tx : getTransactions()) {
+            if (tx.getDate().after(dayAgo) && tx.getAmount() < 0.0) {
+                amount += tx.getAmount();
+            }
+        }
+        return -(amount);
     }
 
     public double getBalance () {
@@ -99,4 +118,9 @@ public class User {
         }
         return sb.toString();
     }
+
+    public OverviewCustomization getOverviewCustomization() {
+        return overviewCustomization;
+    }
+
 }

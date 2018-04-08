@@ -27,7 +27,9 @@ class AppDatabaseHelper extends SQLiteOpenHelper {
                    User.COLUMN_USERNAME + " text not null unique, " +
                    User.COLUMN_PASSWORD + " text not null, " +
                    User.COLUMN_CURRENCY + " text, " +
-                   User.COLUMN_LANGUAGE + " text);";
+                   User.COLUMN_LANGUAGE + " text, " +
+                   User.COLUMN_OVERVIEW_ORDER + " text, " +
+                   User.COLUMN_OVERVIEW_VISIBILITY + " text);";
        db.execSQL(CREATE_USERS_TABLE);
 
        // SQL for creating the accounts table
