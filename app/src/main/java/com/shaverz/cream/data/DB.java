@@ -68,6 +68,8 @@ public class DB {
       public static final String COLUMN_PASSWORD = "password";
       public static final String COLUMN_CURRENCY = "currency";
       public static final String COLUMN_LANGUAGE = "language";
+      public static final String COLUMN_OVERVIEW_ORDER = "overview_order";
+      public static final String COLUMN_OVERVIEW_VISIBILITY = "overview_visibility";
 
 
       // creates a Uri for a specific user

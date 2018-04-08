@@ -1,5 +1,8 @@
 package com.shaverz.cream;
 
+
+import android.content.Intent;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -7,6 +10,7 @@ import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,18 +19,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.Chart;
 import com.shaverz.cream.models.Account;
+import com.shaverz.cream.models.OverviewCustomization;
 import com.shaverz.cream.models.Transaction;
 import com.shaverz.cream.models.User;
 import com.shaverz.cream.utils.ChartGenerator;
 import com.shaverz.cream.views.AccountRecyclerViewAdapter;
 import com.shaverz.cream.views.TransactionRecyclerViewAdapter;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static android.view.View.GONE;
 
 public class OverviewFragment extends Fragment implements
         LoaderManager.LoaderCallbacks<User>{
@@ -35,22 +44,30 @@ public class OverviewFragment extends Fragment implements
     private LinearLayout accountsCardView;
     private LinearLayout transactionsCardView;
     private LinearLayout incomeVsExpenseCardView;
+    private LinearLayout expenseByCategoryCardView;
+    private LinearLayout highSpendingAlertsCardView;
+    private LinearLayout overviewFrame;
 
+    private TextView highSpendingTextView;
     private TransactionRecyclerViewAdapter recentTransactionsAdapter;
     private RecyclerView recentTransactionRecyclerView;
     private AccountRecyclerViewAdapter myAccountsAdapter;
     private RecyclerView myAccountsRecyclerView;
-    private RelativeLayout incomeVsExpensesGraphFrame;
-    private RelativeLayout.LayoutParams chartParams = new RelativeLayout.LayoutParams(
-            RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+    private LinearLayout incomeVsExpensesGraphFrame;
+    private LinearLayout expensesByCategoryGraphFrame;
+    private LinearLayout.LayoutParams chartParams = new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, 1f);
     private ChartGenerator chartGen;
     private static final int USER_LOADER = 0;
+    private List<View> cardViews;
 
     private boolean isAccountsCompact = true;
 
     public OverviewFragment() {
 
     }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,11 +77,26 @@ public class OverviewFragment extends Fragment implements
 
         // Fragment has own menu for customization
         setHasOptionsMenu(true);
+
+        highSpendingAlertsCardView = mView.findViewById(R.id.card_view_high_spending_alert);
         accountsCardView = mView.findViewById(R.id.card_view_my_accounts);
         transactionsCardView = mView.findViewById(R.id.card_view_transactions);
         incomeVsExpenseCardView = mView.findViewById(R.id.card_view_income_vs_expense);
-        incomeVsExpensesGraphFrame = mView.findViewById(R.id.incomevsexpense_chart_frame);
+        expenseByCategoryCardView = mView.findViewById(R.id.card_view_expense_by_category);
+        overviewFrame = mView.findViewById(R.id.overview_frame);
+        highSpendingTextView = mView.findViewById(R.id.textview_high_spending);
 
+        // Add in order according to R.arrays.overview_customization
+        cardViews = new ArrayList<>();
+        cardViews.add(highSpendingAlertsCardView);
+        cardViews.add(accountsCardView);
+        cardViews.add(transactionsCardView);
+        cardViews.add(incomeVsExpenseCardView);
+        cardViews.add(expenseByCategoryCardView);
+
+
+        incomeVsExpensesGraphFrame = mView.findViewById(R.id.incomevsexpense_chart_frame);
+        expensesByCategoryGraphFrame = mView.findViewById(R.id.expense_by_category_chart_frame);
         recentTransactionRecyclerView = (RecyclerView) mView.findViewById(R.id.recent_transactions_list);
         myAccountsRecyclerView = (RecyclerView) mView.findViewById(R.id.my_accounts_list);
 
@@ -82,9 +114,10 @@ public class OverviewFragment extends Fragment implements
                 public boolean onMenuItemClick(MenuItem menuItem) {
                     switch (menuItem.getItemId()) {
                         case R.id.action_hide:
-                            accountsCardView.setVisibility(View.GONE);
+                            startOverViewCustomizationActivity();
                             break;
                         case R.id.action_reorder:
+                            startOverViewCustomizationActivity();
                             break;
                         case R.id.action_reorder_account:
                             break;
@@ -118,9 +151,10 @@ public class OverviewFragment extends Fragment implements
                 public boolean onMenuItemClick(MenuItem menuItem) {
                     switch (menuItem.getItemId()) {
                         case R.id.action_hide:
-                            transactionsCardView.setVisibility(View.GONE);
+                            startOverViewCustomizationActivity();
                             break;
                         case R.id.action_reorder:
+                            startOverViewCustomizationActivity();
                             break;
                         case R.id.action_settings:
                             break;
@@ -139,9 +173,10 @@ public class OverviewFragment extends Fragment implements
                 public boolean onMenuItemClick(MenuItem menuItem) {
                     switch (menuItem.getItemId()) {
                         case R.id.action_hide:
-                            incomeVsExpenseCardView.setVisibility(View.GONE);
+                            startOverViewCustomizationActivity();
                             break;
                         case R.id.action_reorder:
+                            startOverViewCustomizationActivity();
                             break;
                         case R.id.action_settings:
                             break;
@@ -150,6 +185,31 @@ public class OverviewFragment extends Fragment implements
                 }
             });
         }
+
+        // Attach settings menu to income vs expenses card
+        Toolbar expenseByCategoryBar = (Toolbar) mView.findViewById(R.id.toolbar_expense_by_category);
+        if (expenseByCategoryBar != null) {
+            expenseByCategoryBar.inflateMenu(R.menu.menu_overview_expense_by_category);
+            expenseByCategoryBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem menuItem) {
+                    switch (menuItem.getItemId()) {
+                        case R.id.action_hide:
+                            startOverViewCustomizationActivity();
+                            break;
+                        case R.id.action_reorder:
+                            startOverViewCustomizationActivity();
+                            break;
+                        case R.id.action_settings:
+                            break;
+                    }
+                    return true;
+                }
+            });
+        }
+
+        // Remove all views, will add back in according to overview settings
+        overviewFrame.removeAllViews();
 
         getLoaderManager().initLoader(USER_LOADER, null, this).forceLoad();
 
@@ -182,6 +242,7 @@ public class OverviewFragment extends Fragment implements
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.action_customize:
+                startOverViewCustomizationActivity();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -191,6 +252,8 @@ public class OverviewFragment extends Fragment implements
     @Override
     public void onResume(){
         super.onResume();
+
+        getLoaderManager().restartLoader(USER_LOADER, null, this).forceLoad();
 
         // Set title bar
         ((MainActivity) getActivity())
@@ -207,16 +270,53 @@ public class OverviewFragment extends Fragment implements
         // refresh current user
         MainActivity.CURRENT_USER = data;
 
-        refreshRecentTransactions();
+        List<Boolean> isVisibleList = data.getOverviewCustomization().getOverviewVisibilityList();
+        List<Integer> orderList = data.getOverviewCustomization().getOverviewOrderList();
+
+        incomeVsExpensesGraphFrame.removeAllViews();
+        expensesByCategoryGraphFrame.removeAllViews();
+        overviewFrame.removeAllViews();
+
+        // add all views back in order, make some invisible
+        for (int index : orderList) {
+            overviewFrame.addView(cardViews.get(index));
+            if (isVisibleList.get(index))
+                cardViews.get(index).setVisibility(View.VISIBLE);
+            else
+                cardViews.get(index).setVisibility(GONE);
+
+        }
+
+        refreshHighSpendingAlert();
         refreshMyAccounts();
+        refreshRecentTransactions();
         refreshIncomeVsExpenses();
+        refreshExpensesByCategory();
     }
 
     @Override
     public void onLoaderReset(Loader<User> loader) {
         recentTransactionRecyclerView.setAdapter(null);
         myAccountsRecyclerView.setAdapter(null);
-        incomeVsExpensesGraphFrame.removeAllViews();
+    }
+
+    public void startOverViewCustomizationActivity() {
+        Intent i = new Intent(getContext(),OverviewCustomizationActivity.class);
+        startActivity(i);
+    }
+
+    private void refreshHighSpendingAlert() {
+        double todaysExpense = MainActivity.CURRENT_USER.getAmountSpentToday();
+        Log.d(Utils.TAG, "todays expense: " + todaysExpense);
+        if (todaysExpense >= 500.0) {
+            String message = "You have spent " + NumberFormat
+                    .getCurrencyInstance(MainActivity.CURRENT_USER.getCurrencyLocale())
+                    .format(todaysExpense) + " today!";
+            highSpendingTextView.setText(message);
+            highSpendingTextView.setSelected(true);
+        } else {
+            highSpendingAlertsCardView.setVisibility(GONE); // hide self, no alert to show
+        }
     }
 
     private void refreshRecentTransactions() {
@@ -240,6 +340,13 @@ public class OverviewFragment extends Fragment implements
         Chart chart = chartGen.generateIncomeVsExpensesChart(MainActivity.CURRENT_USER.getTransactions());
 
         incomeVsExpensesGraphFrame.addView(chart, chartParams);
+    }
+
+    private void refreshExpensesByCategory() {
+        //TODO: filter by daterange
+        Chart chart = chartGen.generateByCategoryChart(MainActivity.CURRENT_USER.getTransactions(), false);
+
+        expensesByCategoryGraphFrame.addView(chart, chartParams);
     }
 
     private void refreshMyAccounts() {

@@ -25,4 +25,12 @@
         <item>Pay</item>
     </string-array>
 
+    <string-array name="overview_items">
+        <item>High Spending Alerts</item>
+        <item>My Accounts</item>
+        <item>Recent Transactions</item>
+        <item>Income Vs Expense</item>
+        <item>Expense By Category</item>
+    </string-array>
+
 </resources>
