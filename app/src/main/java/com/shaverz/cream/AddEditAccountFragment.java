@@ -10,6 +10,9 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -22,6 +25,7 @@ public class AddEditAccountFragment extends Fragment {
 
     private Account account; // Account object
     private boolean addingNewAccount = true; // adding (true) or editing
+    private boolean deleteWindowOpen;
 
     // EditTexts for account information
 
@@ -72,6 +76,7 @@ public class AddEditAccountFragment extends Fragment {
         }
 
         nameTextLayout.requestFocus(); // focus on name by default
+        deleteWindowOpen = false; // user has to click delete button to open
 
         return mView;
     }
@@ -83,6 +88,24 @@ public class AddEditAccountFragment extends Fragment {
         // Set title bar
         ((MainActivity) getActivity())
                 .setActionBarTitle((addingNewAccount ? "Add" : "Edit") + " Account");
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (!addingNewAccount)
+            inflater.inflate(R.menu.menu_add_edit, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.action_delete:
+                deleteAccount();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     // responds to event generated when user saves a contact
@@ -97,6 +120,44 @@ public class AddEditAccountFragment extends Fragment {
                     saveAccount(); // save contact to the database
                 }
             };
+
+    private void deleteAccount() {
+        if (!deleteWindowOpen) {
+            deleteWindowOpen = true;
+
+            new android.os.Handler().postDelayed(
+                    new Runnable() {
+                        public void run() {
+                            if (deleteWindowOpen) {
+                                deleteWindowOpen = false; // close window after 1 second - user must double click
+                                Snackbar.make(getView(), getString(R.string.delete_confirmation),
+                                        Snackbar.LENGTH_SHORT).show();
+                            }
+                        }
+                    },1000);
+
+        } else {
+            // only delete if existing transaction
+            if (!addingNewAccount) {
+                int numDeletions = getContext().getContentResolver().delete(
+                        DB.Account.buildAccountUri(Long.parseLong(account.getId())),
+                        null,
+                        null);
+
+                if (numDeletions > 0) {
+                    Snackbar.make(this.getView(), getString(R.string.delete_account_ok),
+                            Snackbar.LENGTH_LONG).show();
+                    deleteWindowOpen = false;
+                    // go back to wherever we were
+                    getFragmentManager().popBackStack();
+                } else {
+                    Snackbar.make(this.getView(), getString(R.string.delete_account_fail),
+                            Snackbar.LENGTH_LONG).show();
+                }
+            }
+        }
+    }
+
 
     // saves contact information to the database
     private void saveAccount() {

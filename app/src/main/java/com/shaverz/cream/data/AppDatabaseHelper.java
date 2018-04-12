@@ -40,7 +40,7 @@ class AppDatabaseHelper extends SQLiteOpenHelper {
           Account.COLUMN_NAME + " text not null, " +
           Account.COLUMN_USER_ID + " text not null, " +
           "FOREIGN KEY (" + Account.COLUMN_USER_ID + ") " +
-             "REFERENCES " + User.TABLE_NAME + "(_id)" +
+             "REFERENCES " + User.TABLE_NAME + "(_id) ON DELETE CASCADE " +
           "CONSTRAINT user_account UNIQUE (" +
              Account.COLUMN_USER_ID + ", " + Account.COLUMN_NAME + "));";
        db.execSQL(CREATE_ACCOUNTS_TABLE);
@@ -55,7 +55,7 @@ class AppDatabaseHelper extends SQLiteOpenHelper {
            Transaction.COLUMN_CATEGORY + " text not null, " +
            Transaction.COLUMN_PAYEE + " text not null, " +
            "FOREIGN KEY (" + Transaction.COLUMN_ACCOUNT_ID + ") " +
-           "REFERENCES " + Account.TABLE_NAME + "(_id))";
+           "REFERENCES " + Account.TABLE_NAME + "(_id) ON DELETE CASCADE)";
 
        db.execSQL(CREATE_TRANSACTIONS_TABLE);
    }
