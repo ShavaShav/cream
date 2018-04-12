@@ -1,6 +1,7 @@
 package com.shaverz.cream;
 
 
+import android.content.DialogInterface;
 import android.content.Intent;
 
 import android.os.Bundle;
@@ -8,15 +9,18 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -29,6 +33,8 @@ import com.shaverz.cream.models.Transaction;
 import com.shaverz.cream.models.User;
 import com.shaverz.cream.utils.ChartGenerator;
 import com.shaverz.cream.utils.CommonUtils;
+import com.shaverz.cream.utils.Period;
+import com.shaverz.cream.utils.RecentPeriod;
 import com.shaverz.cream.views.AccountRecyclerViewAdapter;
 import com.shaverz.cream.views.TransactionRecyclerViewAdapter;
 
@@ -58,9 +64,15 @@ public class OverviewFragment extends Fragment implements
     private RecyclerView myAccountsRecyclerView;
     private FloatingActionsMenu overviewFAB;
     private TextView totalBalanceTextView;
+    private AlertDialog.Builder incomeVsExpensePeriodDialog;
+    private AlertDialog.Builder expenseByCategoryPeriodDialog;
+    private TextView incomeVsExpensePeriodTextView;
+    private TextView expenseByCategoryPeriodTextView;
 
     private ChartGenerator chartGen;
     private PieChart incomeVsExpenseChart;
+    private Period.DateRange incomeVsExpensePeriod;
+    private Period.DateRange expenseByCategoryPeriod;
     private PieChart expenseByCategoryChart;
 
     private static final int USER_LOADER = 0;
@@ -69,8 +81,6 @@ public class OverviewFragment extends Fragment implements
     public OverviewFragment() {
 
     }
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -90,6 +100,8 @@ public class OverviewFragment extends Fragment implements
         highSpendingTextView = mView.findViewById(R.id.textview_high_spending);
         overviewFAB = mView.findViewById(R.id.overviewFab);
         totalBalanceTextView = mView.findViewById(R.id.totalBalanceTextView);
+        incomeVsExpensePeriodTextView = mView.findViewById(R.id.incomeVsExpensePeriod);
+        expenseByCategoryPeriodTextView = mView.findViewById(R.id.expenseByCategoryPeriod);
 
         // Add in order according to R.arrays.overview_customization
         cardViews = new ArrayList<>();
@@ -109,6 +121,53 @@ public class OverviewFragment extends Fragment implements
 
         incomeVsExpenseChart = (PieChart) mView.findViewById(R.id.incomevsexpensePieChart);
         expenseByCategoryChart = (PieChart) mView.findViewById(R.id.expenseByCategoryChart);
+
+        incomeVsExpensePeriodDialog = new AlertDialog.Builder(getContext());
+        incomeVsExpensePeriodDialog.setIcon(R.drawable.ic_time);
+        incomeVsExpensePeriodDialog.setTitle(R.string.period_title);
+
+        expenseByCategoryPeriodDialog = new AlertDialog.Builder(getContext());
+        expenseByCategoryPeriodDialog.setIcon(R.drawable.ic_time);
+        expenseByCategoryPeriodDialog.setTitle(R.string.period_title);
+
+        final Period recentPeriod = new RecentPeriod();
+        final ArrayAdapter<String> periodArrayAdapter = new ArrayAdapter<>(getContext(),
+                android.R.layout.select_dialog_singlechoice,
+                recentPeriod.getPeriodStrings());
+
+        incomeVsExpensePeriodDialog.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        incomeVsExpensePeriodDialog.setAdapter(periodArrayAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String periodString = periodArrayAdapter.getItem(which);
+                incomeVsExpensePeriodTextView.setText(periodString);
+                incomeVsExpensePeriod = recentPeriod.getDateRange(periodString);
+                refreshIncomeVsExpenses();
+            }
+        });
+
+        expenseByCategoryPeriodDialog.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        expenseByCategoryPeriodDialog.setAdapter(periodArrayAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String periodString = periodArrayAdapter.getItem(which);
+                expenseByCategoryPeriodTextView.setText(periodString);
+                expenseByCategoryPeriod = recentPeriod.getDateRange(periodString);
+                refreshExpensesByCategory();
+            }
+        });
 
         // Attach settings menu to accounts card
         Toolbar accountsToolbar = (Toolbar) mView.findViewById(R.id.toolbar_accounts);
@@ -159,8 +218,6 @@ public class OverviewFragment extends Fragment implements
                         case R.id.action_reorder:
                             startOverViewCustomizationActivity();
                             break;
-                        case R.id.action_settings:
-                            break;
                     }
                     return true;
                 }
@@ -182,6 +239,7 @@ public class OverviewFragment extends Fragment implements
                             startOverViewCustomizationActivity();
                             break;
                         case R.id.action_settings:
+                            incomeVsExpensePeriodDialog.show();
                             break;
                     }
                     return true;
@@ -204,6 +262,7 @@ public class OverviewFragment extends Fragment implements
                             startOverViewCustomizationActivity();
                             break;
                         case R.id.action_settings:
+                            expenseByCategoryPeriodDialog.show();
                             break;
                     }
                     return true;
@@ -378,16 +437,48 @@ public class OverviewFragment extends Fragment implements
     }
 
     private void refreshIncomeVsExpenses() {
-        //TODO: filter by daterange
-        PieData data = chartGen.generateIncomeVsExpensesData(MainActivity.CURRENT_USER.getTransactions());
+        List<Transaction> transactionList = MainActivity.CURRENT_USER.getTransactions();
+        List<Transaction> transactionsToChart;
+        if (incomeVsExpensePeriod == null) {
+            // no period, no further filter
+            transactionsToChart = transactionList;
+            incomeVsExpensePeriodTextView.setText("All");
+        } else {
+            // only show data for transactions within date range -> makes a copy so user models aren't overwritten
+            transactionsToChart = new ArrayList<>();
+            for (Transaction t : transactionList) {
+                if (t.getDate().after(incomeVsExpensePeriod.startDate)
+                        && t.getDate().before(incomeVsExpensePeriod.endDate)) {
+                    transactionsToChart.add(t);
+                }
+            }
+        }
+
+        PieData data = chartGen.generateIncomeVsExpensesData(transactionsToChart);
         incomeVsExpenseChart.setData(data);
         incomeVsExpenseChart.notifyDataSetChanged();
         incomeVsExpenseChart.invalidate();
     }
 
     private void refreshExpensesByCategory() {
-        //TODO: filter by daterange
-        PieData data = chartGen.generateByCategoryData(MainActivity.CURRENT_USER.getTransactions(), false);
+        List<Transaction> transactionList = MainActivity.CURRENT_USER.getTransactions();
+        List<Transaction> transactionsToChart;
+        if (expenseByCategoryPeriod == null) {
+            // no period, no further filter
+            transactionsToChart = transactionList;
+            expenseByCategoryPeriodTextView.setText("All");
+        } else {
+            // only show data for transactions within date range -> makes a copy so user models aren't overwritten
+            transactionsToChart = new ArrayList<>();
+            for (Transaction t : transactionList) {
+                if (t.getDate().after(expenseByCategoryPeriod.startDate)
+                        && t.getDate().before(expenseByCategoryPeriod.endDate)) {
+                    transactionsToChart.add(t);
+                }
+            }
+        }
+
+        PieData data = chartGen.generateByCategoryData(transactionsToChart, false);
         expenseByCategoryChart.setData(data);
         expenseByCategoryChart.notifyDataSetChanged();
         expenseByCategoryChart.invalidate();

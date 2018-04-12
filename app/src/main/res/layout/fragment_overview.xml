@@ -183,6 +183,13 @@
                         android:textAppearance="?android:attr/textAppearanceLarge" />
                 </android.support.v7.widget.Toolbar>
 
+                <TextView
+                    android:id="@+id/incomeVsExpensePeriod"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:textSize="@dimen/text_account" />
+
                 <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
                     xmlns:tools="http://schemas.android.com/tools"
                     android:id="@+id/incomevsexpense_chart_frame"
@@ -232,6 +239,13 @@
                         android:text="@string/title_expense_by_category"
                         android:textAppearance="?android:attr/textAppearanceLarge" />
                 </android.support.v7.widget.Toolbar>
+
+                <TextView
+                    android:id="@+id/expenseByCategoryPeriod"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:textSize="@dimen/text_account" />
 
                 <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
                     xmlns:tools="http://schemas.android.com/tools"
