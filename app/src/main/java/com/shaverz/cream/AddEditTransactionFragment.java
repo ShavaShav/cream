@@ -89,28 +89,42 @@ public class AddEditTransactionFragment extends Fragment {
 
         Bundle arguments = getArguments(); // null if creating new contact
 
-        // get Transaction from args
+        // get Transaction or income/expense from args
         if (arguments != null) {
-            addingNewTransaction = false;
-            transaction = arguments.getParcelable(MainActivity.TRANSACTION_OBJECT);
 
-            if (transaction.getAmount() < 0.00) {
-                incomeToggle.setChecked(false); // expense
-            } else {
-                incomeToggle.setChecked(true); // income
+            if (arguments.containsKey(MainActivity.IS_INCOME_BOOLEAN)) {
+                boolean isIncome = arguments.getBoolean(MainActivity.IS_INCOME_BOOLEAN);
+                if (isIncome) {
+                    incomeToggle.setChecked(true); // income
+                } else {
+                    incomeToggle.setChecked(false); // expense
+                }
             }
 
-            // find account by name from transaction, in order to set spinner
-            Account toSet = MainActivity.CURRENT_USER.findAccountByName(transaction.getAccount());
-            int accountPosition = accountArrayAdapter.getPosition(toSet);
-            accountSpinner.setSelection(accountPosition);
+            // transaction object will override any is income toggle
+            if (arguments.containsKey(MainActivity.TRANSACTION_OBJECT)) {
+                addingNewTransaction = false;
+                transaction = arguments.getParcelable(MainActivity.TRANSACTION_OBJECT);
 
-            // set spinner by transaction category
-            int categoryPosition = categoryArrayAdapter.getPosition(transaction.getCategory());
-            categorySpinner.setSelection(categoryPosition);
+                if (transaction.getAmount() < 0.00) {
+                    incomeToggle.setChecked(false); // expense
+                } else {
+                    incomeToggle.setChecked(true); // income
+                }
 
-            amountTextLayout.getEditText().setText(String.valueOf(Math.abs(transaction.getAmount())));
-            payerPayeeTextLayout.getEditText().setText(transaction.getPayee());
+                // find account by name from transaction, in order to set spinner
+                Account toSet = MainActivity.CURRENT_USER.findAccountByName(transaction.getAccount());
+                int accountPosition = accountArrayAdapter.getPosition(toSet);
+                accountSpinner.setSelection(accountPosition);
+
+                // set spinner by transaction category
+                int categoryPosition = categoryArrayAdapter.getPosition(transaction.getCategory());
+                categorySpinner.setSelection(categoryPosition);
+
+                amountTextLayout.getEditText().setText(String.valueOf(Math.abs(transaction.getAmount())));
+                payerPayeeTextLayout.getEditText().setText(transaction.getPayee());
+            }
+
         }
 
         return mView;

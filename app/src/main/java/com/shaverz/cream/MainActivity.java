@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity
     public static User CURRENT_USER;
     public static final String TRANSACTION_OBJECT = "transaction";
     public static final String ACCOUNT_OBJECT = "account";
+    public static final String IS_INCOME_BOOLEAN = "is_income";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

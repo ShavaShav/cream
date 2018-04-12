@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,6 +20,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
 import com.shaverz.cream.models.Account;
@@ -53,6 +56,7 @@ public class OverviewFragment extends Fragment implements
     private RecyclerView recentTransactionRecyclerView;
     private AccountRecyclerViewAdapter myAccountsAdapter;
     private RecyclerView myAccountsRecyclerView;
+    private FloatingActionsMenu overviewFAB;
 
     private ChartGenerator chartGen;
     private PieChart incomeVsExpenseChart;
@@ -83,6 +87,7 @@ public class OverviewFragment extends Fragment implements
         expenseByCategoryCardView = mView.findViewById(R.id.card_view_expense_by_category);
         overviewFrame = mView.findViewById(R.id.overview_frame);
         highSpendingTextView = mView.findViewById(R.id.textview_high_spending);
+        overviewFAB = mView.findViewById(R.id.overviewFab);
 
         // Add in order according to R.arrays.overview_customization
         cardViews = new ArrayList<>();
@@ -206,6 +211,46 @@ public class OverviewFragment extends Fragment implements
 
         // Remove all views, will add back in according to overview settings
         overviewFrame.removeAllViews();
+
+        final FloatingActionButton addIncomeButton = mView.findViewById(R.id.add_income_button);
+        addIncomeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle arguments = new Bundle();
+                arguments.putBoolean(MainActivity.IS_INCOME_BOOLEAN, true);
+
+                AddEditTransactionFragment fragment = new AddEditTransactionFragment();
+                fragment.setArguments(arguments);
+
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, fragment)
+                        .addToBackStack(null)
+                        .commit();
+
+                overviewFAB.collapse();
+            }
+        });
+
+        final FloatingActionButton addExpenseButton = mView.findViewById(R.id.add_expense_button);
+        addExpenseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle arguments = new Bundle();
+                arguments.putBoolean(MainActivity.IS_INCOME_BOOLEAN, false);
+
+                AddEditTransactionFragment fragment = new AddEditTransactionFragment();
+                fragment.setArguments(arguments);
+
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, fragment)
+                        .addToBackStack(null)
+                        .commit();
+
+                overviewFAB.collapse();
+            }
+        });
 
         getLoaderManager().initLoader(USER_LOADER, null, this).forceLoad();
 

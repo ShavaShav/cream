@@ -26,4 +26,16 @@
     <color name="chart_yellow">#fff75f</color>
     <color name="chart_black">#282828</color>
 
+    <!-- FAB menu colors -->
+    <color name="black_semi_transparent">#B2000000</color>
+    <color name="background">#e5e5e5</color>
+    <color name="half_black">#808080</color>
+    <color name="dark_grey">#383838</color>
+    <color name="white">#fafafa</color>
+    <color name="white_pressed">#f1f1f1</color>
+    <color name="red">#ea4d62</color>
+    <color name="red_pressed">#bf0228</color>
+    <color name="green">#4cd765</color>
+    <color name="green_pressed">#0ca32f</color>
+
 </resources>

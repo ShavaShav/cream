@@ -105,7 +105,7 @@ public class TransactionFragment extends Fragment implements
                 // no args for regular add
                 AddEditTransactionFragment addEditFrag = new AddEditTransactionFragment();
                 getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, addEditFrag, CommonUtils.TAG)
+                        .replace(R.id.fragment_container, addEditFrag)
                         .addToBackStack(null)
                         .commit();
             }
