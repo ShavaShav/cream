@@ -57,6 +57,7 @@ public class OverviewFragment extends Fragment implements
     private AccountRecyclerViewAdapter myAccountsAdapter;
     private RecyclerView myAccountsRecyclerView;
     private FloatingActionsMenu overviewFAB;
+    private TextView totalBalanceTextView;
 
     private ChartGenerator chartGen;
     private PieChart incomeVsExpenseChart;
@@ -88,6 +89,7 @@ public class OverviewFragment extends Fragment implements
         overviewFrame = mView.findViewById(R.id.overview_frame);
         highSpendingTextView = mView.findViewById(R.id.textview_high_spending);
         overviewFAB = mView.findViewById(R.id.overviewFab);
+        totalBalanceTextView = mView.findViewById(R.id.totalBalanceTextView);
 
         // Add in order according to R.arrays.overview_customization
         cardViews = new ArrayList<>();
@@ -392,6 +394,9 @@ public class OverviewFragment extends Fragment implements
     }
 
     private void refreshMyAccounts() {
+        CommonUtils.setCurrencyTextView(getContext(),
+                totalBalanceTextView, MainActivity.CURRENT_USER.getBalance());
+
         // create recentTransactionsAdapter and set view to use
         myAccountsAdapter =
                 new AccountRecyclerViewAdapter(MainActivity.CURRENT_USER.getAccountList(),
