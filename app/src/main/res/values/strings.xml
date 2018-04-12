@@ -106,11 +106,16 @@
     <string name="add_transaction_fail">Failed to add transaction</string>
     <string name="edit_transaction_ok">Edited transaction!</string>
     <string name="edit_transaction_fail">Failed to edit transaction</string>
+    <string name="delete_transaction_ok">Deleted transaction!</string>
+    <string name="delete_transaction_fail">Failed to delete transaction</string>
     <string name="add_account_ok">Added account!</string>
     <string name="add_account_fail">Failed to add account</string>
     <string name="edit_account_ok">Edited account!</string>
     <string name="edit_account_fail">Failed to edit account</string>
-
+    <string name="delete_account_ok">Deleted account!</string>
+    <string name="delete_account_fail">Failed to delete account</string>
+    <string name="delete_button_text">Delete</string>
+    <string name="delete_confirmation">Double-tap to delete!</string>
     <string name="toggle_expense">Expense</string>
     <string name="toggle_income">Income</string>
     <string name="hint_payer">Payer</string>
