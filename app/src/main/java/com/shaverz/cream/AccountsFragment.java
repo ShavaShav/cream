@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.shaverz.cream.models.Account;
 import com.shaverz.cream.models.User;
@@ -26,6 +27,7 @@ public class AccountsFragment extends Fragment implements
     private View mView;
     private AccountRecyclerViewAdapter myAccountsAdapter;
     private RecyclerView myAccountsRecyclerView;
+    private TextView totalBalanceTextView;
 
     private static final int USER_LOADER = 0;
 
@@ -40,6 +42,7 @@ public class AccountsFragment extends Fragment implements
         // Inflate the layout for this fragment
         mView = inflater.inflate(R.layout.fragment_accounts, container, false);
 
+        totalBalanceTextView = mView.findViewById(R.id.totalBalanceTextView);
         myAccountsRecyclerView = (RecyclerView) mView.findViewById(R.id.accounts_list);
         myAccountsRecyclerView.setAdapter(new AccountRecyclerViewAdapter(new ArrayList<Account>(), false));
 
@@ -101,9 +104,11 @@ public class AccountsFragment extends Fragment implements
     public void onLoadFinished(Loader<User> loader, User data) {
         // refresh current user and accounts
         MainActivity.CURRENT_USER = data;
+
+        CommonUtils.setCurrencyTextView(getContext(), totalBalanceTextView, data.getBalance());
+
         myAccountsAdapter = new AccountRecyclerViewAdapter(MainActivity.CURRENT_USER.getAccountList(), false);
         myAccountsRecyclerView.setAdapter(myAccountsAdapter);
-
     }
 
     @Override

@@ -122,6 +122,7 @@
     <string name="hint_opening_balance">Opening Balance</string>
     <string name="opening_balance_category">Other</string>
     <string name="opening_balance_payee">Opening Balance</string>
+    <string name="current_balance">Total Balance:\u0020</string>
 
     <string name="toast_highspending_enable">Alert will show if you spend over $500 in 24hrs.</string>
 </resources>
