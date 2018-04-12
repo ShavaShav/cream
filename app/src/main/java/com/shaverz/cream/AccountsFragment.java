@@ -46,18 +46,6 @@ public class AccountsFragment extends Fragment implements
         myAccountsRecyclerView = (RecyclerView) mView.findViewById(R.id.accounts_list);
         myAccountsRecyclerView.setAdapter(new AccountRecyclerViewAdapter(new ArrayList<Account>(), false));
 
-        // Attach settings menu to accounts card
-        Toolbar accountsToolbar = (Toolbar) mView.findViewById(R.id.toolbar_accounts);
-        if (accountsToolbar != null) {
-            accountsToolbar.inflateMenu(R.menu.menu_accounts);
-            accountsToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem menuItem) {
-                    return true;
-                }
-            });
-        }
-
         FloatingActionButton addAccountButton = mView.findViewById(R.id.fab);
         addAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
