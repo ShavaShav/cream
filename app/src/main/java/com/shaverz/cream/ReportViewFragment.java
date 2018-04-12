@@ -32,7 +32,7 @@ public class ReportViewFragment extends Fragment {
     private RelativeLayout graphFrame;
     private RelativeLayout.LayoutParams chartParams = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-    private int reportType;
+    private int chartType;
     private boolean periodExists;
     private Period period;
     private Chart chart;
@@ -46,15 +46,15 @@ public class ReportViewFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            reportType = getArguments().getInt("report_type");
+            chartType = getArguments().getInt("report_type");
         } else {
-            reportType = ChartGenerator.EXPENSE_BY_CATEGORY; // default
+            chartType = ChartGenerator.EXPENSE_BY_CATEGORY; // default
         }
 
         chartGen = new ChartGenerator(getContext());
         chartGen.shuffleColours(); // shuffle for initial view
 
-        if (reportType == ChartGenerator.MONTHLY_EXPENSES || reportType == ChartGenerator.MONTHLY_INCOME) {
+        if (chartType == ChartGenerator.MONTHLY_EXPENSES || chartType == ChartGenerator.MONTHLY_INCOME) {
             period = new AnnualPeriod();
         } else {
             period = new RecentPeriod();
@@ -87,7 +87,7 @@ public class ReportViewFragment extends Fragment {
 
         periodExists = false; // assume no period option
 
-        if (reportType != ChartGenerator.DAILY_EXPENSES && reportType != ChartGenerator.DAILY_INCOME) {
+        if (chartType != ChartGenerator.DAILY_EXPENSES && chartType != ChartGenerator.DAILY_INCOME) {
 
             periodExists = true;
 
@@ -122,6 +122,42 @@ public class ReportViewFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        // Set title according to chart type
+        String title = "";
+        switch (chartType) {
+            case ChartGenerator.EXPENSE_BY_CATEGORY:
+                title = getString(R.string.report_title_expense_by_category);
+                break;
+            case ChartGenerator.DAILY_EXPENSES:
+                title = getString(R.string.report_title_daily_expense);
+                break;
+            case ChartGenerator.MONTHLY_EXPENSES:
+                title = getString(R.string.report_title_monthly_expense);
+                break;
+            case ChartGenerator.INCOME_BY_CATEGORY:
+                title = getString(R.string.report_title_income_by_category);
+                break;
+            case ChartGenerator.DAILY_INCOME:
+                title = getString(R.string.report_title_daily_income);
+                break;
+            case ChartGenerator.MONTHLY_INCOME:
+                title = getString(R.string.report_title_monthly_income);
+                break;
+            case ChartGenerator.DAILY_BALANCE:
+                title = getString(R.string.report_title_daily_balance);
+                break;
+            case ChartGenerator.INCOME_VS_EXPENSE:
+                title = getString(R.string.report_title_income_vs_expense);
+                break;
+        }
+
+        ((MainActivity) getActivity()).setActionBarTitle(title);
+    }
+
     private Chart makeChartFromSpinners() {
         // get account from spinner
         Account account = accountArrayAdapter.getItem(accountSpinner.getSelectedItemPosition());
@@ -139,7 +175,7 @@ public class ReportViewFragment extends Fragment {
             dateRange = period.getDateRange(periodString);
         }
 
-        return chartGen.generateChart(reportType, account, dateRange);
+        return chartGen.generateChart(chartType, account, dateRange);
     }
 
     private class optionsChangeListener implements AdapterView.OnItemSelectedListener {

@@ -76,6 +76,15 @@ public class AddEditAccountFragment extends Fragment {
         return mView;
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        // Set title bar
+        ((MainActivity) getActivity())
+                .setActionBarTitle((addingNewAccount ? "Add" : "Edit") + " Account");
+    }
+
     // responds to event generated when user saves a contact
     private final View.OnClickListener saveContactButtonClicked =
             new View.OnClickListener() {
