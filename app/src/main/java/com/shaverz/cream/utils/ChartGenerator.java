@@ -84,7 +84,7 @@ public class ChartGenerator {
         // trim transactions to show according to account and period settings
         List<Transaction> transactionList;
 
-        if (account != null) {
+        if (account != null && Long.parseLong(account.getId()) >= 0) {
             transactionList = MainActivity.CURRENT_USER.getAccount(account.getId()).getTransactionList();
         } else {
             transactionList = MainActivity.CURRENT_USER.getTransactions(); // all by default

@@ -13,7 +13,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,6 +32,7 @@ import com.shaverz.cream.models.Transaction;
 import com.shaverz.cream.models.User;
 import com.shaverz.cream.utils.ChartGenerator;
 import com.shaverz.cream.utils.CommonUtils;
+import com.shaverz.cream.utils.DBUtils;
 import com.shaverz.cream.utils.Period;
 import com.shaverz.cream.utils.RecentPeriod;
 import com.shaverz.cream.views.AccountRecyclerViewAdapter;
@@ -65,15 +65,15 @@ public class OverviewFragment extends Fragment implements
     private FloatingActionsMenu overviewFAB;
     private TextView totalBalanceTextView;
     private AlertDialog.Builder incomeVsExpensePeriodDialog;
-    private AlertDialog.Builder expenseByCategoryPeriodDialog;
     private TextView incomeVsExpensePeriodTextView;
+    private AlertDialog.Builder expenseByCategoryPeriodDialog;
     private TextView expenseByCategoryPeriodTextView;
 
     private ChartGenerator chartGen;
     private PieChart incomeVsExpenseChart;
     private Period.DateRange incomeVsExpensePeriod;
-    private Period.DateRange expenseByCategoryPeriod;
     private PieChart expenseByCategoryChart;
+    private Period.DateRange expenseByCategoryPeriod;
 
     private static final int USER_LOADER = 0;
     private boolean isAccountsCompact = true;
@@ -364,7 +364,7 @@ public class OverviewFragment extends Fragment implements
 
     @Override
     public Loader<User> onCreateLoader(int id, Bundle args) {
-        return new CommonUtils.UserLoader(this.getContext());
+        return new DBUtils.UserLoader(this.getContext());
     }
 
     @Override

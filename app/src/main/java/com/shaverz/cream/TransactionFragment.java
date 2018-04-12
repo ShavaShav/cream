@@ -21,6 +21,7 @@ import com.shaverz.cream.models.Account;
 import com.shaverz.cream.models.Transaction;
 import com.shaverz.cream.models.User;
 import com.shaverz.cream.utils.CommonUtils;
+import com.shaverz.cream.utils.DBUtils;
 import com.shaverz.cream.utils.RecentPeriod;
 import com.shaverz.cream.utils.Period;
 import com.shaverz.cream.views.TransactionRecyclerViewAdapter;
@@ -156,7 +157,7 @@ public class TransactionFragment extends Fragment implements
 
     @Override
     public Loader<User> onCreateLoader(int id, Bundle args) {
-        return new CommonUtils.UserLoader(this.getContext());
+        return new DBUtils.UserLoader(this.getContext());
     }
 
     private void refreshSelectedTransactions() {

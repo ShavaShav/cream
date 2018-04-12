@@ -19,7 +19,7 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.shaverz.cream.data.DB;
 import com.shaverz.cream.models.Account;
-import com.shaverz.cream.utils.CommonUtils;
+import com.shaverz.cream.utils.DBUtils;
 
 public class AddEditAccountFragment extends Fragment {
 
@@ -188,7 +188,7 @@ public class AddEditAccountFragment extends Fragment {
 
             // use Activity's ContentResolver to invoke
             // insert on the AppContentProvider
-            Uri newAccountUri = CommonUtils.createNewAccount(getContext(), name, openingBalance);
+            Uri newAccountUri = DBUtils.createNewAccount(getContext(), name, openingBalance);
             if (newAccountUri != null) {
                 Snackbar.make(this.getView(), getString(R.string.add_account_ok),
                         Snackbar.LENGTH_LONG).show();

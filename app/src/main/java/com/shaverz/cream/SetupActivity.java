@@ -24,6 +24,7 @@ import android.widget.Spinner;
 
 import com.shaverz.cream.data.DB;
 import com.shaverz.cream.utils.CommonUtils;
+import com.shaverz.cream.utils.DBUtils;
 
 public class SetupActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -79,8 +80,8 @@ public class SetupActivity extends AppCompatActivity implements View.OnClickList
                 null);
 
         // add Bank and Cash accounts
-        CommonUtils.createNewAccount(this, "Bank", bankOpeningTransaction);
-        CommonUtils.createNewAccount(this, "Cash", cashOpeningTransaction);
+        DBUtils.createNewAccount(this, "Bank", bankOpeningTransaction);
+        DBUtils.createNewAccount(this, "Cash", cashOpeningTransaction);
 
         Intent intent = new Intent(SetupActivity.this, MainActivity.class);
         startActivity(intent);

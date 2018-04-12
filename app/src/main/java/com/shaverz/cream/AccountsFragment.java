@@ -7,9 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -17,6 +15,7 @@ import android.widget.TextView;
 import com.shaverz.cream.models.Account;
 import com.shaverz.cream.models.User;
 import com.shaverz.cream.utils.CommonUtils;
+import com.shaverz.cream.utils.DBUtils;
 import com.shaverz.cream.views.AccountRecyclerViewAdapter;
 
 import java.util.ArrayList;
@@ -85,7 +84,7 @@ public class AccountsFragment extends Fragment implements
 
     @Override
     public Loader<User> onCreateLoader(int id, Bundle args) {
-        return new CommonUtils.UserLoader(this.getContext());
+        return new DBUtils.UserLoader(this.getContext());
     }
 
     @Override
