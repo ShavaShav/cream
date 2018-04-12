@@ -3,6 +3,9 @@ package com.shaverz.cream.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.shaverz.cream.utils.CommonUtils;
+
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Comparator;
 
@@ -53,6 +56,10 @@ public class Transaction implements Comparable<Transaction>, Parcelable{
         return date;
     }
 
+    public String getDateString() {
+        return new SimpleDateFormat("MMMM dd yyyy").format(date);
+    }
+
     public String getCategory() {
         return category;
     }
@@ -64,7 +71,7 @@ public class Transaction implements Comparable<Transaction>, Parcelable{
     @Override
     public String toString() {
         return id + "| " + account + " | "  + category + " | " +
-                payee + ": $" + amount + " @ " + date.toString();
+                payee + " : " + CommonUtils.getCurrencyString(amount) + " @ " + getDate();
     }
 
     @Override

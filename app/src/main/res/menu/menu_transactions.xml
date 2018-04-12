@@ -2,9 +2,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.shaverz.cream.TransactionFragment">
+
+    <item android:id="@+id/search"
+        android:orderInCategory="1"
+        android:title="Search"
+        android:icon="@drawable/ic_search"
+        app:showAsAction="collapseActionView|ifRoom"
+        app:actionViewClass="android.support.v7.widget.SearchView" />
     <item
         android:id="@+id/action_reorder"
-        android:orderInCategory="1"
+        android:orderInCategory="2"
         android:title="@string/action_reorder"
         android:icon="@drawable/ic_reorder"
         app:showAsAction="always" />

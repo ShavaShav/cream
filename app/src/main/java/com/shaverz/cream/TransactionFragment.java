@@ -1,11 +1,14 @@
 package com.shaverz.cream;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,14 +35,14 @@ import java.util.Comparator;
 import java.util.List;
 
 public class TransactionFragment extends Fragment implements
-        LoaderManager.LoaderCallbacks<User> {
+        LoaderManager.LoaderCallbacks<User>, SearchView.OnQueryTextListener {
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
     private View mView;
-    private TransactionRecyclerViewAdapter adapter;
+    private TransactionRecyclerViewAdapter transactionsAdapter;
     private RecyclerView transactionRecyclerView;
     private Spinner accountSpinner;
     private ArrayAdapter<Account> accountArrayAdapter; // holds account objects so can get id easily
@@ -48,7 +51,8 @@ public class TransactionFragment extends Fragment implements
     private TextView periodOpeningView;
     private TextView periodClosingView;
     private Period period;
-
+    private SearchView searchView;
+    private MenuItem searchMenuItem;
     private static final int LIST_LOADER = 0;
     private boolean reverseOrder = false;
 
@@ -140,6 +144,18 @@ public class TransactionFragment extends Fragment implements
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_transactions, menu);
+
+        SearchManager searchManager = (SearchManager)
+                getActivity().getSystemService(Context.SEARCH_SERVICE);
+        searchMenuItem = menu.findItem(R.id.search);
+        searchView = (SearchView) searchMenuItem.getActionView();
+
+        searchView.setSearchableInfo(searchManager.
+                getSearchableInfo(getActivity().getComponentName()));
+        searchView.setSubmitButtonEnabled(true);
+        searchView.setOnQueryTextListener(this);
+
+        searchView.setBackgroundColor(getResources().getColor(R.color.half_black));
     }
 
     @Override
@@ -153,6 +169,18 @@ public class TransactionFragment extends Fragment implements
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+
+    @Override
+    public boolean onQueryTextSubmit(String transactionQuery) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String transactionQuery) {
+        transactionsAdapter.getFilter().filter(transactionQuery);
+        return true;
     }
 
     @Override
@@ -203,9 +231,9 @@ public class TransactionFragment extends Fragment implements
 
         Collections.sort(transactionsToShow, cmp);
 
-        // create adapter and set view to use
-        adapter = new TransactionRecyclerViewAdapter(transactionsToShow);
-        transactionRecyclerView.setAdapter(adapter);
+        // create transactionsAdapter and set view to use
+        transactionsAdapter = new TransactionRecyclerViewAdapter(transactionsToShow);
+        transactionRecyclerView.setAdapter(transactionsAdapter);
     }
 
     @Override

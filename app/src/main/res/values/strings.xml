@@ -54,6 +54,7 @@
     <string name="period_close">Period Closing</string>
     <string name="tx_account">ACCOUNT</string>
     <string name="tx_period">PERIOD</string>
+    <string name="search_tx_hint">Search transactions</string>
 
     <!-- Reports -->
     <string name="title_activity_reports">ReportsActivity</string>

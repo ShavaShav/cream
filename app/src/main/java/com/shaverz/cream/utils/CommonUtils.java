@@ -34,13 +34,16 @@ public class CommonUtils {
         return getCurrentUserURI(context).getLastPathSegment();
     }
 
+    public static String getCurrencyString (double amount) {
+        return NumberFormat
+                .getCurrencyInstance(MainActivity.CURRENT_USER.getCurrencyLocale())
+                .format(amount);
+    }
+
     // customizes a textview with color depending on currency +/- and locale
     public static void setCurrencyTextView (Context context, TextView currencyTextView, double amount) {
         // Format currency according to locale from main activity
-        currencyTextView.setText(
-                NumberFormat
-                        .getCurrencyInstance(MainActivity.CURRENT_USER.getCurrencyLocale())
-                        .format(amount));
+        currencyTextView.setText(getCurrencyString(amount));
 
         // Set to color depending on expense or income
         if (amount > 0.00) {
