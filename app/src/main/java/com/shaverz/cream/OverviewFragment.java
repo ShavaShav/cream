@@ -32,6 +32,7 @@ import com.shaverz.cream.models.Transaction;
 import com.shaverz.cream.models.User;
 import com.shaverz.cream.utils.ChartGenerator;
 import com.shaverz.cream.utils.CommonUtils;
+import com.shaverz.cream.utils.CurrencyAxisValueFormatter;
 import com.shaverz.cream.utils.DBUtils;
 import com.shaverz.cream.utils.Period;
 import com.shaverz.cream.utils.RecentPeriod;

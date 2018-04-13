@@ -203,6 +203,7 @@ public class ChartGenerator {
         chart.getLegend().setEnabled(false);
         chart.setDescription(null);
         chart.getXAxis().setLabelCount(monthsOfYear.size());
+        chart.getAxisLeft().setValueFormatter(new CurrencyAxisValueFormatter());
 
         chart.invalidate();
 
@@ -271,6 +272,8 @@ public class ChartGenerator {
         set.setColors(new int[]{ income ? R.color.chart_green : R.color.chart_red}, context);
 
         BarData data = new BarData(set);
+        data.setValueFormatter(new CurrencyValueFormatter());
+
         BarChart chart = new BarChart(context);
 
         // Set data and style
@@ -284,6 +287,7 @@ public class ChartGenerator {
         chart.getLegend().setEnabled(false);
         chart.setDescription(null);
         chart.getXAxis().setLabelCount(daysOfWeek.size());
+        chart.getAxisLeft().setValueFormatter(new CurrencyAxisValueFormatter());
 
         chart.invalidate();
 
@@ -342,7 +346,10 @@ public class ChartGenerator {
                 (income ? "Income" : "Expenses") + " by Category");
         set.setColors(graphColours, context);
 
-        return new PieData(set);
+        PieData data = new PieData(set);
+        data.setValueFormatter(new CurrencyValueFormatter());
+
+        return data;
     }
 
     /*
@@ -385,7 +392,7 @@ public class ChartGenerator {
         set.setColors(new int[]{R.color.chart_green, R.color.chart_red}, context);
 
         PieData data = new PieData(set);
-
+        data.setValueFormatter(new CurrencyValueFormatter());
         return data;
     }
 
@@ -443,6 +450,8 @@ public class ChartGenerator {
         set.setColors(new int[]{R.color.chart_black}, context);
 
         LineData data = new LineData(set);
+        data.setValueFormatter(new CurrencyValueFormatter());
+
         LineChart chart = new LineChart(context);
 
         // Set data and style
@@ -454,7 +463,7 @@ public class ChartGenerator {
         chart.getAxisRight().setDrawGridLines(false);
         chart.getLegend().setEnabled(false);
         chart.setDescription(null);
-
+        chart.getAxisLeft().setValueFormatter(new CurrencyAxisValueFormatter());
         chart.invalidate();
 
         return chart;
