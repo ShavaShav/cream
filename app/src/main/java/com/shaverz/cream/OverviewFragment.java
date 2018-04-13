@@ -394,6 +394,8 @@ public class OverviewFragment extends Fragment implements
 
         }
 
+        chartGen.shuffleColours();
+
         refreshHighSpendingAlert();
         refreshMyAccounts();
         refreshRecentTransactions();

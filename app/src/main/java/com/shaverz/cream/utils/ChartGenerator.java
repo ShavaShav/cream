@@ -63,7 +63,8 @@ public class ChartGenerator {
     private int[] graphColours = new int[] {
             R.color.chart_blue,
             R.color.chart_green,
-            R.color.chart_orange,
+            R.color.chart_purple,
+            R.color.chart_yellow,
             R.color.chart_red,
             R.color.chart_black };
 
@@ -190,6 +191,9 @@ public class ChartGenerator {
         set.setColors(new int[]{ income ? R.color.chart_green : R.color.chart_red}, context);
 
         BarData data = new BarData(set);
+        data.setValueFormatter(new CurrencyValueFormatter());
+        data.setValueTextSize(context.getResources().getDimension(R.dimen.chart_value_text_size));
+
         BarChart chart = new BarChart(context);
 
         // Set data and style
@@ -204,6 +208,7 @@ public class ChartGenerator {
         chart.setDescription(null);
         chart.getXAxis().setLabelCount(monthsOfYear.size());
         chart.getAxisLeft().setValueFormatter(new CurrencyAxisValueFormatter());
+        chart.setMaxVisibleValueCount(8);
 
         chart.invalidate();
 
@@ -273,6 +278,7 @@ public class ChartGenerator {
 
         BarData data = new BarData(set);
         data.setValueFormatter(new CurrencyValueFormatter());
+        data.setValueTextSize(context.getResources().getDimension(R.dimen.chart_value_text_size));
 
         BarChart chart = new BarChart(context);
 
@@ -348,6 +354,7 @@ public class ChartGenerator {
 
         PieData data = new PieData(set);
         data.setValueFormatter(new CurrencyValueFormatter());
+        data.setValueTextSize(context.getResources().getDimension(R.dimen.chart_value_text_size));
 
         return data;
     }
@@ -393,6 +400,8 @@ public class ChartGenerator {
 
         PieData data = new PieData(set);
         data.setValueFormatter(new CurrencyValueFormatter());
+        data.setValueTextSize(context.getResources().getDimension(R.dimen.chart_value_text_size));
+
         return data;
     }
 
@@ -451,6 +460,7 @@ public class ChartGenerator {
 
         LineData data = new LineData(set);
         data.setValueFormatter(new CurrencyValueFormatter());
+        data.setValueTextSize(context.getResources().getDimension(R.dimen.chart_value_text_size));
 
         LineChart chart = new LineChart(context);
 
@@ -464,6 +474,7 @@ public class ChartGenerator {
         chart.getLegend().setEnabled(false);
         chart.setDescription(null);
         chart.getAxisLeft().setValueFormatter(new CurrencyAxisValueFormatter());
+        chart.setMaxVisibleValueCount(8);
         chart.invalidate();
 
         return chart;

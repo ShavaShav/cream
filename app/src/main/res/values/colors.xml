@@ -19,12 +19,12 @@
     <color name="text_neutral">#808080</color>
 
     <!-- chart colours -->
-    <color name="chart_red">#f55b5b</color>
-    <color name="chart_green">#40ec46</color>
-    <color name="chart_orange">#ffbe3a</color>
-    <color name="chart_blue">#6c88ff</color>
-    <color name="chart_yellow">#fff75f</color>
-    <color name="chart_black">#282828</color>
+    <color name="chart_red">#f44336</color>
+    <color name="chart_green">#4caf50</color>
+    <color name="chart_purple">#ab47bc</color>
+    <color name="chart_blue">#536dfe</color>
+    <color name="chart_yellow">#cddc39</color>
+    <color name="chart_black">#757575</color>
 
     <!-- FAB menu colors -->
     <color name="black_semi_transparent">#B2000000</color>

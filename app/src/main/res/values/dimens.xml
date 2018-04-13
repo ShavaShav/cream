@@ -17,5 +17,6 @@
     <dimen name="text_amount">26sp</dimen>
     <dimen name="text_account">22sp</dimen>
     <dimen name="common_grid_padding">6dp</dimen>
-    <dimen name="min_chart_height">425dp</dimen>
+    <dimen name="min_chart_height">400dp</dimen>
+    <dimen name="chart_value_text_size">12sp</dimen>
 </resources>
