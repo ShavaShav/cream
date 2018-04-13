@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.ToggleButton;
 
@@ -72,6 +73,16 @@ public class AddEditTransactionFragment extends Fragment {
         payerPayeeTextLayout = mView.findViewById(R.id.payerPayeeTextInputLayout);
         incomeToggle = mView.findViewById(R.id.incomeToggle);
 
+        incomeToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isIncome) {
+                if (isIncome)
+                    payerPayeeTextLayout.setHint(getText(R.string.hint_payer));
+                else
+                    payerPayeeTextLayout.setHint(getText(R.string.hint_payee));
+            }
+        });
+
         amountTextLayout.requestFocus(); // focus on amount by default
 
         accountArrayAdapter = new ArrayAdapter<Account>(getContext(),
@@ -100,8 +111,10 @@ public class AddEditTransactionFragment extends Fragment {
                 boolean isIncome = arguments.getBoolean(MainActivity.IS_INCOME_BOOLEAN);
                 if (isIncome) {
                     incomeToggle.setChecked(true); // income
+                    payerPayeeTextLayout.setHint(getText(R.string.hint_payer));
                 } else {
                     incomeToggle.setChecked(false); // expense
+                    payerPayeeTextLayout.setHint(getText(R.string.hint_payee));
                 }
             }
 
@@ -112,8 +125,10 @@ public class AddEditTransactionFragment extends Fragment {
 
                 if (transaction.getAmount() < 0.00) {
                     incomeToggle.setChecked(false); // expense
+                    payerPayeeTextLayout.setHint(getText(R.string.hint_payee));
                 } else {
                     incomeToggle.setChecked(true); // income
+                    payerPayeeTextLayout.setHint(getText(R.string.hint_payer));
                 }
 
                 // find account by name from transaction, in order to set spinner
