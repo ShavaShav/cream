@@ -7,8 +7,10 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -174,7 +176,8 @@ public class TransactionFragment extends Fragment implements
 
     @Override
     public boolean onQueryTextSubmit(String transactionQuery) {
-        return false;
+        MenuItemCompat.collapseActionView(searchMenuItem);
+        return true;
     }
 
     @Override
@@ -234,6 +237,7 @@ public class TransactionFragment extends Fragment implements
         // create transactionsAdapter and set view to use
         transactionsAdapter = new TransactionRecyclerViewAdapter(transactionsToShow);
         transactionRecyclerView.setAdapter(transactionsAdapter);
+
     }
 
     @Override
