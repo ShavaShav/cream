@@ -8,15 +8,15 @@
     <color name="nav_icon_colour">#000000</color>
 
     <!-- Report colors -->
-    <color name="bg_expense">#f28888</color>
-    <color name="bg_income">#68ef6d</color>
-    <color name="bg_cash_flow">#f2bf58</color>
-    <color name="bg_balance">#aab9fa</color>
+    <color name="bg_expense">#ff8a80</color>
+    <color name="bg_income">#81c784</color>
+    <color name="bg_cash_flow">#ffb74d</color>
+    <color name="bg_balance">#90caf9</color>
 
     <!-- Colours for text -->
-    <color name="text_negative">#d93e3e</color>
-    <color name="text_positive">#3ab63e</color>
-    <color name="text_neutral">#808080</color>
+    <color name="text_negative">#e53935</color>
+    <color name="text_positive">#43a047</color>
+    <color name="text_neutral">#757575</color>
 
     <!-- chart colours -->
     <color name="chart_red">#f44336</color>
@@ -29,13 +29,13 @@
     <!-- FAB menu colors -->
     <color name="black_semi_transparent">#B2000000</color>
     <color name="background">#e5e5e5</color>
-    <color name="half_black">#808080</color>
+    <color name="half_black">#757575</color>
     <color name="dark_grey">#383838</color>
     <color name="white">#fafafa</color>
     <color name="white_pressed">#f1f1f1</color>
-    <color name="red">#ea4d62</color>
-    <color name="red_pressed">#bf0228</color>
-    <color name="green">#4cd765</color>
-    <color name="green_pressed">#0ca32f</color>
+    <color name="red">#ef5350</color>
+    <color name="red_pressed">#b71c1c</color>
+    <color name="green">#66bb6a</color>
+    <color name="green_pressed">#388e3c</color>
 
 </resources>
