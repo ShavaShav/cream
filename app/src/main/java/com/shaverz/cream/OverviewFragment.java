@@ -122,6 +122,12 @@ public class OverviewFragment extends Fragment implements
         incomeVsExpenseChart = (PieChart) mView.findViewById(R.id.incomevsexpensePieChart);
         expenseByCategoryChart = (PieChart) mView.findViewById(R.id.expenseByCategoryChart);
 
+        incomeVsExpenseChart.getLegend().setEnabled(false);
+        incomeVsExpenseChart.getDescription().setEnabled(false);
+
+        expenseByCategoryChart.getLegend().setEnabled(false);
+        expenseByCategoryChart.getDescription().setEnabled(false);
+
         incomeVsExpensePeriodDialog = new AlertDialog.Builder(getContext());
         incomeVsExpensePeriodDialog.setIcon(R.drawable.ic_time);
         incomeVsExpensePeriodDialog.setTitle(R.string.period_title);

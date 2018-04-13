@@ -294,6 +294,8 @@ public class ChartGenerator {
         PieChart chart = new PieChart(context);
 
         chart.setData(generateByCategoryData(transactions, income));
+        chart.getLegend().setEnabled(false);
+        chart.getDescription().setEnabled(false);
         chart.invalidate();
 
         return chart;
@@ -351,6 +353,8 @@ public class ChartGenerator {
         PieChart chart = new PieChart(context);
 
         chart.setData(generateIncomeVsExpensesData(transactions));
+        chart.getLegend().setEnabled(false);
+        chart.getDescription().setEnabled(false);
         chart.invalidate();
 
         return chart;
